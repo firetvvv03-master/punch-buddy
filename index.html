@@ -8,7 +8,7 @@
 <style>
 * {
     box-sizing: border-box;
-    touch-action: none;
+    touch-action: manipulation;
 }
 
 html, body {
@@ -22,6 +22,7 @@ html, body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
     user-select: none;
+    -webkit-user-select: none;
 }
 
 body {
@@ -2017,26 +2018,82 @@ function updateHearts() {
 
 function buyExtraHearts() {
     if (maxHearts >= 14) {
-        popup("❌ Max Heart Limit Reached!", "orange", arena.clientWidth / 2 - 100, 50);
+        popup("❌ Max Heart Limit Reached!", "orange", arena.clientWidth / 2 - 90, 50);
         return;
     }
     if (coins >= 1200) {
         coins -= 1200;
-        maxHearts = Math.min(14, maxHearts + 5);
+        maxHearts += 5;
         hearts = maxHearts;
         updateHearts();
         updateScoreboard();
-        updateActivePowerupsUI();
         saveGame();
-        popup("💖 MAX HEARTS INCREASED!", "#ff00a0", arena.clientWidth / 2 - 110, 50);
+        popup("💖 +5 Max Hearts Purchased!", "pink", arena.clientWidth / 2 - 100, 50);
     } else {
         popup("❌ Need 1200 Coins!", "red", arena.clientWidth / 2 - 60, 50);
     }
 }
 
-function flashDamage() {
-    arena.classList.add("damageFlash");
-    setTimeout(() => arena.classList.remove("damageFlash"), 300);
+function buyUpgrade(type) {
+    let cost = getScaledCost(type, eval("upg" + type.charAt(0).toUpperCase() + type.slice(1)));
+    if (coins >= cost) {
+        coins -= cost;
+        if (type === 'power') upgPower++;
+        if (type === 'crit') upgCrit++;
+        if (type === 'auto') upgAuto++;
+        if (type === 'magnet') upgMagnet++;
+        updateUpgradesUI();
+        updateScoreboard();
+        saveGame();
+        popup("💪 Upgrade Successful!", "#00ff88", arena.clientWidth / 2 - 80, 50);
+    } else {
+        popup("❌ Need " + cost + " Coins!", "red", arena.clientWidth / 2 - 60, 50);
+    }
+}
+
+function updateUpgradesUI() {
+    document.getElementById("powerCost").textContent = getScaledCost('power', upgPower);
+    document.getElementById("critCost").textContent = getScaledCost('crit', upgCrit);
+    document.getElementById("autoCost").textContent = getScaledCost('auto', upgAuto);
+    document.getElementById("magnetCost").textContent = getScaledCost('magnet', upgMagnet);
+
+    document.getElementById("basePwrLvl").textContent = upgPower + 1;
+    document.getElementById("basePwrBonus").textContent = upgPower * 5;
+    document.getElementById("critLvl").textContent = upgCrit + 1;
+    document.getElementById("critBonus").textContent = 10 + (upgCrit * 3);
+    document.getElementById("autoLvl").textContent = upgAuto;
+    document.getElementById("magnetLvl").textContent = upgMagnet;
+
+    ['fire', 'ice', 'lightning', 'toxic'].forEach(type => {
+        const tier = gloveTiers[type];
+        const tierLvlEl = document.getElementById(type + "TierLvl");
+        const tierBonusEl = document.getElementById(type + "TierBonus");
+        const buyBtn = document.getElementById("buy" + type.charAt(0).toUpperCase() + type.slice(1) + "Btn");
+        
+        if (tierLvlEl) tierLvlEl.textContent = tier;
+        if (tierBonusEl) tierBonusEl.textContent = tier * 25;
+        if (buyBtn) {
+            if (tier >= 3) {
+                buyBtn.textContent = "MAX";
+                buyBtn.disabled = true;
+            } else {
+                buyBtn.textContent = getScaledCost('elementalGlove', tier) + " 🪙";
+            }
+        }
+    });
+
+    Object.keys(ownedPets).forEach(pet => {
+        const btn = document.getElementById("petBtn_" + pet);
+        if (btn) {
+            if (activePets.includes(pet)) {
+                btn.classList.add("activePetBtn");
+                btn.textContent = pet + " (Equipped)";
+            } else if (ownedPets[pet]) {
+                btn.classList.remove("activePetBtn");
+                btn.textContent = pet + " (Owned)";
+            }
+        }
+    });
 }
 
 function setGloveSkin(skin) {
@@ -2045,643 +2102,271 @@ function setGloveSkin(skin) {
     saveGame();
 }
 
-function animateGloveToTarget(targetX, targetY) {
-    const arenaRect = arena.getBoundingClientRect();
-    const startX = arenaRect.width - 60;
-    const startY = arenaRect.height - 60;
-
-    const deltaX = targetX - startX;
-    const deltaY = targetY - startY;
-    const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-
-    glove.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${angle}deg) scale(1.35)`;
-    
-    setTimeout(() => {
-        glove.style.transform = `translate(0px, 0px) rotate(0deg) scale(1)`;
-    }, 120);
+function triggerShake(intensity = 6) {
+    arena.style.transform = `translate(${(Math.random()-0.5)*intensity}px, ${(Math.random()-0.5)*intensity}px)`;
+    setTimeout(() => arena.style.transform = "translate(0,0)", 80);
 }
 
-function toggleArtifact(key) {
-    let equippedCount = Object.values(artifacts).filter(a => a.equipped).length;
-    if (!artifacts[key].equipped && equippedCount >= 2) {
-        popup("❌ Max 2 Artifacts!", "red", arena.clientWidth / 2 - 80, 50);
-        return;
-    }
-    artifacts[key].equipped = !artifacts[key].equipped;
-    updateUpgradesUI();
-    saveGame();
-}
-
-function updateUpgradesUI() {
-    const buyFireBtn = document.getElementById("buyFireBtn");
-    const buyIceBtn = document.getElementById("buyIceBtn");
-    const buyLightningBtn = document.getElementById("buyLightningBtn");
-    const buyToxicBtn = document.getElementById("buyToxicBtn");
-
-    document.getElementById("fireTierLvl").textContent = gloveTiers.fire;
-    document.getElementById("fireTierBonus").textContent = gloveTiers.fire * 15;
-    buyFireBtn.textContent = gloveTiers.fire >= 3 ? "⭐ MAX" : (getScaledCost('elementalGlove', gloveTiers.fire) + " 🪙");
-
-    document.getElementById("iceTierLvl").textContent = gloveTiers.ice;
-    document.getElementById("iceTierBonus").textContent = gloveTiers.ice * 10;
-    buyIceBtn.textContent = gloveTiers.ice >= 3 ? "⭐ MAX" : (getScaledCost('elementalGlove', gloveTiers.ice) + " 🪙");
-
-    document.getElementById("lightningTierLvl").textContent = gloveTiers.lightning;
-    document.getElementById("lightningTierBonus").textContent = gloveTiers.lightning * 20;
-    buyLightningBtn.textContent = gloveTiers.lightning >= 3 ? "⭐ MAX" : (getScaledCost('elementalGlove', gloveTiers.lightning) + " 🪙");
-
-    document.getElementById("toxicTierLvl").textContent = gloveTiers.toxic;
-    document.getElementById("toxicTierBonus").textContent = gloveTiers.toxic;
-    buyToxicBtn.textContent = gloveTiers.toxic >= 3 ? "⭐ MAX" : (getScaledCost('elementalGlove', gloveTiers.toxic) + " 🪙");
-
-    const petPrices = { '🐶': 1500, '🐱': 2250, '🐉': 3000, '🤖': 4500, '🦅': 6000, '🦄': 9000 };
-    Object.keys(petPrices).forEach(pet => {
-        const btn = document.getElementById("petBtn_" + pet);
-        if (btn) {
-            const isOwned = ownedPets[pet];
-            const isActive = activePets.includes(pet);
-
-            if (isActive) {
-                btn.textContent = pet + " Equipped";
-                btn.classList.add("activePetBtn");
-            } else if (isOwned) {
-                btn.textContent = pet + " Select";
-                btn.classList.remove("activePetBtn");
-            } else {
-                btn.textContent = `${pet} (${petPrices[pet]} 🪙)`;
-                btn.classList.remove("activePetBtn");
-            }
-        }
-    });
-
-    document.getElementById("basePwrLvl").textContent = upgPower + 1;
-    document.getElementById("basePwrBonus").textContent = upgPower * 5;
-    document.getElementById("powerCost").textContent = getScaledCost('power', upgPower);
-
-    document.getElementById("critLvl").textContent = upgCrit + 1;
-    document.getElementById("critBonus").textContent = 10 + (upgCrit * 5);
-    document.getElementById("critCost").textContent = getScaledCost('crit', upgCrit);
-
-    document.getElementById("autoLvl").textContent = upgAuto;
-    document.getElementById("autoCost").textContent = getScaledCost('auto', upgAuto);
-
-    document.getElementById("magnetLvl").textContent = upgMagnet;
-    document.getElementById("magnetCost").textContent = getScaledCost('magnet', upgMagnet);
-
-    const artDiv = document.getElementById("artifactsList");
-    artDiv.innerHTML = "";
-    Object.keys(artifacts).forEach(key => {
-        const a = artifacts[key];
-        const box = document.createElement("div");
-        box.className = "artifactBox " + (a.equipped ? "equipped" : "");
-        box.innerHTML = `<strong>${a.title}</strong> - ${a.desc} <br>
-        <button onclick="toggleArtifact('${key}')">${a.equipped ? 'Unequip' : 'Equip'}</button>`;
-        artDiv.appendChild(box);
-    });
-
-    const achDiv = document.getElementById("achievementsList");
-    achDiv.innerHTML = "";
-    Object.keys(achievements).forEach(key => {
-        const a = achievements[key];
-        const box = document.createElement("div");
-        box.className = "achievementBox " + (a.unlocked ? "unlocked" : "");
-        box.innerHTML = `<strong>${a.title}</strong> - ${a.desc} <br><small>Status: ${a.unlocked ? '✅ Unlocked' : '🔒 Locked'}</small>`;
-        achDiv.appendChild(box);
-    });
-}
-
-function buyUpgrade(type) {
-    if (type === 'power') {
-        let cost = getScaledCost('power', upgPower);
-        if (coins >= cost) { coins -= cost; upgPower++; }
-    } else if (type === 'crit') {
-        let cost = getScaledCost('crit', upgCrit);
-        if (coins >= cost && upgCrit < 10) { coins -= cost; upgCrit++; }
-    } else if (type === 'auto') {
-        let cost = getScaledCost('auto', upgAuto);
-        if (coins >= cost) { coins -= cost; upgAuto++; }
-    } else if (type === 'magnet') {
-        let cost = getScaledCost('magnet', upgMagnet);
-        if (coins >= cost && upgMagnet < 1) { coins -= cost; upgMagnet++; }
-    }
-    updateUpgradesUI();
-    updateScoreboard();
-    saveGame();
-}
-
-function createParticles(x, y, color = "#ffcc00", count = 8) {
-    for (let i = 0; i < count; i++) {
-        const p = document.createElement("div");
-        p.className = "particle";
-        p.style.left = x + "px";
-        p.style.top = y + "px";
-        p.style.width = Math.random() * 6 + 4 + "px";
-        p.style.height = p.style.width;
-        p.style.backgroundColor = color;
-
-        arena.appendChild(p);
-
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 60 + 20;
-        const vx = Math.cos(angle) * speed;
-        const vy = Math.sin(angle) * speed;
-
-        let opacity = 1;
-        const pInterval = setInterval(() => {
-            if (gamePaused) return;
-            p.style.left = (parseFloat(p.style.left) + vx * 0.02) + "px";
-            p.style.top = (parseFloat(p.style.top) + vy * 0.02) + "px";
-            opacity -= 0.05;
-            p.style.opacity = opacity;
-
-            if (opacity <= 0) {
-                clearInterval(pInterval);
-                p.remove();
-            }
-        }, 20);
-    }
+function flashDamage() {
+    arena.classList.add("damageFlash");
+    setTimeout(() => arena.classList.remove("damageFlash"), 200);
 }
 
 function popup(text, color, x, y) {
     const el = document.createElement("div");
+    el.className = "particle";
     el.textContent = text;
-    el.style.position = "absolute";
-    el.style.left = Math.max(10, Math.min(arena.clientWidth - 100, x)) + "px";
-    el.style.top = Math.max(10, y) + "px";
+    el.style.left = x + "px";
+    el.style.top = y + "px";
     el.style.color = color;
     el.style.fontWeight = "bold";
-    el.style.fontSize = "13px";
-    el.style.pointerEvents = "none";
-    el.style.zIndex = "9999";
-    el.style.textShadow = "0 0 5px black";
-    el.style.transition = "all 0.6s ease-out";
-
+    el.style.fontSize = "14px";
+    el.style.textShadow = "0 0 4px black";
+    el.style.transition = "transform 0.6s ease-out, opacity 0.6s ease-out";
     arena.appendChild(el);
 
-    requestAnimationFrame(() => {
-        el.style.transform = "translateY(-30px)";
+    setTimeout(() => {
+        el.style.transform = "translateY(-40px) scale(1.2)";
         el.style.opacity = "0";
-    });
-
+    }, 20);
     setTimeout(() => el.remove(), 600);
 }
 
-function triggerShake(amount = 8) {
-    let shakeCount = 0;
-    const interval = setInterval(() => {
-        if (shakeCount > 5) {
-            arena.style.transform = "none";
-            clearInterval(interval);
-            return;
-        }
-        const rx = (Math.random() - 0.5) * amount;
-        const ry = (Math.random() - 0.5) * amount;
-        arena.style.transform = `translate(${rx}px, ${ry}px)`;
-        shakeCount++;
-    }, 25);
-}
+function createBag() {
+    const bag = document.createElement("div");
+    bag.className = "bag";
+    
+    let isElite = (Math.random() < 0.25 || level % 5 === 0);
+    let isBoss = (level % 10 === 0 && Math.random() < 0.5);
+    let isBigBoss = (level >= 25 && level % 25 === 0);
+    let isLegendary = (level >= 60 && level % 60 === 0);
+    let isBomb = (Math.random() < 0.08 && level > 3);
+    let isCoinBag = (Math.random() < 0.12);
 
-function triggerHitstop(duration = 60) {
-    hitstopActive = true;
-    setTimeout(() => { hitstopActive = false; }, duration);
-}
-
-function spawnDropItem(x, y) {
-    const types = [
-        { symbol: "🪙", name: "Coin (+20)", color: "gold", action: () => { coins += 20; } },
-        { symbol: "💖", name: "Heart (+1 HP)", color: "#ff00a0", action: () => { hearts = Math.min(maxHearts, hearts + 1); updateHearts(); } },
-        { symbol: "⚔️", name: "Sword (+5 Hits)", color: "#00ffff", action: () => { swordHits += 5; updateActivePowerupsUI(); } }
-    ];
-
-    const drop = types[Math.floor(Math.random() * types.length)];
-    const el = document.createElement("div");
-    el.className = "dropItem";
-    el.textContent = drop.symbol;
-    el.style.left = Math.max(10, Math.min(arena.clientWidth - 40, x)) + "px";
-    el.style.top = Math.max(10, y) + "px";
-
-    const collect = () => {
-        drop.action();
-        playSound("coin");
-        popup(drop.name, drop.color, parseFloat(el.style.left), parseFloat(el.style.top));
-        advanceQuestProgress("loot");
-        el.remove();
-        updateScoreboard();
-        saveGame();
-    };
-
-    el.collect = collect;
-    el.addEventListener("pointerdown", collect);
-    arena.appendChild(el);
-
-    setTimeout(() => { if (el.parentNode) el.remove(); }, 8000);
-}
-
-// BAG CREATION & PUNCHING ENGINE
-function createBag(forceType = null, posX = null, posY = null) {
-    const bagEl = document.createElement("div");
-    bagEl.className = "bag";
-
-    let bagType = forceType;
-    let size = 95;
-    let hp = 30 + level * 8;
-    let maxTime = Math.max(7, 18 - Math.floor(level / 3));
-    let moveSpeed = 0;
-    let faceEmoji = "😠";
-    let isBomb = false;
-    let isGhost = false;
-    let isShielded = false;
-    let isElite = false;
-
-   // Boss spawns based on Level milestones
-    if (!bagType) {
-        if (level % 60 === 0) {
-            // Check how many legendary bosses already exist in activeBags
-            const currentLegendaryCount = activeBags.filter(b => b.type === "legendaryboss").length;
-            // Only allow spawn if there are fewer than 2 legendary bosses max
-            if (currentLegendaryCount < 2) {
-                bagType = "legendaryboss";
-            } else {
-                bagType = "boss"; // Fallback to normal boss if max limit reached
-            }
-        } else if (level % 25 === 0) {
-            bagType = "bigboss";
-        } else if (level % 10 === 0) {
-            bagType = "boss";
-        } else {
-            const rand = Math.random();
-            if (rand < 0.10) bagType = "elite";
-            else if (rand < 0.18) bagType = "inferno";
-            else if (rand < 0.26) bagType = "frost";
-            else if (rand < 0.34) bagType = "shock";
-            else if (rand < 0.42) bagType = "toxic";
-            else if (rand < 0.48) bagType = "coinbag";
-            else if (rand < 0.54) bagType = "splitter";
-            else if (rand < 0.60) bagType = "ghost";
-            else if (rand < 0.65) bagType = "healer";
-            else if (rand < 0.70) bagType = "combobreaker";
-            else if (rand < 0.75) bagType = "goblin";
-            else if (rand < 0.80) bagType = "bomb";
-            else bagType = "normal";
-        }
-    }
-
-    if (bagType === "legendaryboss") {
-        bagEl.classList.add("legendaryboss");
-        size = 150;
-        hp = (120 + level * 25) * 2;
-        maxTime = 25;
-        faceEmoji = "👑👿";
-        triggerAnnouncerBanner("🚨 LEGENDARY BOSS ENGAGED! 🚨");
-    } else if (bagType === "bigboss") {
-        bagEl.classList.add("bigboss");
-        size = 135;
-        hp = 100 + level * 20;
-        maxTime = 22;
-        faceEmoji = "👹";
-        triggerAnnouncerBanner("⚠️ BIG BOSS ENGAGED! ⚠️");
-    } else if (bagType === "boss") {
-        bagEl.classList.add("boss");
-        size = 115;
-        hp = 60 + level * 14;
-        maxTime = 18;
-        faceEmoji = "👿";
-    } else if (bagType === "elite") {
-        bagEl.classList.add("elite");
-        size = 105;
-        hp = 50 + level * 10;
-        moveSpeed = (Math.random() < 0.5 ? 1 : -1) * (2.5 + Math.random() * 2); 
-        faceEmoji = "😈";
-        isElite = true;
-    } else if (bagType === "coinbag") {
-        bagEl.classList.add("coinbag");
-        faceEmoji = "🤑";
-    } else if (bagType === "inferno") {
-        bagEl.classList.add("inferno");
-        faceEmoji = "🔥";
-    } else if (bagType === "frost") {
-        bagEl.classList.add("frost");
-        faceEmoji = "🥶";
-    } else if (bagType === "shock") {
-        bagEl.classList.add("shock");
-        faceEmoji = "⚡";
-    } else if (bagType === "toxic") {
-        bagEl.classList.add("toxic");
-        faceEmoji = "🤢";
-    } else if (bagType === "splitter") {
-        bagEl.classList.add("splitter");
-        faceEmoji = "🌀";
-    } else if (bagType === "minibag") {
-        bagEl.classList.add("minibag");
-        size = 65;
-        hp = Math.floor((30 + level * 8) * 0.4);
-        faceEmoji = "👶";
-    } else if (bagType === "ghost") {
-        bagEl.classList.add("ghost");
-        isGhost = true;
-        faceEmoji = "👻";
-    } else if (bagType === "healer") {
-        bagEl.classList.add("healer");
-        faceEmoji = "💚";
-    } else if (bagType === "combobreaker") {
-        bagEl.classList.add("combobreaker");
-        faceEmoji = "🛑";
-    } else if (bagType === "goblin") {
-        bagEl.classList.add("goblin");
-        moveSpeed = 4.5;
-        faceEmoji = "👺";
-    } else if (bagType === "bomb") {
-        bagEl.classList.add("bomb");
-        isBomb = true;
-        faceEmoji = "💣";
-        maxTime = 8;
-    }
-
-    if (Math.random() < 0.20 && !isBomb && bagType !== "legendaryboss" && bagType !== "bigboss" && bagType !== "boss") {
-        isShielded = true;
-        bagEl.classList.add("shielded");
-    }
-
-    bagEl.style.width = size + "px";
-    bagEl.style.height = (size * 1.25) + "px";
-
-    const leftPos = posX !== null ? posX : Math.random() * (arena.clientWidth - size - 20) + 10;
-    const topPos = posY !== null ? posY : Math.random() * (arena.clientHeight - (size * 1.25) - 40) + 20;
-
-    bagEl.style.left = Math.max(10, Math.min(arena.clientWidth - size - 10, leftPos)) + "px";
-    bagEl.style.top = Math.max(10, Math.min(arena.clientHeight - (size * 1.25) - 20, topPos)) + "px";
-
-    let photoHtml = uploadedPhoto ? `<img src="${uploadedPhoto}">` : `<div class="faceOverlay">${faceEmoji}</div>`;
-
-    bagEl.innerHTML = `
-        <div class="hatOverlay">${activeHat}</div>
-        <div class="bagWrapper">${photoHtml}</div>
-        ${isShielded ? '<div class="shieldText">🛡️ SHIELDED</div>' : ''}
-        <div class="typeText">${bagType.toUpperCase()}</div>
-        <div class="timerText">⏳ ${Math.ceil(maxTime)}</div>
-        <div class="hpBarContainer"><div class="hpBar"></div></div>
-        <div class="hpText">${Math.floor(hp)}/${Math.floor(hp)}</div>
-    `;
-
-    if (Math.random() < 0.35 && !isBomb) {
-        const bullseye = document.createElement("div");
-        bullseye.className = "bullseye";
-        bullseye.style.left = (size / 2 - 14) + "px";
-        bullseye.style.top = (size * 0.6) + "px";
-        bagEl.appendChild(bullseye);
-    }
-
-    const bagObj = {
-        element: bagEl,
-        type: bagType,
-        hp: hp,
-        maxHp: hp,
-        timeLeft: maxTime,
-        maxTime: maxTime,
-        size: size,
-        moveSpeed: moveSpeed,
+    let bagObj = {
+        element: bag,
+        hp: 50 + level * 15,
+        maxHp: 50 + level * 15,
+        timeLeft: 12.0,
+        size: 55,
         isBomb: isBomb,
-        isGhost: isGhost,
-        isShielded: isShielded,
-        shieldHp: isShielded ? 2 : 0,
-        isBurning: false,
-        isPoisoned: false,
-        poisonStacks: 0,
         isElite: isElite
     };
 
-    activeBags.push(bagObj);
-    bagsContainer.appendChild(bagEl);
+    if (isLegendary) {
+        bag.classList.add("legendaryboss");
+        bagObj.hp = 800 + level * 50;
+        bagObj.maxHp = bagObj.hp;
+        bagObj.size = 85;
+        triggerAnnouncerBanner("⚡ LEGENDARY BOSS ENGAGED! ⚡");
+    } else if (isBigBoss) {
+        bag.classList.add("bigboss");
+        bagObj.hp = 400 + level * 30;
+        bagObj.maxHp = bagObj.hp;
+        bagObj.size = 75;
+        triggerAnnouncerBanner("⚠️ BIG BOSS ENGAGED! ⚠️");
+    } else if (isBoss) {
+        bag.classList.add("boss");
+        bagObj.hp = 150 + level * 20;
+        bagObj.maxHp = bagObj.hp;
+        bagObj.size = 65;
+    } else if (isElite) {
+        bag.classList.add("elite");
+        bagObj.moveSpeed = (Math.random() < 0.5 ? 1 : -1) * (1.5 + level * 0.1);
+        bagObj.hp = 90 + level * 12;
+        bagObj.maxHp = bagObj.hp;
+    } else if (isBomb) {
+        bag.classList.add("bomb");
+        bagObj.hp = 30;
+        bagObj.maxHp = 30;
+        bagObj.timeLeft = 7.0;
+    } else if (isCoinBag) {
+        bag.classList.add("coinbag");
+        bagObj.hp = 40;
+        bagObj.maxHp = 40;
+    }
 
-    bagEl.addEventListener("pointerdown", (e) => {
+    bag.style.width = bagObj.size + "px";
+    bag.style.height = (bagObj.size * 1.35) + "px";
+
+    const maxLeft = Math.max(10, arena.clientWidth - bagObj.size - 20);
+    const maxTop = Math.max(80, arena.clientHeight - (bagObj.size * 1.5) - 30);
+    bag.style.left = Math.floor(Math.random() * maxLeft) + "px";
+    bag.style.top = Math.floor(Math.random() * (maxTop - 60) + 50) + "px";
+
+    let innerHTML = `<div class="bagWrapper">`;
+    if (uploadedPhoto) {
+        innerHTML += `<img src="${uploadedPhoto}">`;
+    } else {
+        innerHTML += `<div class="faceOverlay">🐵</div>`;
+    }
+    if (activeHat) {
+        innerHTML += `<div class="hatOverlay">${activeHat}</div>`;
+    }
+    innerHTML += `</div>`;
+    innerHTML += `<div class="hpBarContainer"><div class="hpBar"></div></div>`;
+    innerHTML += `<div class="hpText">${Math.floor(bagObj.hp)}/${Math.floor(bagObj.maxHp)}</div>`;
+    innerHTML += `<div class="timerText">⏳ ${Math.ceil(bagObj.timeLeft)}</div>`;
+
+    if (Math.random() < 0.25 && !isBomb) {
+        innerHTML += `<div class="bullseye" style="top: ${Math.random()*20}px; left: ${Math.random()*20}px;"></div>`;
+    }
+
+    bag.innerHTML = innerHTML;
+
+    bag.addEventListener("pointerdown", (e) => {
         e.stopPropagation();
-        punch(bagObj, false, e);
+        punch(bagObj);
     });
+
+    bagsContainer.appendChild(bag);
+    activeBags.push(bagObj);
 }
 
-function punch(bag, isAuto = false, event = null) {
-    if (gamePaused || bag.hp <= 0) return;
+function punch(bagObj, isAuto = false) {
+    if (gamePaused) return;
 
     totalPunches++;
-    punchCount++;
-
-    if (artifacts.vampire.equipped && punchCount % 50 === 0) {
-        hearts = Math.min(maxHearts, hearts + 0.5);
-        updateHearts();
-        popup("🩸 Vampire Heal (+0.5 HP)", "#ff00a0", arena.clientWidth / 2 - 80, 40);
+    if (!isAuto) {
+        combo++;
+        comboTimerAcc = 0;
+        maxComboStreak = Math.max(maxComboStreak, combo);
+        updateComboUI();
     }
 
-    let clickX = arena.clientWidth / 2;
-    let clickY = arena.clientHeight / 2;
-
-    if (event) {
-        const rect = arena.getBoundingClientRect();
-        clickX = event.clientX - rect.left;
-        clickY = event.clientY - rect.top;
-    } else if (bag.element) {
-        const rect = bag.element.getBoundingClientRect();
-        const arenaRect = arena.getBoundingClientRect();
-        clickX = rect.left - arenaRect.left + bag.size / 2;
-        clickY = rect.top - arenaRect.top + bag.size / 2;
+    let baseDmg = 12 + (upgPower * 5);
+    if (swordHits > 0) {
+        baseDmg *= 2;
+        swordHits--;
+        updateScoreboard();
     }
+    if (rageActive) baseDmg *= 3;
+    if (feverActive) baseDmg *= 2;
 
-    animateGloveToTarget(clickX, clickY);
-
-    if (bag.isBomb) {
-        playSound("explosion");
-        triggerShake(16);
-        popup("💣 BOMB DETONATED! -1 ❤️", "red", clickX, clickY);
-        hearts = Math.max(0, hearts - 1);
-        flashDamage();
-        updateHearts();
-        removeBagFromGame(bag);
-        if (hearts <= 0) gameOver();
-        else maintainBagCount();
-        return;
-    }
-
-    // Bounce Elite bag on hit!
-    if (bag.isElite) {
-        bag.moveSpeed = (bag.moveSpeed > 0 ? -1 : 1) * (3 + Math.random() * 2.5);
-    }
-
-    if (bag.isShielded && bag.shieldHp > 0) {
-        bag.shieldHp--;
-        playSound("shield");
-        createParticles(clickX, clickY, "#00aaff", 10);
-        if (bag.shieldHp <= 0) {
-            bag.isShielded = false;
-            bag.element.classList.remove("shielded");
-            const st = bag.element.querySelector(".shieldText");
-            if (st) st.remove();
-            popup("🛡️ SHIELD BROKEN!", "#00aaff", clickX, clickY);
-        } else {
-            popup("🛡️ SHIELD ABSORBED!", "#00aaff", clickX, clickY);
-            return;
-        }
-    }
-
-    combo++;
-    comboTimerAcc = 0;
-    if (combo > maxComboStreak) maxComboStreak = combo;
-    updateComboUI();
-
-    if (activeSkillCharge < activeSkillMax) {
-        activeSkillCharge++;
-        updateActiveSkillButton();
-    }
-
-    feverPoints++;
-    if (feverPoints >= feverMax && !feverActive) {
-        triggerFeverMode();
-    }
-    updateFeverUI();
-
-    let baseDmg = 15 + (upgPower * 5);
-    if (achievements.collector.unlocked) baseDmg += 50;
-
-    let critChance = 0.10 + (upgCrit * 0.05);
+    let critChance = 0.10 + (upgCrit * 0.03);
     if (achievements.comboMaster.unlocked) critChance += 0.10;
 
     let isCrit = Math.random() < critChance;
     if (isCrit) {
-        baseDmg *= 2;
+        baseDmg *= 2.2;
         totalCrits++;
-        advanceQuestProgress("crit");
-    }
-
-    if (swordHits > 0) {
-        baseDmg *= 2;
-        if (!isAuto) swordHits--;
-        updateActivePowerupsUI();
-    }
-
-    if (rageActive) baseDmg *= 3;
-    if (feverActive) baseDmg *= 2;
-    if (artifacts.cursedBandage.equipped) baseDmg *= 1.5;
-
-    let isBullseye = false;
-    if (event && event.target && event.target.classList.contains("bullseye")) {
-        isBullseye = true;
-        baseDmg *= 2.5;
-        event.target.remove();
-        advanceQuestProgress("bullseye");
-        popup("🎯 BULLSEYE 2.5x!", "gold", clickX, clickY - 20);
-    }
-
-    // Element Matchup Multipliers
-    if (activeGloveType === "fire" && bag.type === "inferno") baseDmg *= 1.5;
-    if (activeGloveType === "ice" && bag.type === "frost") baseDmg *= 1.5;
-    if (activeGloveType === "lightning" && bag.type === "shock") baseDmg *= 1.5;
-    if (activeGloveType === "toxic" && bag.type === "toxic") baseDmg *= 1.5;
-
-    // Apply Glove Effects
-    if (activeGloveType === "fire") {
-        bag.isBurning = true;
-        bag.element.classList.add("burning");
-    } else if (activeGloveType === "toxic") {
-        bag.isPoisoned = true;
-        bag.poisonStacks = Math.min(5, (bag.poisonStacks || 0) + 1);
-        bag.element.classList.add("poisoned");
-    } else if (activeGloveType === "lightning") {
-        activeBags.forEach(otherBag => {
-            if (otherBag !== bag && !otherBag.isBomb) {
-                applyDirectDamage(otherBag, Math.floor(baseDmg * (0.25 + gloveTiers.lightning * 0.05)), "⚡ ", "#ffff00");
-            }
-        });
-    }
-
-    bag.hp -= baseDmg;
-
-    if (isCrit) {
         playSound("crit");
-        triggerShake(6);
-        triggerHitstop(40);
-        createParticles(clickX, clickY, "#ffcc00", 12);
-        popup("💥 CRIT -" + Math.floor(baseDmg), "gold", clickX, clickY);
+        triggerShake(8);
+        advanceQuestProgress('crit');
     } else {
         playSound("punch");
-        createParticles(clickX, clickY, "#ffffff", 6);
-        popup("-" + Math.floor(baseDmg), "white", clickX, clickY);
+        triggerShake(3);
     }
 
-    const hpText = bag.element.querySelector(".hpText");
-    const hpBar = bag.element.querySelector(".hpBar");
-    if (hpText) hpText.textContent = Math.max(0, Math.floor(bag.hp)) + "/" + Math.floor(bag.maxHp);
-    if (hpBar) hpBar.style.width = Math.max(0, (bag.hp / bag.maxHp) * 100) + "%";
-
-    if (bag.type === "combobreaker") {
-        combo = 0;
-        updateComboUI();
-        popup("🛑 COMBO BROKEN!", "red", clickX, clickY);
+    if (bagObj.isBomb) {
+        playSound("explosion");
+        triggerShake(12);
+        flashDamage();
+        popup("💥 BOOM! HP PENALTY", "red", parseFloat(bagObj.element.style.left), parseFloat(bagObj.element.style.top));
+        hearts = Math.max(0, hearts - 2);
+        updateHearts();
+        removeBagFromGame(bagObj);
+        if (hearts <= 0) gameOver();
+        maintainBagCount();
+        return;
     }
 
-    if (bag.hp <= 0) {
-        handleBagKO(bag, clickX, clickY);
+    // Elite bounce logic adjustment on punch
+    if (bagObj.moveSpeed) {
+        bagObj.moveSpeed *= -1;
     }
+
+    applyDirectDamage(bagObj, Math.floor(baseDmg), isCrit ? "CRIT! -" : "-", isCrit ? "gold" : "white");
+
+    activeSkillCharge = Math.min(activeSkillMax, activeSkillCharge + 1);
+    updateActiveSkillButton();
+
+    feverPoints = Math.min(feverMax, feverPoints + 1);
+    updateFeverUI();
+    if (feverPoints >= feverMax && !feverActive) {
+        triggerFeverMode();
+    }
+
+    arena.classList.add("zoomPulse");
+    setTimeout(() => arena.classList.remove("zoomPulse"), 100);
 }
 
-function handleBagKO(bag, clickX = 0, clickY = 0) {
-    totalKills++;
-    advanceQuestProgress("ko");
+function handleBagKO(bagObj) {
     playSound("ko");
+    triggerShake(10);
+    totalKills++;
 
-    let scoreGain = 100 * level * Math.max(1, combo);
-    let coinGain = 10 + level * 2;
+    const rect = bagObj.element.getBoundingClientRect();
+    const arenaRect = arena.getBoundingClientRect();
+    const x = rect.left - arenaRect.left;
+    const y = rect.top - arenaRect.top;
 
-    if (artifacts.luckyCoin.equipped) coinGain = Math.floor(coinGain * 1.15);
-    if (achievements.bossSlayer.unlocked) coinGain = Math.floor(coinGain * 1.10);
-    if (feverActive) coinGain *= 2;
+    let earnedCoins = 15 + Math.floor(level * 3);
+    if (artifacts.luckyCoin.equipped) earnedCoins = Math.floor(earnedCoins * 1.15);
+    if (feverActive) earnedCoins *= 2;
 
-    if (bag.type === "coinbag" || bag.type === "goblin") coinGain *= 4;
-    if (bag.type === "boss") { coinGain *= 5; totalBossesDefeated++; }
-    if (bag.type === "bigboss") { coinGain *= 10; totalBossesDefeated++; }
-    if (bag.type === "legendaryboss") { coinGain *= 20; totalBossesDefeated++; }
+    coins += earnedCoins;
+    score += 100 + level * 25;
 
-    score += scoreGain;
-    coins += coinGain;
-
-    if (bag.type === "healer") {
-        hearts = Math.min(maxHearts, hearts + 1);
-        updateHearts();
-        popup("💚 HEALED +1 ❤️", "#00ff88", clickX, clickY - 20);
+    if (bagObj.element.classList.contains("legendaryboss") || bagObj.element.classList.contains("bigboss") || bagObj.element.classList.contains("boss")) {
+        totalBossesDefeated++;
+        score += 1000;
+        popup("👹 BOSS DEFEATED! +1000 PTS", "gold", x, y - 20);
     }
 
-    if (Math.random() < 0.40) {
-        spawnDropItem(clickX, clickY);
-    }
+    popup("🪙 +" + earnedCoins, "gold", x + 10, y);
+    spawnDropItem(x, y);
 
+    removeBagFromGame(bagObj);
+    advanceQuestProgress('ko');
     checkAchievements();
-    removeBagFromGame(bag);
 
-    // Splitter & Boss Degrade Mechanics (Capped to max 1-2 offspring)
-    if (bag.type === "splitter") {
-        popup("🌀 SPLIT!", "cyan", clickX, clickY);
-        createBag("minibag", clickX - 35, clickY);
-        createBag("minibag", clickX + 35, clickY);
-    } else if (bag.type === "legendaryboss") {
-        popup("👑 LEGENDARY BOSS SPLIT!", "#ff00ff", clickX, clickY);
-        // Limit legendary boss split to only 1 bigboss max to avoid overwhelming the screen
-        createBag("bigboss", clickX, clickY);
-    } else if (bag.type === "bigboss") {
-        popup("💥 BIG BOSS SPLIT!", "#ff0055", clickX, clickY);
-        createBag("boss", clickX - 35, clickY);
-        createBag("boss", clickX + 35, clickY);
-    } else if (bag.type === "boss") {
-        popup("👹 BOSS SPLIT!", "orange", clickX, clickY);
-        createBag("normal", clickX, clickY);
-    }
-
-    if (totalKills % 5 === 0) {
-        level++;
-        popup("⭐ LEVEL UP! LEVEL " + level, "gold", arena.clientWidth / 2 - 80, 60);
-        setTheme(currentTheme);
-    }
+    level++;
+    setTheme(currentTheme);
 
     updateScoreboard();
     saveGame();
     maintainBagCount();
 }
+
+function spawnDropItem(x, y) {
+    const item = document.createElement("div");
+    item.className = "dropItem";
+    item.style.left = x + "px";
+    item.style.top = y + "px";
+
+    const types = ['🪙', '💖', '⚔️'];
+    const chosen = types[Math.floor(Math.random() * types.length)];
+    item.textContent = chosen;
+
+    item.collect = function() {
+        if (chosen === '🪙') {
+            coins += 50;
+            popup("🪙 +50 Coins", "gold", x, y);
+        } else if (chosen === '💖') {
+            hearts = Math.min(maxHearts, hearts + 1);
+            updateHearts();
+            popup("💖 +1 Heart", "pink", x, y);
+        } else if (chosen === '⚔️') {
+            swordHits += 10;
+            popup("⚔️ +10 Sword Hits", "lime", x, y);
+        }
+        playSound("coin");
+        item.remove();
+        advanceQuestProgress('loot');
+        updateScoreboard();
+        saveGame();
+    };
+
+    item.addEventListener("pointerdown", (e) => {
+        e.stopPropagation();
+        item.collect();
+    });
+
+    arena.appendChild(item);
+    setTimeout(() => { if (item.parentNode) item.remove(); }, 7000);
+}
 </script>
+
 </body>
 </html>
