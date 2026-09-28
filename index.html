@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Punch Buddy V9.5 - Legendary Boss & Bouncing Elite Overhaul</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Punch Buddy V9.2 - Arc FX & Elemental Overhaul</title>
 
 <style>
 * {
@@ -22,7 +22,6 @@ html, body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
     user-select: none;
-    -webkit-user-select: none;
 }
 
 body {
@@ -30,39 +29,54 @@ body {
     flex-direction: column;
 }
 
+/* ENHANCED NEON BANNER UI */
 #uiHeader {
     flex: 0 0 auto;
-    padding: 4px 8px;
-    background: #0b0b12;
+    padding: 8px 12px;
+    background: linear-gradient(180deg, #121220 0%, #07070c 100%);
+    border-bottom: 2px solid #00ffcc;
+    box-shadow: 0 4px 20px rgba(0, 255, 204, 0.25);
     z-index: 100;
 }
 
 h1 {
-    margin: 2px 0;
-    font-size: 20px;
-    letter-spacing: 1px;
-    text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+    margin: 0 0 6px 0;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, #ff0055, #ffcc00, #00ffcc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
 }
 
 #topControls {
     display: flex;
     justify-content: center;
-    gap: 6px;
+    gap: 8px;
     align-items: center;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     flex-wrap: wrap;
 }
 
 #topControls button, #topControls select {
     font-size: 11px;
-    padding: 5px 8px;
-    background: #1a1a28;
-    border: 1px solid #3d3d5c;
-    border-radius: 6px;
+    padding: 6px 12px;
+    background: #1a1a2e;
+    border: 1px solid #00ffcc;
+    border-radius: 20px;
     color: #e0e0e0;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: bold;
     outline: none;
+    box-shadow: 0 0 6px rgba(0, 255, 204, 0.2);
+    transition: all 0.2s;
+}
+
+#topControls button:hover, #topControls select:hover {
+    background: #00ffcc;
+    color: #000;
+    box-shadow: 0 0 12px #00ffcc;
 }
 
 #topControls select option {
@@ -71,43 +85,46 @@ h1 {
 }
 
 #scoreboard {
-    font-size: 11px;
-    margin: 2px auto;
-    background: #111119;
-    padding: 4px 10px;
-    border-radius: 8px;
+    font-size: 12px;
+    margin: 4px auto;
+    background: rgba(17, 17, 25, 0.85);
+    padding: 6px 14px;
+    border-radius: 12px;
     display: inline-block;
-    border: 1px solid #2a2a40;
+    border: 1px solid #333355;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
 }
 
-#scoreboard div { margin: 1px 0; }
+#scoreboard div { margin: 2px 0; }
 
 #questContainer {
-    background: #161624;
+    background: linear-gradient(90deg, #1a1500, #2a2000);
     border: 1px solid #ffcc00;
-    border-radius: 8px;
-    padding: 3px 8px;
-    margin: 2px auto;
-    max-width: 340px;
+    border-radius: 10px;
+    padding: 4px 10px;
+    margin: 4px auto;
+    max-width: 360px;
     font-size: 11px;
     color: #ffdd66;
+    box-shadow: 0 0 8px rgba(255, 204, 0, 0.2);
 }
 
 #hearts {
-    font-size: 16px;
-    margin: 1px 0;
-    letter-spacing: 2px;
+    font-size: 18px;
+    margin: 2px 0;
+    letter-spacing: 3px;
 }
 
 #feverBarContainer {
-    width: 200px;
-    height: 10px;
-    background: #1b1b26;
-    border-radius: 6px;
-    margin: 2px auto;
+    width: 220px;
+    height: 12px;
+    background: #11111a;
+    border-radius: 8px;
+    margin: 4px auto;
     overflow: hidden;
-    border: 1px solid #33334d;
+    border: 1px solid #ff0055;
     position: relative;
+    box-shadow: 0 0 8px rgba(255, 0, 85, 0.3);
 }
 
 #feverBar {
@@ -120,23 +137,24 @@ h1 {
 #feverText {
     position: absolute;
     inset: 0;
-    font-size: 8px;
-    font-weight: bold;
-    line-height: 10px;
-    text-shadow: 0 0 2px black;
+    font-size: 9px;
+    font-weight: 900;
+    line-height: 12px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 3px black;
 }
 
 #shop {
-    margin: 2px;
+    margin: 4px 2px;
     position: relative;
     z-index: 100;
 }
 
 #shop button {
     margin: 2px;
-    padding: 4px 7px;
+    padding: 5px 9px;
     border: 1px solid #3b3b5c;
-    border-radius: 6px;
+    border-radius: 8px;
     background: #1c1c2b;
     color: white;
     cursor: pointer;
@@ -152,14 +170,14 @@ h1 {
     display: flex;
     justify-content: center;
     gap: 4px;
-    margin: 3px 0;
+    margin: 4px 0;
     flex-wrap: wrap;
 }
 
 #gloveSelector button {
-    padding: 3px 7px;
+    padding: 4px 8px;
     font-size: 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid #444;
     background: #151520;
     color: #aaa;
@@ -168,28 +186,22 @@ h1 {
 
 #gloveSelector button.activeGlove {
     border-color: #00ffcc;
-    background: #223344;
-    color: #fff;
-    box-shadow: 0 0 8px #00ffcc;
+    background: #00ffcc;
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0 0 10px #00ffcc;
 }
 
 #gloveSelector button.hubBtn {
-    background: linear-gradient(135deg, #2b1a4a, #4a2b7a);
-    border-color: #aa55ff;
-    color: #e0b0ff;
+    background: linear-gradient(135deg, #4a1a7a, #7a2bca);
+    border-color: #d080ff;
+    color: #ffffff;
     font-weight: bold;
 }
 
 #gloveSelector button.hubBtn:hover {
-    background: linear-gradient(135deg, #3c2468, #6038a0);
-    box-shadow: 0 0 8px #aa55ff;
-}
-
-#activeSkillBtn {
-    background: linear-gradient(135deg, #00bfff, #00008b) !important;
-    color: #fff !important;
-    border: 1px solid #00ffff !important;
-    font-weight: 900 !important;
+    background: linear-gradient(135deg, #6024a0, #9038f0);
+    box-shadow: 0 0 10px #aa55ff;
 }
 
 #ultBtn {
@@ -203,7 +215,7 @@ h1 {
     color: #00ffcc;
     font-size: 10px;
     font-weight: bold;
-    margin: 1px 0;
+    margin: 2px 0;
     min-height: 14px;
 }
 
@@ -236,89 +248,29 @@ h1 {
     box-shadow: inset 0 0 30px #ff3300;
 }
 
-#arena.theme-darkcrimson {
-    background: radial-gradient(circle at center, #3d000a 0%, #080002 100%);
-    box-shadow: inset 0 0 50px #ff0033;
-    animation: bigBossPulse 1.5s infinite alternate ease-in-out;
-}
-
-@keyframes bigBossPulse {
-    from { box-shadow: inset 0 0 30px #880022; filter: brightness(1); }
-    to { box-shadow: inset 0 0 70px #ff0044; filter: brightness(1.15); }
-}
-
 #arena.damageFlash { box-shadow: inset 0 0 40px #ff0000 !important; }
 #arena.feverFlash { box-shadow: inset 0 0 40px #ffd700 !important; }
 
-#comboContainer {
+#combo {
     position: absolute;
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 999;
-    pointer-events: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#combo {
     color: gold;
     font-size: 24px;
     font-weight: bold;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
-}
-
-#comboTimerBarContainer {
-    width: 120px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 2px;
-    margin-top: 2px;
-    overflow: hidden;
-    display: none;
-}
-
-#comboTimerBar {
-    width: 100%;
-    height: 100%;
-    background: gold;
-    transition: width 0.05s linear;
-}
-
-#announcerBanner {
-    position: absolute;
-    top: 50px;
-    left: 50%;
-    transform: translateX(-50%) scale(0.8);
-    background: linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.85), rgba(255, 69, 0, 0.9), rgba(139, 0, 0, 0.85), transparent);
-    border-top: 2px solid #ff4500;
-    border-bottom: 2px solid #ff4500;
-    color: #fff;
-    padding: 8px 30px;
-    font-size: 20px;
-    font-weight: 900;
-    letter-spacing: 2px;
-    z-index: 9999;
+    z-index: 999;
     pointer-events: none;
-    text-shadow: 0 0 12px #ff0000, 0 0 20px #ff4500;
-    opacity: 0;
-    transition: opacity 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    width: 100%;
-}
-
-#announcerBanner.active {
-    opacity: 1;
-    transform: translateX(-50%) scale(1);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
 }
 
 #announcerText {
     position: absolute;
-    top: 95px;
+    top: 45px;
     left: 50%;
     transform: translateX(-50%);
     color: #00ffff;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 900;
     z-index: 998;
     pointer-events: none;
@@ -327,28 +279,19 @@ h1 {
     transition: opacity 0.3s, transform 0.3s;
 }
 
-#activePetsContainer {
+#activePet {
     position: absolute;
     top: 15px;
     left: 15px;
-    display: flex;
-    gap: 8px;
+    font-size: 28px;
     z-index: 900;
     pointer-events: none;
-}
-
-.petItem {
-    font-size: 26px;
     animation: petFloat 2s ease-in-out infinite alternate;
-    transition: transform 0.2s ease-out;
 }
-
-.petItem:nth-child(2) { animation-delay: 0.4s; }
-.petItem:nth-child(3) { animation-delay: 0.8s; }
 
 @keyframes petFloat {
     from { transform: translateY(0px); }
-    to { transform: translateY(-10px); }
+    to { transform: translateY(-12px); }
 }
 
 .bag {
@@ -363,19 +306,12 @@ h1 {
     align-items: center;
     justify-content: space-evenly;
     padding: 4px;
-    transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s, filter 0.2s;
+    transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s, filter 0.2s, left 0.2s ease, top 0.2s ease;
     z-index: 10;
 }
 
 .bag * { pointer-events: none; }
 .bag .bullseye { pointer-events: auto; }
-
-.bag.coinbag {
-    background: linear-gradient(135deg, #ffd700, #b8860b);
-    border: 2px solid #ffffff;
-    box-shadow: 0 0 18px #ffd700;
-    color: black;
-}
 
 .bag.inferno {
     background: linear-gradient(135deg, #ff2200, #990000);
@@ -400,6 +336,49 @@ h1 {
     background: linear-gradient(135deg, #00ff66, #005511);
     border: 2px solid #aaff00;
     box-shadow: 0 0 18px #00ff66;
+}
+
+.bag.golden {
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    border: 2px solid #fff;
+    box-shadow: 0 0 20px #ffd700;
+    color: black;
+}
+
+.bag.ninja {
+    background: linear-gradient(135deg, #2b1055, #110522);
+    border: 2px solid #9933ff;
+    box-shadow: 0 0 20px #aa00ff;
+}
+
+.bag.rainbow {
+    background: linear-gradient(135deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 25px #ff00ff;
+}
+
+.bag.veryfast {
+    background: linear-gradient(135deg, #ff3300, #ff00ff);
+    border: 2px solid #ffff00;
+    box-shadow: 0 0 20px #ff3300;
+    animation: fastPulse 0.2s infinite alternate;
+}
+
+@keyframes fastPulse {
+    from { transform: scale(0.95); }
+    to { transform: scale(1.05); }
+}
+
+.bag.void {
+    background: radial-gradient(circle, #4b0082 0%, #000000 100%);
+    border: 2px solid #a855f7;
+    box-shadow: 0 0 30px #a855f7, inset 0 0 15px #000;
+    animation: voidSpin 4s linear infinite;
+}
+
+@keyframes voidSpin {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
 }
 
 .bag.splitter {
@@ -440,7 +419,7 @@ h1 {
 .bag.elite {
     background: linear-gradient(135deg, #1e90ff, #00008b);
     border: 2px solid #00ffff;
-    box-shadow: 0 0 15px #00ffff, 0 0 25px #1e90ff;
+    box-shadow: 0 0 12px #00ffff;
 }
 
 .bag.boss {
@@ -449,35 +428,48 @@ h1 {
     box-shadow: 0 0 15px #ff4500;
 }
 
+/* SPECIAL BOSS & LEGENDARY STYLES */
+.bag.magmaTitan {
+    background: radial-gradient(circle, #ff3300 0%, #4a0000 100%);
+    border: 3px solid #ffaa00;
+    box-shadow: 0 0 30px #ff3300, 0 0 10px #ffff00;
+    animation: magmaPulse 1s infinite alternate;
+}
+
+@keyframes magmaPulse {
+    from { filter: drop-shadow(0 0 5px #ff3300); }
+    to { filter: drop-shadow(0 0 20px #ffaa00); }
+}
+
+.bag.omegaGod {
+    background: linear-gradient(135deg, #bf00ff, #00ffff, #ff0077);
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 40px #00ffff, 0 0 20px #bf00ff;
+    animation: omegaRotate 3s linear infinite;
+}
+
+@keyframes omegaRotate {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
+.bag.legendary {
+    background: linear-gradient(135deg, #ff0055, #ffd700, #00ffcc);
+    border: 3px solid #ffff00;
+    box-shadow: 0 0 40px #ffd700, 0 0 20px #ff0055;
+    animation: legendaryGlow 1.5s infinite alternate;
+}
+
+@keyframes legendaryGlow {
+    0% { filter: drop-shadow(0 0 10px #ffd700); }
+    100% { filter: drop-shadow(0 0 25px #00ffcc); }
+}
+
 .bag.champion {
     background: linear-gradient(135deg, #ffd700, #ff8c00);
     border: 2px solid #ffffff;
     box-shadow: 0 0 20px #ffd700;
     color: black;
-}
-
-.bag.bigboss {
-    background: radial-gradient(circle, #ff0055 0%, #500014 60%, #1a0005 100%);
-    border: 3px solid #ffcc00;
-    box-shadow: 0 0 35px #ff0055, inset 0 0 20px #ffcc00;
-    animation: bigBossBagGlow 1s infinite alternate;
-}
-
-.bag.legendaryboss {
-    background: radial-gradient(circle, #ff00ff 0%, #800080 60%, #300030 100%);
-    border: 3px solid #00ffff;
-    box-shadow: 0 0 45px #ff00ff, inset 0 0 25px #00ffff;
-    animation: legendaryGlow 0.8s infinite alternate;
-}
-
-@keyframes legendaryGlow {
-    from { filter: drop-shadow(0 0 10px #ff00ff); }
-    to { filter: drop-shadow(0 0 25px #00ffff); }
-}
-
-@keyframes bigBossBagGlow {
-    from { filter: drop-shadow(0 0 6px #ff0055); }
-    to { filter: drop-shadow(0 0 18px #ffcc00); }
 }
 
 .bag.bomb {
@@ -491,6 +483,17 @@ h1 {
     border: 2px solid #ffffff;
     box-shadow: 0 0 15px #ffea00;
     color: black;
+}
+
+.bag.bouncy {
+    background: linear-gradient(135deg, #ff00cc, #330066);
+    border: 2px solid #ff66ff;
+    box-shadow: 0 0 18px #ff00cc;
+}
+
+.bag.invulnerable {
+    filter: brightness(1.8);
+    box-shadow: 0 0 25px #ffffff !important;
 }
 
 .bag.burning { animation: burnEffect 0.5s infinite alternate; }
@@ -732,9 +735,29 @@ h1 {
     background: #132832;
 }
 
-.petBtn.activePetBtn {
-    border: 2px solid #00ffcc;
-    background: #223344;
+#adProgressBarContainer {
+    width: 100%;
+    height: 12px;
+    background: #222;
+    border-radius: 6px;
+    margin: 15px 0;
+    overflow: hidden;
+    border: 1px solid #444;
+}
+
+#adProgressBar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #00ff88, #00d2ff);
+    transition: width 0.1s linear;
+}
+
+.petCategoryHeader {
+    font-size: 11px;
+    color: #00ffcc;
+    margin: 6px 0 2px 0;
+    border-bottom: 1px solid #2a2a40;
+    padding-bottom: 2px;
 }
 </style>
 </head>
@@ -742,7 +765,7 @@ h1 {
 <body>
 
 <div id="uiHeader">
-    <h1>🥊 Punch Buddy V9.5</h1>
+    <h1>🥊 PUNCH BUDDY V9.2</h1>
 
     <div id="topControls">
         <input type="file" id="upload" accept="image/*" style="display:none">
@@ -751,7 +774,6 @@ h1 {
             <option value="audio" id="optAudio">🔊 Sound: ON</option>
             <option value="music" id="optMusic">🎵 Music: OFF</option>
             <option value="vib" id="optVib">📳 Vib: ON</option>
-            <option value="guide">📖 How to Play</option>
             <option value="stats">📊 Stats</option>
             <option value="leaderboard">🏆 Leaderboard</option>
             <option value="reset">🔄 Reset</option>
@@ -798,8 +820,6 @@ h1 {
             <button class="hubBtn" onclick="openUpgradesModal()">🏋️ Shop / Upgrade</button>
         </div>
 
-        <button id="activeSkillBtn" onclick="triggerActiveSkill()">⚡ Meteor Slam (0/60)</button>
-        <button onclick="buyExtraHearts()">💖 +5 Max Hearts (1200 🪙)</button>
         <button onclick="buyDoubleDamage()">⚔️ Sword 2x (30 Hits) (600 🪙)</button>
         <button onclick="buyFreezeTime()">❄️ Freeze (900 🪙)</button>
         <button onclick="buyRageMode()">🔥 Rage Mode (1500 🪙)</button>
@@ -810,40 +830,22 @@ h1 {
 </div>
 
 <div id="arena" class="theme-cyberpunk">
-    <div id="activePetsContainer"></div>
-    <div id="comboContainer">
-        <div id="combo"></div>
-        <div id="comboTimerBarContainer"><div id="comboTimerBar"></div></div>
-    </div>
-    <div id="announcerBanner">⚠️ BIG BOSS ENGAGED! ⚠️</div>
+    <div id="activePet"></div>
+    <div id="combo"></div>
     <div id="announcerText"></div>
     <div id="bags"></div>
     <div id="glove">🥊</div>
 </div>
 
 <!-- Modals -->
-<div id="guideModal" class="modal">
-    <div class="modalBox">
-        <h2>📖 How to Play Punch Buddy</h2>
-        <p style="text-align: left; font-size: 11px; line-height: 1.4;">
-            • <strong>Punching:</strong> Click or tap on punching bags to deal damage and score points.<br>
-            • <strong>Combo Streak:</strong> Keep punching bags continuously to increase your combo multiplier! Clicking empty arena space resets your combo.<br>
-            • <strong>Elite Bags:</strong> Elite bags bounce across the arena and reverse direction every time you punch them!<br>
-            • <strong>Legendary Bosses:</strong> Spawn every 60 levels! Defeating boss bags splits them into 2 weaker bags until reduced to normal bags.<br>
-            • <strong>Element Matchups:</strong> Use Fire against Inferno, Ice against Frost, Shock against Shock bags, and Venom against Toxic for bonus damage.<br>
-            • <strong>Bosses & Abilities:</strong> Charge up your Meteor Slam skill to unleash powerful arena-wide damage!
-        </p>
-        <br>
-        <button class="continueBtn" onclick="closeModal('guideModal')">Got It!</button>
-    </div>
-</div>
-
 <div id="dailyRewardModal" class="modal">
     <div class="modalBox">
         <h2>🎁 Daily Login Reward!</h2>
-        <p>Welcome back, Challenger! Here is your daily bonus:</p>
-        <h3 style="color: gold;">+500 🪙 Coins & +25 ⚔️ Sword Hits!</h3>
-        <button class="continueBtn" onclick="claimDailyReward()">🎉 Claim Reward</button>
+        <p>Come back every day to claim your free random prize!</p>
+        <div id="dailyRewardDisplay" style="font-size: 14px; margin: 15px 0; font-weight: bold; color: #00ffcc;">
+            Ready to spin/open!
+        </div>
+        <button id="claimDailyBtn" class="continueBtn" onclick="claimDailyReward()">🎁 Claim Reward</button>
     </div>
 </div>
 
@@ -861,7 +863,7 @@ h1 {
         <h2>☠️ GAME OVER</h2>
         <p>You ran out of lives!</p>
         <p>Final Score: <strong id="finalScore">0</strong></p>
-        <button class="continueBtn" onclick="continueGame()">❤️ Continue (+5 Hearts for 3000 🪙)</button>
+        <button class="continueBtn" onclick="continueGame()">❤️ Continue (+3 Hearts for 3000 🪙)</button>
         <button class="confirmBtn" onclick="confirmNewGame()">🔄 New Game (Reset All Except High Score)</button>
     </div>
 </div>
@@ -892,49 +894,77 @@ h1 {
     </div>
 </div>
 
+<div id="adModal" class="modal">
+    <div class="modalBox">
+        <h2 id="adTitle">📺 Watching Ad...</h2>
+        <p id="adSub">Please wait to claim your reward!</p>
+        <div id="adProgressBarContainer">
+            <div id="adProgressBar"></div>
+        </div>
+        <button id="adCloseBtn" class="continueBtn" style="display:none;" onclick="finishAd()">✅ Claim Reward</button>
+    </div>
+</div>
+
 <div id="upgradesModal" class="modal">
     <div class="modalBox">
         <h2>🏋️ Arcade Hub</h2>
 
-        <h3>🔥 Multi-Tier Elemental Gloves</h3>
+        <h3>🔥 Special Elemental Gloves & Levels</h3>
         <div class="upgradeRow">
             <div style="text-align:left">
-                <strong>Fire Glove (Lvl <span id="fireTierLvl">0</span>/3)</strong><br>
-                <small>Tier Bonus: +<span id="fireTierBonus">0</span>% Burn Dmg</small>
+                <strong>Fire Glove (Lvl <span id="fireGloveLvl">1</span>/3)</strong><br>
+                <small>Hits <span id="fireHitCount">1</span> addl. target(s) | Burn DoT</small>
             </div>
-            <button id="buyFireBtn" onclick="buyGloveUpgrade('fire')">2250 🪙</button>
+            <button id="buyFireBtn" onclick="upgradeOrBuyGlove('fire')">2250 🪙</button>
         </div>
         <div class="upgradeRow">
             <div style="text-align:left">
-                <strong>Ice Glove (Lvl <span id="iceTierLvl">0</span>/3)</strong><br>
-                <small>Tier Bonus: -<span id="iceTierBonus">0</span>% Slow Effect</small>
+                <strong>Ice Glove (Lvl <span id="iceGloveLvl">1</span>/3)</strong><br>
+                <small>Hits <span id="iceHitCount">1</span> addl. target(s) | Slow Timers</small>
             </div>
-            <button id="buyIceBtn" onclick="buyGloveUpgrade('ice')">2250 🪙</button>
+            <button id="buyIceBtn" onclick="upgradeOrBuyGlove('ice')">2250 🪙</button>
         </div>
         <div class="upgradeRow">
             <div style="text-align:left">
-                <strong>Shock Glove (Lvl <span id="lightningTierLvl">0</span>/3)</strong><br>
-                <small>Tier Bonus: +<span id="lightningTierBonus">0</span>% Chain Dmg</small>
+                <strong>Shock Glove (Lvl <span id="lightningGloveLvl">1</span>/3)</strong><br>
+                <small>Hits <span id="lightningHitCount">1</span> addl. target(s) | Chain Dmg</small>
             </div>
-            <button id="buyLightningBtn" onclick="buyGloveUpgrade('lightning')">2700 🪙</button>
+            <button id="buyLightningBtn" onclick="upgradeOrBuyGlove('lightning')">2700 🪙</button>
         </div>
         <div class="upgradeRow">
             <div style="text-align:left">
-                <strong>Venom Glove (Lvl <span id="toxicTierLvl">0</span>/3)</strong><br>
-                <small>Tier Bonus: +<span id="toxicTierBonus">0</span> Poison Stacks</small>
+                <strong>Venom Glove (Lvl <span id="toxicGloveLvl">1</span>/3)</strong><br>
+                <small>Hits <span id="toxicHitCount">1</span> addl. target(s) | Stacking Poison</small>
             </div>
-            <button id="buyToxicBtn" onclick="buyGloveUpgrade('toxic')">2700 🪙</button>
+            <button id="buyToxicBtn" onclick="upgradeOrBuyGlove('toxic')">2700 🪙</button>
         </div>
 
-        <h3>🐉 Sidekick Pets (Max 2 in Arena)</h3>
+        <h3>💖 Health Upgrades</h3>
+        <div class="upgradeRow">
+            <div style="text-align:left">
+                <strong>+5 Max Hearts</strong><br>
+                <small>Increases Max Hearts (Max 14)</small>
+            </div>
+            <button onclick="buyExtraHearts()">1200 🪙</button>
+        </div>
+
+        <h3>🐉 Sidekick Pets</h3>
+        <button onclick="setPet('')" style="margin-bottom:6px;">❌ Unequip Pet</button>
+        
+        <div class="petCategoryHeader">🪙 COIN PETS (ELEMENTAL DAMAGE - MAX 2 SLOTS)</div>
         <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:4px; margin-bottom:10px;">
-            <button onclick="clearAllPets()">❌ Clear All</button>
-            <button id="petBtn_🐶" class="petBtn" onclick="togglePet('🐶', 1500)">🐶 Dog (1500 🪙)</button>
-            <button id="petBtn_🐱" class="petBtn" onclick="togglePet('🐱', 2250)">🐱 Cat (2250 🪙)</button>
-            <button id="petBtn_🐉" class="petBtn" onclick="togglePet('🐉', 3000)">🐉 Dragon (3000 🪙)</button>
-            <button id="petBtn_🤖" class="petBtn" onclick="togglePet('🤖', 4500)">🤖 Drone (4500 🪙)</button>
-            <button id="petBtn_🦅" class="petBtn" onclick="togglePet('🦅', 6000)">🦅 Eagle (6000 🪙)</button>
-            <button id="petBtn_🦄" class="petBtn" onclick="togglePet('🦄', 9000)">🦄 Unicorn (9000 🪙)</button>
+            <button id="petDragonBtn" onclick="buyOrEquipCoinPet('🐉', 3000)">🐉 Dragon (3000 🪙)<br><small>Fire Dmg</small></button>
+            <button id="petDroneBtn" onclick="buyOrEquipCoinPet('🤖', 4500)">🤖 Drone (4500 🪙)<br><small>Shock Dmg</small></button>
+            <button id="petFoxBtn" onclick="buyOrEquipCoinPet('🧊', 6000)">🧊 Frost Fox (6000 🪙)<br><small>Ice Dmg</small></button>
+            <button id="petSlimeBtn" onclick="buyOrEquipCoinPet('🧪', 7500)">🧪 Venom Slime (7500 🪙)<br><small>Venom Dmg</small></button>
+        </div>
+
+        <div class="petCategoryHeader">📺 ADS PETS (SLIGHTLY BETTER - MAX 2 SLOTS)</div>
+        <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:4px; margin-bottom:10px;">
+            <button id="petDogBtn" onclick="handlePetAdUnlock('🐶')">🐶 Dog (📺 Ad)<br><small>+20% Coins</small></button>
+            <button id="petCatBtn" onclick="handlePetAdUnlock('🐱')">🐱 Cat (📺 Ad)<br><small>+15% Crit</small></button>
+            <button id="petPhoenixBtn" onclick="handlePetAdUnlock('🦅')">🦅 Phoenix (📺 Ad)<br><small>Ice + Fire Dmg</small></button>
+            <button id="petTigerBtn" onclick="handlePetAdUnlock('⚡')">⚡ Volt Tiger (📺 Ad)<br><small>Venom + Shock</small></button>
         </div>
 
         <h3>🕶️ Wardrobe Cosmetics</h3>
@@ -946,7 +976,7 @@ h1 {
             <button onclick="setHat('🎭')">🎭 Mask</button>
         </div>
 
-        <h3>💪 Upgrades (Config Scaled)</h3>
+        <h3>💪 Upgrades</h3>
         <div class="upgradeRow">
             <div style="text-align:left">
                 <strong>Base Power</strong><br>
@@ -988,10 +1018,9 @@ h1 {
 
         <h3>🥊 Glove Skins (Standard)</h3>
         <div style="display:flex; justify-content:space-around; margin-top:5px;">
-            <button onclick="setGloveSkin('🥊')">🥊 Red</button>
-            <button onclick="setGloveSkin('⚡')">⚡ Bolt</button>
-            <button onclick="setGloveSkin('🪙')">🪙 Gold</button>
-            <button onclick="setGloveSkin('🐲')">🐲 Dragon</button>
+            <button onclick="setGloveSkin('🥊')">🥊 Glove</button>
+            <button onclick="setGloveSkin('🤛')">🤛 Knuckle</button>
+            <button onclick="setGloveSkin('🧶')">🧶 Whip</button>
         </div>
 
         <h3>🏆 Achievements</h3>
@@ -1003,37 +1032,12 @@ h1 {
 </div>
 
 <script>
-// --- INTERNAL DATA & STATE MANAGEMENT ---
 let activeBags = [];
 let audioCtx = null;
 let soundEnabled = true;
 let musicEnabled = false;
 let vibEnabled = true;
 let musicInterval = null;
-let hitstopActive = false;
-
-// Active skill state
-let activeSkillCharge = 0;
-const activeSkillMax = 60;
-
-// Combo decay variables
-let comboTimerAcc = 0;
-const comboDecayTime = 4.0; // Seconds before combo decays if idle
-
-// SHOP CONFIGURATION
-const shopConfig = {
-    power: { baseCost: 450, scaleFactor: 1.35 },
-    crit: { baseCost: 600, scaleFactor: 1.40 },
-    auto: { baseCost: 1500, scaleFactor: 1.50 },
-    magnet: { baseCost: 1200, scaleFactor: 1.45 },
-    elementalGlove: { baseCost: 2250, scaleFactor: 1.60, maxTier: 3 }
-};
-
-function getScaledCost(type, currentLevel) {
-    const config = shopConfig[type];
-    if (!config) return 300;
-    return Math.floor(config.baseCost * Math.pow(config.scaleFactor, currentLevel));
-}
 
 function handleDropdownAction() {
     const val = document.getElementById("menuSelect").value;
@@ -1042,7 +1046,6 @@ function handleDropdownAction() {
         case "audio": toggleAudio(); break;
         case "music": toggleMusic(); break;
         case "vib": toggleVib(); break;
-        case "guide": openGuideModal(); break;
         case "stats": openStatsModal(); break;
         case "leaderboard": openLeaderboardModal(); break;
         case "reset": openRestartModal(); break;
@@ -1057,8 +1060,10 @@ document.getElementById("upload").addEventListener("change", function(e) {
         reader.onload = function(evt) {
             uploadedPhoto = evt.target.result;
             saveGame();
-            document.querySelectorAll(".bag img").forEach(img => img.src = uploadedPhoto);
-            popup("📷 Face Uploaded!", "#00ff88", arena.clientWidth / 2 - 70, 50);
+            activeBags.forEach(b => {
+                const img = b.element.querySelector("img");
+                if (img) img.src = uploadedPhoto;
+            });
         };
         reader.readAsDataURL(file);
     }
@@ -1074,9 +1079,6 @@ function playSound(type, pitchMultiplier = 1.0) {
     initAudio();
     if (!audioCtx) return;
 
-    let comboPitchBonus = 1.0 + Math.min(1.5, combo * 0.03);
-    const finalPitch = Math.min(3.0, Math.max(0.4, pitchMultiplier * comboPitchBonus));
-
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.connect(gain);
@@ -1085,29 +1087,29 @@ function playSound(type, pitchMultiplier = 1.0) {
 
     if (type === "punch") {
         osc.type = "sine";
-        osc.frequency.setValueAtTime(150 * finalPitch, now);
-        osc.frequency.exponentialRampToValueAtTime(20 * finalPitch, now + 0.1);
+        osc.frequency.setValueAtTime(150 * pitchMultiplier, now);
+        osc.frequency.exponentialRampToValueAtTime(20 * pitchMultiplier, now + 0.1);
         gain.gain.setValueAtTime(0.6, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
         osc.start(now); osc.stop(now + 0.1);
     } else if (type === "crit") {
         osc.type = "triangle";
-        osc.frequency.setValueAtTime(320 * finalPitch, now);
-        osc.frequency.exponentialRampToValueAtTime(90 * finalPitch, now + 0.18);
+        osc.frequency.setValueAtTime(320 * pitchMultiplier, now);
+        osc.frequency.exponentialRampToValueAtTime(90 * pitchMultiplier, now + 0.18);
         gain.gain.setValueAtTime(0.7, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
         osc.start(now); osc.stop(now + 0.18);
     } else if (type === "ko") {
         osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(200 * finalPitch, now);
+        osc.frequency.setValueAtTime(200, now);
         osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
         gain.gain.setValueAtTime(0.8, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
         osc.start(now); osc.stop(now + 0.35);
     } else if (type === "coin") {
         osc.type = "sine";
-        osc.frequency.setValueAtTime(800 * finalPitch, now);
-        osc.frequency.setValueAtTime(1200 * finalPitch, now + 0.05);
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.setValueAtTime(1200, now + 0.05);
         gain.gain.setValueAtTime(0.3, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
         osc.start(now); osc.stop(now + 0.15);
@@ -1125,6 +1127,14 @@ function playSound(type, pitchMultiplier = 1.0) {
         gain.gain.setValueAtTime(0.4, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
         osc.start(now); osc.stop(now + 0.15);
+    } else if (type === "siren") {
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.linearRampToValueAtTime(600, now + 0.3);
+        osc.frequency.linearRampToValueAtTime(180, now + 0.6);
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+        osc.start(now); osc.stop(now + 0.6);
     }
 }
 
@@ -1175,10 +1185,10 @@ function triggerVib(ms) {
     if (vibEnabled && navigator.vibrate) navigator.vibrate(ms);
 }
 
-// GAME STATE & METRICS
 let score = Number(localStorage.score) || 0;
 let highScore = Number(localStorage.highScore) || 0;
 let level = Number(localStorage.level) || 1;
+let baseMaxHearts = 9;
 let maxHearts = Number(localStorage.maxHearts) || 9;
 let hearts = localStorage.hearts !== undefined ? Number(localStorage.hearts) : maxHearts;
 let coins = Number(localStorage.coins) || 0;
@@ -1189,6 +1199,17 @@ let totalPunches = Number(localStorage.totalPunches) || 0;
 let totalCrits = Number(localStorage.totalCrits) || 0;
 let maxComboStreak = Number(localStorage.maxComboStreak) || 0;
 
+let ownedPets = { '🐉': false, '🤖': false, '🧊': false, '🧪': false };
+if (localStorage.ownedPets) {
+    try { ownedPets = JSON.parse(localStorage.ownedPets); } catch(e){}
+}
+
+let petDogUnlocked = localStorage.petDogUnlocked === "true";
+let petCatUnlocked = localStorage.petCatUnlocked === "true";
+let petPhoenixUnlocked = localStorage.petPhoenixUnlocked === "true";
+let petTigerUnlocked = localStorage.petTigerUnlocked === "true";
+let pendingAdPet = "";
+
 let weeklyHighScore = Number(localStorage.weeklyHighScore) || 0;
 let monthlyHighScore = Number(localStorage.monthlyHighScore) || 0;
 let activeLeaderboardTab = 'weekly';
@@ -1197,20 +1218,7 @@ let gamePaused = false;
 let uploadedPhoto = localStorage.photo || "";
 let currentTheme = localStorage.currentTheme || "cyberpunk";
 let activeHat = localStorage.activeHat || "";
-
-let activePets = [];
-if (localStorage.activePets) {
-    try { activePets = JSON.parse(localStorage.activePets); } catch(e){ activePets = []; }
-} else if (localStorage.activePet) {
-    activePets = [localStorage.activePet];
-}
-
-let ownedPets = { '🐶': false, '🐱': false, '🐉': false, '🤖': false, '🦅': false, '🦄': false };
-if (localStorage.ownedPets) {
-    try { ownedPets = JSON.parse(localStorage.ownedPets); } catch(e){}
-} else {
-    activePets.forEach(p => { if (ownedPets[p] !== undefined) ownedPets[p] = true; });
-}
+let activePet = localStorage.activePet || "";
 
 let upgPower = Number(localStorage.upgPower) || 0;
 let upgCrit = Number(localStorage.upgCrit) || 0;
@@ -1218,11 +1226,18 @@ let upgAuto = Number(localStorage.upgAuto) || 0;
 let upgMagnet = Number(localStorage.upgMagnet) || 0;
 let gloveSkin = localStorage.gloveSkin || "🥊";
 
-let gloveTiers = { fire: 0, ice: 0, lightning: 0, toxic: 0 };
-if (localStorage.gloveTiers) {
-    try { gloveTiers = JSON.parse(localStorage.gloveTiers); } catch(e){}
+let ownedGloves = { standard: true, fire: false, ice: false, lightning: false, toxic: false };
+if (localStorage.ownedGloves) {
+    try { ownedGloves = JSON.parse(localStorage.ownedGloves); } catch(e){}
 }
 let activeGloveType = localStorage.activeGloveType || "standard";
+
+let elementalLevels = {
+    fire: Number(localStorage.fireGloveLvl) || 0,
+    ice: Number(localStorage.iceGloveLvl) || 0,
+    lightning: Number(localStorage.lightningGloveLvl) || 0,
+    toxic: Number(localStorage.toxicGloveLvl) || 0
+};
 
 let artifacts = {
     vampire: { title: "🩸 Vampire Glove", desc: "Heal 0.5 HP back every 50 punches", equipped: false },
@@ -1245,18 +1260,18 @@ if (localStorage.achievements) {
 }
 
 let feverPoints = 0;
-let feverMax = 30;
 let feverActive = false;
 
 let freezeActive = false;
 let rageActive = false;
 let combo = 0;
+let comboTimer;
 
 let questsList = [
-    { type: 'crit', target: 5, progress: 0, text: 'Landing 5 Critical Hits', reward: 300 },
-    { type: 'ko', target: 4, progress: 0, text: 'KO 4 Bags', reward: 250 },
-    { type: 'bullseye', target: 3, progress: 0, text: 'Hit 3 Bullseyes', reward: 400 },
-    { type: 'loot', target: 5, progress: 0, text: 'Collect 5 Dropped Items', reward: 350 }
+    { type: 'crit', target: 5, progress: 0, text: 'Landing 5 Critical Hits', reward: 900 },
+    { type: 'ko', target: 4, progress: 0, text: 'KO 4 Bags', reward: 750 },
+    { type: 'bullseye', target: 3, progress: 0, text: 'Hit 3 Bullseyes', reward: 1200 },
+    { type: 'loot', target: 5, progress: 0, text: 'Collect 5 Dropped Items', reward: 1050 }
 ];
 let currentQuestIndex = 0;
 
@@ -1265,207 +1280,76 @@ const bagsContainer = document.getElementById("bags");
 const glove = document.getElementById("glove");
 
 setTheme(currentTheme);
-setPetsUI();
+setPetUI();
 selectActiveGlove(activeGloveType);
 updateHearts();
 updateScoreboard();
 updateUpgradesUI();
 updateActivePowerupsUI();
 updateQuestUI();
-updateFeverUI();
 
-checkDailyLogin();
-maintainBagCount();
+createBag();
 
-arena.addEventListener("pointerdown", (e) => {
-    if (e.target === arena) {
-        if (combo > 0) {
-            combo = 0;
-            updateComboUI();
-            popup("❌ Combo Lost!", "#ff4444", e.clientX - arena.getBoundingClientRect().left, e.clientY - arena.getBoundingClientRect().top);
-        }
-    }
-});
+let pendingDailyReward = null;
 
-function updateComboUI() {
-    const comboEl = document.getElementById("combo");
-    const container = document.getElementById("comboTimerBarContainer");
-    if (combo > 1) {
-        comboEl.textContent = combo + "x COMBO!";
-        container.style.display = "block";
-    } else {
-        comboEl.textContent = "";
-        container.style.display = "none";
-    }
-}
-
-function checkDailyLogin() {
+function checkDailyLoginReward() {
     const todayStr = new Date().toDateString();
-    const lastLogin = localStorage.lastLoginDate || "";
-    if (lastLogin !== todayStr) {
+    const lastClaimDate = localStorage.getItem("lastLoginRewardDate");
+
+    if (lastClaimDate !== todayStr) {
+        const randRoll = Math.random();
+        if (randRoll < 0.5) {
+            const amt = Math.floor(Math.random() * 41) * 100 + 1000;
+            pendingDailyReward = { type: 'coins', amount: amt, text: `🪙 +${amt} Coins!` };
+        } else if (randRoll < 0.8) {
+            const amt = Math.floor(Math.random() * 31) + 20;
+            pendingDailyReward = { type: 'sword', amount: amt, text: `⚔️ +${amt} Sword Hits!` };
+        } else {
+            pendingDailyReward = { type: 'heart', amount: 1, text: `❤️ +1 Max Heart Upgrade & Refill!` };
+        }
+
+        document.getElementById("dailyRewardDisplay").textContent = pendingDailyReward.text;
         document.getElementById("dailyRewardModal").style.display = "flex";
         gamePaused = true;
     }
 }
 
 function claimDailyReward() {
-    coins += 500;
-    swordHits += 25;
-    localStorage.lastLoginDate = new Date().toDateString();
-    updateScoreboard();
-    saveGame();
+    if (!pendingDailyReward) return;
+    const todayStr = new Date().toDateString();
+
+    if (pendingDailyReward.type === 'coins') {
+        coins += pendingDailyReward.amount;
+    } else if (pendingDailyReward.type === 'sword') {
+        swordHits += pendingDailyReward.amount;
+    } else if (pendingDailyReward.type === 'heart') {
+        maxHearts = Math.min(14, maxHearts + 1);
+        hearts = maxHearts;
+        updateHearts();
+    }
+
+    localStorage.setItem("lastLoginRewardDate", todayStr);
+    playSound("coin");
+    popup(pendingDailyReward.text, "gold", arena.clientWidth / 2 - 80, 50);
+
     closeModal("dailyRewardModal");
-    popup("🎁 Daily Bonus Claimed!", "#00ff88", arena.clientWidth / 2 - 90, 50);
+    updateScoreboard();
+    updateActivePowerupsUI();
+    saveGame();
 }
 
-function buyDoubleDamage() {
-    if (coins >= 600) {
-        coins -= 600;
-        swordHits += 30;
-        updateScoreboard();
-        updateActivePowerupsUI();
-        saveGame();
-        popup("⚔️ Sword Activated (+30 Hits)", "lime", arena.clientWidth / 2 - 100, 50);
-    } else {
-        popup("❌ Need 600 Coins!", "red", arena.clientWidth / 2 - 60, 50);
-    }
-}
-
-function buyFreezeTime() {
-    if (coins >= 900) {
-        coins -= 900;
-        freezeActive = true;
-        updateScoreboard();
-        updateActivePowerupsUI();
-        saveGame();
-        popup("❄️ Time Frozen for 15s!", "cyan", arena.clientWidth / 2 - 90, 50);
-        setTimeout(() => { freezeActive = false; updateActivePowerupsUI(); }, 15000);
-    } else {
-        popup("❌ Need 900 Coins!", "red", arena.clientWidth / 2 - 60, 50);
-    }
-}
-
-function buyRageMode() {
-    if (coins >= 1500) {
-        coins -= 1500;
-        rageActive = true;
-        updateScoreboard();
-        updateActivePowerupsUI();
-        saveGame();
-        popup("🔥 Rage Mode Active (3x Dmg)!", "orange", arena.clientWidth / 2 - 100, 50);
-        setTimeout(() => { rageActive = false; updateActivePowerupsUI(); }, 12000);
-    } else {
-        popup("❌ Need 1500 Coins!", "red", arena.clientWidth / 2 - 60, 50);
-    }
-}
-
-function triggerUltimate() {
-    if (coins >= 9000) {
-        coins -= 9000;
-        triggerShake(20);
-        playSound("explosion");
-        arena.style.filter = "invert(0.8) brightness(2)";
-        setTimeout(() => arena.style.filter = "none", 400);
-
-        const bagsToClear = [...activeBags];
-        bagsToClear.forEach(bag => {
-            if (!bag.isBomb) {
-                applyDirectDamage(bag, bag.hp, "💥 ULTIMATE CLEAR -", "gold");
-            }
-        });
-        updateScoreboard();
-        saveGame();
-        popup("💥 ULTIMATE CLEAR UNLEASHED!", "gold", arena.clientWidth / 2 - 130, 80);
-    } else {
-        popup("❌ Need 9000 Coins!", "red", arena.clientWidth / 2 - 60, 50);
-    }
-}
-
-function triggerActiveSkill() {
-    if (activeSkillCharge < activeSkillMax) {
-        popup("⚡ Skill Still Charging!", "orange", arena.clientWidth / 2 - 80, 50);
-        return;
-    }
-    activeSkillCharge = 0;
-    updateActiveSkillButton();
-    triggerShake(14);
-    playSound("explosion");
-
-    arena.style.filter = "invert(0.3) brightness(1.8)";
-    setTimeout(() => arena.style.filter = "none", 250);
-
-    activeBags.forEach(bag => {
-        if (!bag.isBomb) {
-            let damageVal = Math.floor(bag.maxHp * 0.25);
-            applyDirectDamage(bag, damageVal, "💥 METEOR SLAM (-25% HP) -", "gold");
-        }
-    });
-
-    popup("☄️ METEOR SLAM UNLEASHED!", "gold", arena.clientWidth / 2 - 110, 80);
-}
-
-function updateActiveSkillButton() {
-    const btn = document.getElementById("activeSkillBtn");
-    if (activeSkillCharge >= activeSkillMax) {
-        btn.textContent = "⚡ METEOR SLAM READY!";
-        btn.style.boxShadow = "0 0 12px #00ffff";
-    } else {
-        btn.textContent = `⚡ Meteor Slam (${activeSkillCharge}/${activeSkillMax})`;
-        btn.style.boxShadow = "none";
-    }
-}
-
-function updateFeverUI() {
-    const pct = Math.min(100, (feverPoints / feverMax) * 100);
-    document.getElementById("feverBar").style.width = pct + "%";
-    const textEl = document.getElementById("feverText");
-    if (feverActive) {
-        textEl.textContent = "🔥 FEVER MODE ACTIVE! 🔥";
-    } else {
-        textEl.textContent = `🔥 FEVER METER (${feverPoints}/${feverMax})`;
-    }
-}
-
-function triggerFeverMode() {
-    feverActive = true;
-    updateFeverUI();
-    arena.classList.add("feverFlash");
-    playSound("crit");
-    popup("🔥 FEVER MODE UNLEASHED! (2x DMG & COINS)", "gold", arena.clientWidth / 2 - 130, 50);
-
-    setTimeout(() => {
-        feverActive = false;
-        feverPoints = 0;
-        arena.classList.remove("feverFlash");
-        updateFeverUI();
-        popup("❄️ Fever Mode Ended", "cyan", arena.clientWidth / 2 - 70, 50);
-    }, 8000);
-}
+setTimeout(checkDailyLoginReward, 500);
 
 let lastTime = performance.now();
 let autoTimerAcc = 0;
-let petAttackTimerAcc = 0;
 let magnetTimerAcc = 0;
 
 function gameLoop(now) {
     let deltaTime = (now - lastTime) / 1000;
     lastTime = now;
 
-    if (!gamePaused && !hitstopActive) {
+    if (!gamePaused) {
         updateBagTimers(deltaTime);
-
-        // Combo decay logic
-        if (combo > 1) {
-            comboTimerAcc += deltaTime;
-            let remainingPct = Math.max(0, (1 - (comboTimerAcc / comboDecayTime))) * 100;
-            document.getElementById("comboTimerBar").style.width = remainingPct + "%";
-            if (comboTimerAcc >= comboDecayTime) {
-                combo = 0;
-                comboTimerAcc = 0;
-                updateComboUI();
-                popup("❌ Combo Expired!", "#ff4444", arena.clientWidth / 2 - 50, 40);
-            }
-        }
 
         autoTimerAcc += deltaTime;
         if (autoTimerAcc >= 1.2) {
@@ -1477,18 +1361,45 @@ function gameLoop(now) {
                     punch(randomBag, true);
                 }
             }
-        }
-
-        petAttackTimerAcc += deltaTime;
-        if (petAttackTimerAcc >= 2.5 && activePets.length > 0 && activeBags.length > 0) {
-            petAttackTimerAcc = 0;
-            activePets.forEach((pet, index) => {
+            if (activePet !== "" && activeBags.length > 0) {
                 const nonBombs = activeBags.filter(b => !b.isBomb);
                 if (nonBombs.length > 0) {
-                    const targetBag = nonBombs[Math.floor(Math.random() * nonBombs.length)];
-                    executePetAttack(pet, index, targetBag);
+                    const randomBag = nonBombs[Math.floor(Math.random() * nonBombs.length)];
+                    const rect = randomBag.element.getBoundingClientRect();
+                    const arenaRect = arena.getBoundingClientRect();
+                    
+                    if (activePet === '🐉') {
+                        popup("🐉 FIRE BLAST!", "orange", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
+                        randomBag.isBurning = true;
+                        randomBag.element.classList.add("burning");
+                    } else if (activePet === '🤖') {
+                        popup("🤖 SHOCK DISCHARGE!", "yellow", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
+                        applyChainLightning(randomBag, 35);
+                    } else if (activePet === '🧊') {
+                        popup("🧊 ICE BLAST!", "cyan", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
+                        randomBag.timeLeft += 2;
+                    } else if (activePet === '🧪') {
+                        popup("🧪 VENOM SPLASH!", "#00ff66", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
+                        randomBag.isPoisoned = true;
+                        randomBag.poisonStacks = (randomBag.poisonStacks || 0) + 1;
+                        randomBag.element.classList.add("poisoned");
+                    } else if (activePet === '🦅') {
+                        popup("🦅 PHOENIX STRIKE!", "#ffaa00", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
+                        randomBag.timeLeft += 2;
+                        randomBag.isBurning = true;
+                        randomBag.element.classList.add("burning");
+                    } else if (activePet === '⚡') {
+                        popup("⚡ VOLT TIGER CLAW!", "#00ffff", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
+                        applyChainLightning(randomBag, 50);
+                        randomBag.isPoisoned = true;
+                        randomBag.poisonStacks = (randomBag.poisonStacks || 0) + 1;
+                        randomBag.element.classList.add("poisoned");
+                    } else {
+                        popup(activePet + " ATTACK!", "orange", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
+                    }
+                    applyDirectDamage(randomBag, Math.floor(10 + upgPower * 2), "🐾 -", "#00ffff");
                 }
-            });
+            }
         }
 
         magnetTimerAcc += deltaTime;
@@ -1504,63 +1415,97 @@ function gameLoop(now) {
 }
 requestAnimationFrame(gameLoop);
 
-function executePetAttack(pet, petIndex, bag) {
-    const rect = bag.element.getBoundingClientRect();
-    const arenaRect = arena.getBoundingClientRect();
-    const targetX = rect.left - arenaRect.left + 20;
-    const targetY = rect.top - arenaRect.top;
-
-    animatePetIcon(petIndex, targetX, targetY);
-
-    let petDmg = Math.max(8, Math.floor((10 + level * 3)));
-    
-    if (pet === '🐉') {
-        petDmg *= 2;
-        bag.isBurning = true;
-        bag.element.classList.add("burning");
-        popup("🐉 DRAGON FIRE! -" + petDmg, "#ff4500", targetX, targetY - 15);
-    } else if (pet === '🐱') {
-        coins += 3;
-        popup("🐱 CLAW STRIKE + 🪙3", "#ffd700", targetX, targetY - 15);
-    } else if (pet === '🤖') {
-        petDmg = Math.floor(petDmg * 1.5);
-        popup("🤖 LASER STRIKE! -" + petDmg, "#00ffcc", targetX, targetY - 15);
-    } else if (pet === '🦅') {
-        popup("🦅 SWOOP CRIT! -" + petDmg, "#00ffff", targetX, targetY - 15);
-        petDmg *= 1.8;
-    } else if (pet === '🦄') {
-        hearts = Math.min(maxHearts, hearts + 0.1);
-        updateHearts();
-        popup("🦄 BLESSING + ❤️", "#ff69b4", targetX, targetY - 15);
-    } else {
-        popup(pet + " BITE! -" + petDmg, "orange", targetX, targetY - 15);
-    }
-
-    applyDirectDamage(bag, petDmg, pet + " ", "orange");
-}
-
-function animatePetIcon(petIndex, targetX, targetY) {
-    const petElements = document.querySelectorAll("#activePetsContainer .petItem");
-    if (!petElements[petIndex]) return;
-    const petEl = petElements[petIndex];
-
-    const petRect = petEl.getBoundingClientRect();
-    const arenaRect = arena.getBoundingClientRect();
-    const startX = petRect.left - arenaRect.left;
-    const startY = petRect.top - arenaRect.top;
-
-    const deltaX = targetX - startX;
-    const deltaY = targetY - startY;
-
-    petEl.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.5)`;
-    setTimeout(() => {
-        petEl.style.transform = `translate(0px, 0px) scale(1)`;
-    }, 200);
-}
-
 function updateBagTimers(dt) {
+    const voidBags = activeBags.filter(b => b.isVoid);
+
     for (let i = activeBags.length - 1; i >= 0; i--) {
         const bag = activeBags[i];
+
+        if (!bag.isVoid && voidBags.length > 0 && !freezeActive) {
+            const vBag = voidBags[0];
+            let cX = parseFloat(bag.element.style.left);
+            let cY = parseFloat(bag.element.style.top);
+            let vX = parseFloat(vBag.element.style.left);
+            let vY = parseFloat(vBag.element.style.top);
+
+            let dx = vX - cX;
+            let dy = vY - cY;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist > 10) {
+                let pullForce = 120 / (dist + 50);
+                bag.vx = (bag.vx || 0) + (dx / dist) * pullForce;
+                bag.vy = (bag.vy || 0) + (dy / dist) * pullForce;
+            }
+        }
+
+        // PHYSICAL BOUNCE LOGIC FOR BOUNCY BAGS
+        if (bag.isBouncy && !freezeActive) {
+            if (bag.vx === undefined || bag.vx === 0) bag.vx = (Math.random() > 0.5 ? 1 : -1) * 350;
+            if (bag.vy === undefined || bag.vy === 0) bag.vy = (Math.random() > 0.5 ? 1 : -1) * 350;
+
+            let curLeft = parseFloat(bag.element.style.left);
+            let curTop = parseFloat(bag.element.style.top);
+            let height = bag.size * 1.25;
+
+            curLeft += bag.vx * dt;
+            curTop += bag.vy * dt;
+
+            const maxLeft = Math.max(10, arena.clientWidth - bag.size - 10);
+            const maxTop = Math.max(20, arena.clientHeight - height - 20);
+
+            if (curLeft <= 10 || curLeft >= maxLeft) {
+                bag.vx *= -1;
+                curLeft = Math.max(10, Math.min(maxLeft, curLeft));
+                playSound("punch", 0.6);
+            }
+            if (curTop <= 20 || curTop >= maxTop) {
+                bag.vy *= -1;
+                curTop = Math.max(20, Math.min(maxTop, curTop));
+                playSound("punch", 0.6);
+            }
+
+            bag.element.style.left = curLeft + "px";
+            bag.element.style.top = curTop + "px";
+        } else if (bag.vx || bag.vy || bag.moveSpeed) {
+            let curLeft = parseFloat(bag.element.style.left);
+            let curTop = parseFloat(bag.element.style.top);
+            let height = bag.size * 1.25;
+
+            if (bag.vx || bag.vy) {
+                curLeft += bag.vx * dt * 60;
+                curTop += bag.vy * dt * 60;
+
+                const maxLeft = Math.max(10, arena.clientWidth - bag.size - 10);
+                const maxTop = Math.max(20, arena.clientHeight - height - 20);
+
+                if (curLeft <= 10 || curLeft >= maxLeft) {
+                    bag.vx *= -1;
+                    curLeft = Math.max(10, Math.min(maxLeft, curLeft));
+                    playSound("punch", 0.5);
+                }
+                if (curTop <= 20 || curTop >= maxTop) {
+                    bag.vy *= -1;
+                    curTop = Math.max(20, Math.min(maxTop, curTop));
+                    playSound("punch", 0.5);
+                }
+
+                bag.vx *= 0.96;
+                bag.vy *= 0.96;
+                if (Math.abs(bag.vx) < 0.2) bag.vx = 0;
+                if (Math.abs(bag.vy) < 0.2) bag.vy = 0;
+            } else if (bag.moveSpeed && !freezeActive) {
+                const maxLeft = Math.max(10, arena.clientWidth - bag.size - 10);
+                curLeft += bag.moveSpeed * dt * 60;
+                if (curLeft >= maxLeft || curLeft <= 10) {
+                    bag.moveSpeed *= -1;
+                    curLeft = Math.max(10, Math.min(maxLeft, curLeft));
+                }
+            }
+
+            bag.element.style.left = curLeft + "px";
+            bag.element.style.top = curTop + "px";
+        }
 
         if (bag.isGhost) {
             bag.ghostAcc = (bag.ghostAcc || 0) + dt;
@@ -1574,10 +1519,10 @@ function updateBagTimers(dt) {
             bag.burnAcc = (bag.burnAcc || 0) + dt;
             if (bag.burnAcc >= 1.0) {
                 bag.burnAcc = 0;
-                let burnDmg = Math.max(5, Math.floor(bag.maxHp * (0.05 + (gloveTiers.fire * 0.02))));
+                let burnDmg = Math.max(5, Math.floor(bag.maxHp * 0.05));
                 applyDirectDamage(bag, burnDmg, "🔥 -", "#ff5500");
                 bag.burnTicks = (bag.burnTicks || 0) + 1;
-                if (bag.burnTicks >= (4 + gloveTiers.fire)) {
+                if (bag.burnTicks >= 4) {
                     bag.isBurning = false;
                     bag.element.classList.remove("burning");
                 }
@@ -1586,25 +1531,22 @@ function updateBagTimers(dt) {
 
         if (bag.isPoisoned && bag.hp > 0) {
             bag.poisonAcc = (bag.poisonAcc || 0) + dt;
-            if (bag.poisonAcc >= 0.8) {
+            if (bag.poisonAcc >= 0.7) {
                 bag.poisonAcc = 0;
-                let poisonDmg = Math.max(4, Math.floor(bag.maxHp * 0.03)) * (bag.poisonStacks || 1) * (1 + gloveTiers.toxic * 0.25);
-                applyDirectDamage(bag, Math.floor(poisonDmg), "🧪 -", "#00ff66");
+                let poisonDmg = Math.max(4, Math.floor(bag.maxHp * 0.04)) * (bag.poisonStacks || 1);
+                applyDirectDamage(bag, poisonDmg, "🧪 -", "#00ff66");
+                bag.poisonTicks = (bag.poisonTicks || 0) + 1;
+                if (bag.poisonTicks >= 5) {
+                    bag.isPoisoned = false;
+                    bag.element.classList.remove("poisoned");
+                }
             }
         }
 
         if (!freezeActive) {
-            let timerSpeed = (activeGloveType === "ice") ? Math.max(0.4, 0.75 - (gloveTiers.ice * 0.1)) : 1.0;
+            let timerSpeed = (activeGloveType === "ice") ? 0.70 : 1.0;
+            if (bag.isVeryFast) timerSpeed *= 1.8;
             bag.timeLeft -= dt * timerSpeed;
-
-            if (bag.moveSpeed) {
-                let curLeft = parseFloat(bag.element.style.left);
-                const maxLeft = Math.max(10, arena.clientWidth - bag.size - 10);
-                if (curLeft + bag.moveSpeed > maxLeft || curLeft + bag.moveSpeed < 10) {
-                    bag.moveSpeed *= -1;
-                }
-                bag.element.style.left = (curLeft + bag.moveSpeed) + "px";
-            }
         }
 
         const timerText = bag.element.querySelector(".timerText");
@@ -1615,8 +1557,9 @@ function updateBagTimers(dt) {
             const arenaRect = arena.getBoundingClientRect();
 
             if (!bag.isBomb) {
-                popup("💔 HEART LOST", "red", rect.left - arenaRect.left, rect.top - arenaRect.top);
-                hearts = Math.max(0, hearts - 1);
+                let heartLoss = (bag.isGolden || bag.isRainbow || bag.isHighTier || bag.isBoss || bag.isLegendary || bag.isNinja || bag.isBouncy || bag.isSplitter || bag.isHealer || bag.isVeryFast || bag.isVoid) ? 1 : 2;
+                popup(`💔 ${heartLoss} HEART${heartLoss > 1 ? 'S' : ''} LOST`, "red", rect.left - arenaRect.left, rect.top - arenaRect.top);
+                hearts = Math.max(0, hearts - heartLoss);
                 flashDamage();
                 updateHearts();
             } else {
@@ -1625,12 +1568,8 @@ function updateBagTimers(dt) {
 
             removeBagFromGame(bag);
 
-            if (hearts <= 0) {
-                gameOver();
-            } else {
-                maintainBagCount();
-                saveGame();
-            }
+            if (hearts <= 0) gameOver();
+            else { createBag(); saveGame(); }
         }
     }
 }
@@ -1649,16 +1588,59 @@ function applyDirectDamage(bag, dmg, prefix, color) {
     if (bag.hp <= 0) handleBagKO(bag);
 }
 
+function applyChainLightning(targetBag, baseDmg) {
+    const targetRect = targetBag.element.getBoundingClientRect();
+    activeBags.forEach(b => {
+        if (b !== targetBag && b.hp > 0) {
+            const bRect = b.element.getBoundingClientRect();
+            const dist = Math.hypot(bRect.left - targetRect.left, bRect.top - targetRect.top);
+            if (dist < 220) {
+                applyDirectDamage(b, Math.floor(baseDmg * 0.6), "⚡ -", "yellow");
+            }
+        }
+    });
+}
+
+function handleBagKO(bag) {
+    const rect = bag.element.getBoundingClientRect();
+    const arenaRect = arena.getBoundingClientRect();
+    createParticles(rect.left - arenaRect.left + bag.size/2, rect.top - arenaRect.top + bag.size/2, "#ff3300", 12);
+    playSound("ko");
+
+    score += bag.reward || 1000;
+    coins += Math.floor((bag.reward || 1000) / 10);
+    totalKills++;
+
+    if (bag.isBoss || bag.isLegendary) {
+        totalBossesDefeated++;
+        checkAchievements();
+    }
+
+    advanceQuestProgress('ko');
+
+    if (Math.random() < 0.45) {
+        spawnDroppedItem(rect.left - arenaRect.left, rect.top - arenaRect.top);
+    }
+
+    if (bag.isLegendary) {
+        popup("🌟 LEGENDARY DEFEATED! SPAWNING OMEGA + 2 BAGS!", "#00ffcc", rect.left - arenaRect.left - 50, rect.top - arenaRect.top);
+        removeBagFromGame(bag);
+        spawnBagLogic("omegaGod");
+        spawnBagLogic("golden");
+        spawnBagLogic("normal");
+    } else {
+        removeBagFromGame(bag);
+        level++;
+        if (activeBags.length === 0) createBag();
+    }
+
+    updateScoreboard();
+    saveGame();
+}
+
 function removeBagFromGame(bag) {
     if (bag.element && bag.element.parentNode) bag.element.remove();
     activeBags = activeBags.filter(b => b !== bag);
-}
-
-function maintainBagCount() {
-    const desiredBags = Math.min(6, Math.floor(level / 8) + 1);
-    while (activeBags.length < desiredBags) {
-        createBag();
-    }
 }
 
 function saveGame() {
@@ -1681,10 +1663,18 @@ function saveGame() {
     localStorage.gloveSkin = gloveSkin;
     localStorage.currentTheme = currentTheme;
     localStorage.activeHat = activeHat;
-    localStorage.activePets = JSON.stringify(activePets);
+    localStorage.activePet = activePet;
     localStorage.ownedPets = JSON.stringify(ownedPets);
-    localStorage.gloveTiers = JSON.stringify(gloveTiers);
+    localStorage.petDogUnlocked = petDogUnlocked;
+    localStorage.petCatUnlocked = petCatUnlocked;
+    localStorage.petPhoenixUnlocked = petPhoenixUnlocked;
+    localStorage.petTigerUnlocked = petTigerUnlocked;
+    localStorage.ownedGloves = JSON.stringify(ownedGloves);
     localStorage.activeGloveType = activeGloveType;
+    localStorage.fireGloveLvl = elementalLevels.fire;
+    localStorage.iceGloveLvl = elementalLevels.ice;
+    localStorage.lightningGloveLvl = elementalLevels.lightning;
+    localStorage.toxicGloveLvl = elementalLevels.toxic;
     localStorage.achievements = JSON.stringify(achievements);
     localStorage.artifacts = JSON.stringify(artifacts);
 
@@ -1694,8 +1684,8 @@ function saveGame() {
 }
 
 function selectActiveGlove(type) {
-    if (type !== 'standard' && gloveTiers[type] <= 0) {
-        popup("🔒 Unlock Tier 1 in Arcade Hub!", "red", arena.clientWidth / 2 - 90, 50);
+    if (!ownedGloves[type]) {
+        popup("🔒 Unlock in Arcade Hub!", "red", arena.clientWidth / 2 - 90, 50);
         return;
     }
     activeGloveType = type;
@@ -1720,33 +1710,49 @@ function selectActiveGlove(type) {
     saveGame();
 }
 
-function buyGloveUpgrade(type) {
-    let currentTier = gloveTiers[type];
-    if (currentTier >= shopConfig.elementalGlove.maxTier) {
-        popup("⭐ Max Glove Tier Reached!", "gold", arena.clientWidth / 2 - 90, 50);
-        return;
-    }
-    let cost = getScaledCost('elementalGlove', currentTier);
+function buyGlove(type) {
+    if (ownedGloves[type]) return;
+    let cost = (type === 'lightning' || type === 'toxic') ? 2700 : 2250;
     if (coins >= cost) {
         coins -= cost;
-        gloveTiers[type]++;
+        ownedGloves[type] = true;
+        elementalLevels[type] = 1; 
         selectActiveGlove(type);
         updateUpgradesUI();
         updateScoreboard();
         saveGame();
-        popup(`🔓 ${type.toUpperCase()} Glove Tier ${gloveTiers[type]} Unlocked!`, "#00ff88", arena.clientWidth / 2 - 110, 50);
+        popup("🔓 Glove Unlocked!", "#00ff88", arena.clientWidth / 2 - 80, 50);
     } else {
         popup("❌ Need " + cost + " Coins!", "red", arena.clientWidth / 2 - 60, 50);
     }
 }
 
+function upgradeOrBuyGlove(type) {
+    if (!ownedGloves[type]) {
+        buyGlove(type);
+    } else {
+        let currentLvl = elementalLevels[type];
+        if (currentLvl >= 3) {
+            popup("⭐ Max Elemental Level Reached!", "gold", arena.clientWidth / 2 - 110, 50);
+            return;
+        }
+        let upgradeCost = (currentLvl + 1) * 1500;
+        if (coins >= upgradeCost) {
+            coins -= upgradeCost;
+            elementalLevels[type]++;
+            updateUpgradesUI();
+            updateScoreboard();
+            saveGame();
+            popup("⚡ Elemental Lvl Up! (" + elementalLevels[type] + "/3)", "#00ffcc", arena.clientWidth / 2 - 90, 50);
+        } else {
+            popup("❌ Need " + upgradeCost + " Coins to Upgrade!", "red", arena.clientWidth / 2 - 100, 50);
+        }
+    }
+}
+
 function setTheme(theme) {
     currentTheme = theme;
-    if (level >= 25 && (level % 25 === 0)) {
-        arena.className = "theme-darkcrimson";
-    } else {
-        arena.className = "theme-" + theme;
-    }
+    arena.className = "theme-" + theme;
     saveGame();
 }
 
@@ -1756,62 +1762,106 @@ function setHat(hat) {
     saveGame();
 }
 
-function clearAllPets() {
-    activePets = [];
-    setPetsUI();
+function setPet(pet) {
+    activePet = pet;
+    setPetUI();
     saveGame();
     updateScoreboard();
-    updateUpgradesUI();
 }
 
-function togglePet(pet, cost = 0) {
-    const isOwned = ownedPets[pet];
-
-    if (!isOwned) {
+function buyOrEquipCoinPet(pet, cost) {
+    if (!ownedPets[pet]) {
         if (coins < cost) {
             popup("❌ Need " + cost + " Coins!", "red", arena.clientWidth / 2 - 70, 50);
             return;
         }
         coins -= cost;
         ownedPets[pet] = true;
+        popup("🐾 PET UNLOCKED!", "#00ff88", arena.clientWidth / 2 - 70, 50);
     }
-
-    const index = activePets.indexOf(pet);
-    if (index !== -1) {
-        activePets.splice(index, 1);
-    } else {
-        if (activePets.length >= 2) {
-            if (!isOwned) { coins += cost; ownedPets[pet] = false; }
-            popup("❌ Max 2 Pets in Arena!", "red", arena.clientWidth / 2 - 90, 50);
-            return;
-        }
-        activePets.push(pet);
-    }
-
-    setPetsUI();
-    saveGame();
-    updateScoreboard();
+    setPet(pet);
     updateUpgradesUI();
 }
 
-function setPetsUI() {
-    const container = document.getElementById("activePetsContainer");
-    container.innerHTML = "";
-    activePets.forEach(pet => {
-        const span = document.createElement("span");
-        span.className = "petItem";
-        span.textContent = pet;
-        container.appendChild(span);
-    });
+function handlePetAdUnlock(pet) {
+    if (pet === '🐶') {
+        if (petDogUnlocked) setPet('🐶');
+        else { pendingAdPet = '🐶'; startAdSimulator(); }
+    } else if (pet === '🐱') {
+        if (petCatUnlocked) setPet('🐱');
+        else { pendingAdPet = '🐱'; startAdSimulator(); }
+    } else if (pet === '🦅') {
+        if (petPhoenixUnlocked) setPet('🦅');
+        else { pendingAdPet = '🦅'; startAdSimulator(); }
+    } else if (pet === '⚡') {
+        if (petTigerUnlocked) setPet('⚡');
+        else { pendingAdPet = '⚡'; startAdSimulator(); }
+    }
 }
 
-function triggerAnnouncerBanner(text) {
-    const banner = document.getElementById("announcerBanner");
-    banner.textContent = text;
-    banner.classList.add("active");
+function startAdSimulator() {
+    document.getElementById("adTitle").textContent = "📺 Watching Ad...";
+    document.getElementById("adSub").textContent = "Please wait to unlock your Pet!";
+    document.getElementById("adCloseBtn").style.display = "none";
+    document.getElementById("adProgressBar").style.width = "0%";
+    document.getElementById("adModal").style.display = "flex";
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 10;
+        document.getElementById("adProgressBar").style.width = progress + "%";
+        if (progress >= 100) {
+            clearInterval(interval);
+            document.getElementById("adTitle").textContent = "🎉 Ad Complete!";
+            document.getElementById("adSub").textContent = "Click below to claim your new pet!";
+            document.getElementById("adCloseBtn").style.display = "inline-block";
+        }
+    }, 300);
+}
+
+function finishAd() {
+    document.getElementById("adModal").style.display = "none";
+    if (pendingAdPet === '🐶') {
+        petDogUnlocked = true;
+        setPet('🐶');
+        popup("🐶 DOG UNLOCKED! (+20% COINS)", "#00ff88", arena.clientWidth / 2 - 120, 50);
+    } else if (pendingAdPet === '🐱') {
+        petCatUnlocked = true;
+        setPet('🐱');
+        popup("🐱 CAT UNLOCKED! (+15% CRIT RATE)", "#00ff88", arena.clientWidth / 2 - 120, 50);
+    } else if (pendingAdPet === '🦅') {
+        petPhoenixUnlocked = true;
+        setPet('🦅');
+        popup("🦅 PHOENIX UNLOCKED! (ICE + FIRE)", "#00ff88", arena.clientWidth / 2 - 120, 50);
+    } else if (pendingAdPet === '⚡') {
+        petTigerUnlocked = true;
+        setPet('⚡');
+        popup("⚡ VOLT TIGER UNLOCKED! (VENOM + SHOCK)", "#00ff88", arena.clientWidth / 2 - 140, 50);
+    }
+    pendingAdPet = "";
+    updateUpgradesUI();
+    saveGame();
+}
+
+function setPetUI() { document.getElementById("activePet").textContent = activePet; }
+
+function triggerAnnouncer(text) {
+    const el = document.getElementById("announcerText");
+    el.textContent = text;
+    el.style.opacity = "1";
+    el.style.transform = "translateX(-50%) scale(1.2)";
     setTimeout(() => {
-        banner.classList.remove("active");
-    }, 2500);
+        el.style.opacity = "0";
+        el.style.transform = "translateX(-50%) scale(1)";
+    }, 1200);
+}
+
+function triggerSpawnWarning(title, subtitle, spawnCallback) {
+    triggerAnnouncer(`⚠️ ${title}: ${subtitle} ⚠️`);
+    playSound("siren");
+    setTimeout(() => {
+        spawnCallback();
+    }, 500); // 0.5 sec delay before boss spawn
 }
 
 function togglePause() {
@@ -1829,7 +1879,6 @@ function updateActivePowerupsUI() {
     if (swordHits > 0) activeText.push("⚔️ Sword (" + swordHits + " hits)");
     if (rageActive) activeText.push("🔥 Rage 3x Dmg");
     if (freezeActive) activeText.push("❄️ Freeze Active");
-    if (feverActive) activeText.push("🔥 Fever Active (2x)");
     if (maxHearts > 9) activeText.push("💖 Over-Hearts Active");
 
     document.getElementById("activePowerups").innerHTML = activeText.length > 0 ? activeText.join(" | ") : "No Powerups Active";
@@ -1878,11 +1927,6 @@ function checkAchievements() {
 function openLeaderboardModal() {
     renderLeaderboard();
     document.getElementById("leaderboardModal").style.display = "flex";
-    gamePaused = true;
-}
-
-function openGuideModal() {
-    document.getElementById("guideModal").style.display = "flex";
     gamePaused = true;
 }
 
@@ -1968,16 +2012,19 @@ function confirmNewGame() {
     upgMagnet = 0;
     gloveSkin = "🥊";
     activeGloveType = "standard";
-    gloveTiers = { fire: 0, ice: 0, lightning: 0, toxic: 0 };
+    ownedGloves = { standard: true, fire: false, ice: false, lightning: false, toxic: false };
+    elementalLevels = { fire: 0, ice: 0, lightning: 0, toxic: 0 };
     activeHat = "";
-    activePets = [];
-    ownedPets = { '🐶': false, '🐱': false, '🐉': false, '🤖': false, '🦅': false, '🦄': false };
+    activePet = "";
+    ownedPets = { '🐉': false, '🤖': false, '🧊': false, '🧪': false };
+    petDogUnlocked = false;
+    petCatUnlocked = false;
+    petPhoenixUnlocked = false;
+    petTigerUnlocked = false;
     
     freezeActive = false;
     rageActive = false;
     combo = 0;
-    feverPoints = 0;
-    feverActive = false;
     
     saveGame();
     location.reload();
@@ -1986,21 +2033,20 @@ function confirmNewGame() {
 function continueGame() {
     if (coins >= 3000) {
         coins -= 3000;
-        maxHearts = Math.max(maxHearts, 14);
-        hearts = maxHearts;
+        hearts = 5;
         updateHearts();
         updateScoreboard();
         closeModal("gameOverModal");
-        maintainBagCount();
+        if (activeBags.length === 0) createBag();
     } else {
         popup("❌ Need 3000 Coins to Continue!", "red", arena.clientWidth / 2 - 110, 50);
     }
 }
 
 function gameOver() {
-    gamePaused = true;
     document.getElementById("finalScore").textContent = Math.floor(score);
     document.getElementById("gameOverModal").style.display = "flex";
+    gamePaused = true;
 }
 
 function updateHearts() {
@@ -2018,82 +2064,67 @@ function updateHearts() {
 
 function buyExtraHearts() {
     if (maxHearts >= 14) {
-        popup("❌ Max Heart Limit Reached!", "orange", arena.clientWidth / 2 - 90, 50);
+        popup("❌ Max Heart Limit Reached!", "orange", arena.clientWidth / 2 - 100, 50);
         return;
     }
     if (coins >= 1200) {
         coins -= 1200;
-        maxHearts += 5;
+        maxHearts = Math.min(14, maxHearts + 5);
         hearts = maxHearts;
         updateHearts();
         updateScoreboard();
+        updateActivePowerupsUI();
         saveGame();
-        popup("💖 +5 Max Hearts Purchased!", "pink", arena.clientWidth / 2 - 100, 50);
+        popup("💖 MAX HEARTS INCREASED!", "#ff00a0", arena.clientWidth / 2 - 110, 50);
     } else {
         popup("❌ Need 1200 Coins!", "red", arena.clientWidth / 2 - 60, 50);
     }
 }
 
-function buyUpgrade(type) {
-    let cost = getScaledCost(type, eval("upg" + type.charAt(0).toUpperCase() + type.slice(1)));
-    if (coins >= cost) {
-        coins -= cost;
-        if (type === 'power') upgPower++;
-        if (type === 'crit') upgCrit++;
-        if (type === 'auto') upgAuto++;
-        if (type === 'magnet') upgMagnet++;
-        updateUpgradesUI();
+function buyDoubleDamage() {
+    if (coins >= 600) {
+        coins -= 600;
+        swordHits += 30;
         updateScoreboard();
+        updateActivePowerupsUI();
         saveGame();
-        popup("💪 Upgrade Successful!", "#00ff88", arena.clientWidth / 2 - 80, 50);
+        popup("⚔️ SWORD POWERUP ACTIVATED!", "#00ff88", arena.clientWidth / 2 - 110, 50);
     } else {
-        popup("❌ Need " + cost + " Coins!", "red", arena.clientWidth / 2 - 60, 50);
+        popup("❌ Need 600 Coins!", "red", arena.clientWidth / 2 - 60, 50);
     }
 }
 
-function updateUpgradesUI() {
-    document.getElementById("powerCost").textContent = getScaledCost('power', upgPower);
-    document.getElementById("critCost").textContent = getScaledCost('crit', upgCrit);
-    document.getElementById("autoCost").textContent = getScaledCost('auto', upgAuto);
-    document.getElementById("magnetCost").textContent = getScaledCost('magnet', upgMagnet);
+function buyFreezeTime() {
+    if (coins >= 900) {
+        coins -= 900;
+        freezeActive = true;
+        updateScoreboard();
+        updateActivePowerupsUI();
+        saveGame();
+        popup("❄️ TIME FROZEN FOR 15s!", "#00d2ff", arena.clientWidth / 2 - 110, 50);
+        setTimeout(() => { freezeActive = false; updateActivePowerupsUI(); }, 15000);
+    } else {
+        popup("❌ Need 900 Coins!", "red", arena.clientWidth / 2 - 60, 50);
+    }
+}
 
-    document.getElementById("basePwrLvl").textContent = upgPower + 1;
-    document.getElementById("basePwrBonus").textContent = upgPower * 5;
-    document.getElementById("critLvl").textContent = upgCrit + 1;
-    document.getElementById("critBonus").textContent = 10 + (upgCrit * 3);
-    document.getElementById("autoLvl").textContent = upgAuto;
-    document.getElementById("magnetLvl").textContent = upgMagnet;
+function buyRageMode() {
+    if (coins >= 1500) {
+        coins -= 1500;
+        rageActive = true;
+        updateScoreboard();
+        updateActivePowerupsUI();
+        saveGame();
+        popup("🔥 RAGE MODE 3x DAMAGE FOR 12s!", "#ff3300", arena.clientWidth / 2 - 130, 50);
+        setTimeout(() => { rageActive = false; updateActivePowerupsUI(); }, 12000);
+    } else {
+        popup("❌ Need 1500 Coins!", "red", arena.clientWidth / 2 - 60, 50);
+    }
+}
 
-    ['fire', 'ice', 'lightning', 'toxic'].forEach(type => {
-        const tier = gloveTiers[type];
-        const tierLvlEl = document.getElementById(type + "TierLvl");
-        const tierBonusEl = document.getElementById(type + "TierBonus");
-        const buyBtn = document.getElementById("buy" + type.charAt(0).toUpperCase() + type.slice(1) + "Btn");
-        
-        if (tierLvlEl) tierLvlEl.textContent = tier;
-        if (tierBonusEl) tierBonusEl.textContent = tier * 25;
-        if (buyBtn) {
-            if (tier >= 3) {
-                buyBtn.textContent = "MAX";
-                buyBtn.disabled = true;
-            } else {
-                buyBtn.textContent = getScaledCost('elementalGlove', tier) + " 🪙";
-            }
-        }
-    });
-
-    Object.keys(ownedPets).forEach(pet => {
-        const btn = document.getElementById("petBtn_" + pet);
-        if (btn) {
-            if (activePets.includes(pet)) {
-                btn.classList.add("activePetBtn");
-                btn.textContent = pet + " (Equipped)";
-            } else if (ownedPets[pet]) {
-                btn.classList.remove("activePetBtn");
-                btn.textContent = pet + " (Owned)";
-            }
-        }
-    });
+function flashDamage() {
+    arena.classList.add("damageFlash");
+    setTimeout(() => arena.classList.remove("damageFlash"), 300);
 }
 
 function setGloveSkin(skin) {
@@ -2102,271 +2133,625 @@ function setGloveSkin(skin) {
     saveGame();
 }
 
-function triggerShake(intensity = 6) {
-    arena.style.transform = `translate(${(Math.random()-0.5)*intensity}px, ${(Math.random()-0.5)*intensity}px)`;
-    setTimeout(() => arena.style.transform = "translate(0,0)", 80);
-}
-
-function flashDamage() {
-    arena.classList.add("damageFlash");
-    setTimeout(() => arena.classList.remove("damageFlash"), 200);
-}
-
-function popup(text, color, x, y) {
-    const el = document.createElement("div");
-    el.className = "particle";
-    el.textContent = text;
-    el.style.left = x + "px";
-    el.style.top = y + "px";
-    el.style.color = color;
-    el.style.fontWeight = "bold";
-    el.style.fontSize = "14px";
-    el.style.textShadow = "0 0 4px black";
-    el.style.transition = "transform 0.6s ease-out, opacity 0.6s ease-out";
-    arena.appendChild(el);
-
-    setTimeout(() => {
-        el.style.transform = "translateY(-40px) scale(1.2)";
-        el.style.opacity = "0";
-    }, 20);
-    setTimeout(() => el.remove(), 600);
-}
-
-function createBag() {
-    const bag = document.createElement("div");
-    bag.className = "bag";
+function animateGloveToTarget(targetX, targetY) {
+    const arenaRect = arena.getBoundingClientRect();
+    const gloveRect = glove.getBoundingClientRect();
     
-    let isElite = (Math.random() < 0.25 || level % 5 === 0);
-    let isBoss = (level % 10 === 0 && Math.random() < 0.5);
-    let isBigBoss = (level >= 25 && level % 25 === 0);
-    let isLegendary = (level >= 60 && level % 60 === 0);
-    let isBomb = (Math.random() < 0.08 && level > 3);
-    let isCoinBag = (Math.random() < 0.12);
+    // Glove natural resting position center relative to arena
+    const gloveCenterX = gloveRect.left + gloveRect.width / 2 - arenaRect.left;
+    const gloveCenterY = gloveRect.top + gloveRect.height / 2 - arenaRect.top;
 
-    let bagObj = {
-        element: bag,
-        hp: 50 + level * 15,
-        maxHp: 50 + level * 15,
-        timeLeft: 12.0,
-        size: 55,
-        isBomb: isBomb,
-        isElite: isElite
-    };
+    const deltaX = targetX - gloveCenterX;
+    const deltaY = targetY - gloveCenterY;
+    const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
 
-    if (isLegendary) {
-        bag.classList.add("legendaryboss");
-        bagObj.hp = 800 + level * 50;
-        bagObj.maxHp = bagObj.hp;
-        bagObj.size = 85;
-        triggerAnnouncerBanner("⚡ LEGENDARY BOSS ENGAGED! ⚡");
-    } else if (isBigBoss) {
-        bag.classList.add("bigboss");
-        bagObj.hp = 400 + level * 30;
-        bagObj.maxHp = bagObj.hp;
-        bagObj.size = 75;
-        triggerAnnouncerBanner("⚠️ BIG BOSS ENGAGED! ⚠️");
-    } else if (isBoss) {
-        bag.classList.add("boss");
-        bagObj.hp = 150 + level * 20;
-        bagObj.maxHp = bagObj.hp;
-        bagObj.size = 65;
-    } else if (isElite) {
-        bag.classList.add("elite");
-        bagObj.moveSpeed = (Math.random() < 0.5 ? 1 : -1) * (1.5 + level * 0.1);
-        bagObj.hp = 90 + level * 12;
-        bagObj.maxHp = bagObj.hp;
-    } else if (isBomb) {
-        bag.classList.add("bomb");
-        bagObj.hp = 30;
-        bagObj.maxHp = 30;
-        bagObj.timeLeft = 7.0;
-    } else if (isCoinBag) {
-        bag.classList.add("coinbag");
-        bagObj.hp = 40;
-        bagObj.maxHp = 40;
-    }
-
-    bag.style.width = bagObj.size + "px";
-    bag.style.height = (bagObj.size * 1.35) + "px";
-
-    const maxLeft = Math.max(10, arena.clientWidth - bagObj.size - 20);
-    const maxTop = Math.max(80, arena.clientHeight - (bagObj.size * 1.5) - 30);
-    bag.style.left = Math.floor(Math.random() * maxLeft) + "px";
-    bag.style.top = Math.floor(Math.random() * (maxTop - 60) + 50) + "px";
-
-    let innerHTML = `<div class="bagWrapper">`;
-    if (uploadedPhoto) {
-        innerHTML += `<img src="${uploadedPhoto}">`;
-    } else {
-        innerHTML += `<div class="faceOverlay">🐵</div>`;
-    }
-    if (activeHat) {
-        innerHTML += `<div class="hatOverlay">${activeHat}</div>`;
-    }
-    innerHTML += `</div>`;
-    innerHTML += `<div class="hpBarContainer"><div class="hpBar"></div></div>`;
-    innerHTML += `<div class="hpText">${Math.floor(bagObj.hp)}/${Math.floor(bagObj.maxHp)}</div>`;
-    innerHTML += `<div class="timerText">⏳ ${Math.ceil(bagObj.timeLeft)}</div>`;
-
-    if (Math.random() < 0.25 && !isBomb) {
-        innerHTML += `<div class="bullseye" style="top: ${Math.random()*20}px; left: ${Math.random()*20}px;"></div>`;
-    }
-
-    bag.innerHTML = innerHTML;
-
-    bag.addEventListener("pointerdown", (e) => {
-        e.stopPropagation();
-        punch(bagObj);
-    });
-
-    bagsContainer.appendChild(bag);
-    activeBags.push(bagObj);
+    glove.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${angle}deg) scale(1.35)`;
+    
+    setTimeout(() => {
+        glove.style.transform = `translate(0px, 0px) rotate(0deg) scale(1)`;
+    }, 120);
 }
 
-function punch(bagObj, isAuto = false) {
+function punch(bagObj, isAuto = false, isBullseye = false, clickX = null, clickY = null) {
     if (gamePaused) return;
 
     totalPunches++;
-    if (!isAuto) {
-        combo++;
-        comboTimerAcc = 0;
-        maxComboStreak = Math.max(maxComboStreak, combo);
-        updateComboUI();
-    }
+    punchCount++;
 
-    let baseDmg = 12 + (upgPower * 5);
-    if (swordHits > 0) {
-        baseDmg *= 2;
-        swordHits--;
-        updateScoreboard();
-    }
-    if (rageActive) baseDmg *= 3;
-    if (feverActive) baseDmg *= 2;
-
-    let critChance = 0.10 + (upgCrit * 0.03);
-    if (achievements.comboMaster.unlocked) critChance += 0.10;
-
-    let isCrit = Math.random() < critChance;
-    if (isCrit) {
-        baseDmg *= 2.2;
-        totalCrits++;
-        playSound("crit");
-        triggerShake(8);
-        advanceQuestProgress('crit');
+    if (clickX !== null && clickY !== null) {
+        const arenaRect = arena.getBoundingClientRect();
+        const relX = clickX - arenaRect.left;
+        const relY = clickY - arenaRect.top;
+        animateGloveToTarget(relX, relY);
     } else {
-        playSound("punch");
-        triggerShake(3);
+        const rect = bagObj.element.getBoundingClientRect();
+        const arenaRect = arena.getBoundingClientRect();
+        animateGloveToTarget(rect.left + rect.width / 2 - arenaRect.left, rect.top + rect.height / 2 - arenaRect.top);
     }
 
-    if (bagObj.isBomb) {
-        playSound("explosion");
-        triggerShake(12);
-        flashDamage();
-        popup("💥 BOOM! HP PENALTY", "red", parseFloat(bagObj.element.style.left), parseFloat(bagObj.element.style.top));
-        hearts = Math.max(0, hearts - 2);
-        updateHearts();
-        removeBagFromGame(bagObj);
-        if (hearts <= 0) gameOver();
-        maintainBagCount();
+    if (bagObj.isNinja) {
+        bagObj.ninjaHitsLeft = (bagObj.ninjaHitsLeft || 3) - 1;
+        playSound("punch");
+        if (bagObj.ninjaHitsLeft <= 0) {
+            handleBagKO(bagObj);
+        } else {
+            popup(`🥷 ${bagObj.ninjaHitsLeft} HITS LEFT!`, "#a855f7", bagObj.element.offsetLeft, bagObj.element.offsetTop);
+        }
         return;
     }
 
-    // Elite bounce logic adjustment on punch
-    if (bagObj.moveSpeed) {
-        bagObj.moveSpeed *= -1;
+    let baseDmg = 15 + (upgPower * 5);
+    if (swordHits > 0) {
+        baseDmg *= 2;
+        swordHits--;
+        if (swordHits <= 0) updateActivePowerupsUI();
+    }
+    if (rageActive) baseDmg *= 3;
+    if (isBullseye) {
+        baseDmg *= 2;
+        advanceQuestProgress('bullseye');
     }
 
-    applyDirectDamage(bagObj, Math.floor(baseDmg), isCrit ? "CRIT! -" : "-", isCrit ? "gold" : "white");
+    let critChance = 0.10 + (upgCrit * 0.05);
+    if (petCatUnlocked && activePet === '🐱') critChance += 0.15;
+    let isCrit = Math.random() < critChance;
 
-    activeSkillCharge = Math.min(activeSkillMax, activeSkillCharge + 1);
-    updateActiveSkillButton();
-
-    feverPoints = Math.min(feverMax, feverPoints + 1);
-    updateFeverUI();
-    if (feverPoints >= feverMax && !feverActive) {
-        triggerFeverMode();
+    if (isCrit) {
+        baseDmg *= 2;
+        totalCrits++;
+        playSound("crit");
+        advanceQuestProgress('crit');
+    } else {
+        playSound("punch");
     }
 
-    arena.classList.add("zoomPulse");
-    setTimeout(() => arena.classList.remove("zoomPulse"), 100);
+    if (bagObj.shield && bagObj.shield > 0) {
+        bagObj.shield--;
+        playSound("shield");
+        popup("🛡️ BLOCKED", "#00ffff", bagObj.element.offsetLeft, bagObj.element.offsetTop);
+        if (bagObj.shield <= 0) bagObj.element.classList.remove("shielded");
+        return;
+    }
+
+    combo++;
+    if (combo > maxComboStreak) maxComboStreak = combo;
+    if (combo > 1) {
+        document.getElementById("combo").textContent = combo + "x COMBO!";
+        clearTimeout(comboTimer);
+        comboTimer = setTimeout(() => {
+            combo = 0;
+            document.getElementById("combo").textContent = "";
+        }, 2000);
+    }
+
+    if (activeGloveType === "fire") {
+        bagObj.isBurning = true;
+        bagObj.element.classList.add("burning");
+    } else if (activeGloveType === "lightning") {
+        applyChainLightning(bagObj, baseDmg);
+    } else if (activeGloveType === "toxic") {
+        bagObj.isPoisoned = true;
+        bagObj.poisonStacks = (bagObj.poisonStacks || 0) + 1;
+        bagObj.element.classList.add("poisoned");
+    }
+
+    applyDirectDamage(bagObj, baseDmg, isCrit ? "💥 CRIT! -" : "-", isCrit ? "#ff0055" : "#ffffff");
 }
 
-function handleBagKO(bagObj) {
-    playSound("ko");
-    triggerShake(10);
-    totalKills++;
-
-    const rect = bagObj.element.getBoundingClientRect();
-    const arenaRect = arena.getBoundingClientRect();
-    const x = rect.left - arenaRect.left;
-    const y = rect.top - arenaRect.top;
-
-    let earnedCoins = 15 + Math.floor(level * 3);
-    if (artifacts.luckyCoin.equipped) earnedCoins = Math.floor(earnedCoins * 1.15);
-    if (feverActive) earnedCoins *= 2;
-
-    coins += earnedCoins;
-    score += 100 + level * 25;
-
-    if (bagObj.element.classList.contains("legendaryboss") || bagObj.element.classList.contains("bigboss") || bagObj.element.classList.contains("boss")) {
-        totalBossesDefeated++;
-        score += 1000;
-        popup("👹 BOSS DEFEATED! +1000 PTS", "gold", x, y - 20);
+function toggleArtifact(key) {
+    let equippedCount = Object.values(artifacts).filter(a => a.equipped).length;
+    if (!artifacts[key].equipped && equippedCount >= 2) {
+        popup("❌ Max 2 Artifacts!", "red", arena.clientWidth / 2 - 80, 50);
+        return;
     }
+    artifacts[key].equipped = !artifacts[key].equipped;
+    updateUpgradesUI();
+    saveGame();
+}
 
-    popup("🪙 +" + earnedCoins, "gold", x + 10, y);
-    spawnDropItem(x, y);
+function updateUpgradesUI() {
+    const buyFireBtn = document.getElementById("buyFireBtn");
+    const buyIceBtn = document.getElementById("buyIceBtn");
+    const buyLightningBtn = document.getElementById("buyLightningBtn");
+    const buyToxicBtn = document.getElementById("buyToxicBtn");
 
-    removeBagFromGame(bagObj);
-    advanceQuestProgress('ko');
-    checkAchievements();
+    document.getElementById("fireGloveLvl").textContent = Math.max(1, elementalLevels.fire);
+    document.getElementById("fireHitCount").textContent = elementalLevels.fire;
+    buyFireBtn.textContent = !ownedGloves.fire ? "2250 🪙" : (elementalLevels.fire >= 3 ? "⭐ MAX" : ((elementalLevels.fire + 1) * 1500) + " 🪙 Upgr");
 
-    level++;
-    setTheme(currentTheme);
+    document.getElementById("iceGloveLvl").textContent = Math.max(1, elementalLevels.ice);
+    document.getElementById("iceHitCount").textContent = elementalLevels.ice;
+    buyIceBtn.textContent = !ownedGloves.ice ? "2250 🪙" : (elementalLevels.ice >= 3 ? "⭐ MAX" : ((elementalLevels.ice + 1) * 1500) + " 🪙 Upgr");
 
+    document.getElementById("lightningGloveLvl").textContent = Math.max(1, elementalLevels.lightning);
+    document.getElementById("lightningHitCount").textContent = Math.max(1, elementalLevels.lightning);
+    buyLightningBtn.textContent = !ownedGloves.lightning ? "2700 🪙" : (elementalLevels.lightning >= 3 ? "⭐ MAX" : ((elementalLevels.lightning + 1) * 1500) + " 🪙 Upgr");
+
+    document.getElementById("toxicGloveLvl").textContent = Math.max(1, elementalLevels.toxic);
+    document.getElementById("toxicHitCount").textContent = elementalLevels.toxic;
+    buyToxicBtn.textContent = !ownedGloves.toxic ? "2700 🪙" : (elementalLevels.toxic >= 3 ? "⭐ MAX" : ((elementalLevels.toxic + 1) * 1500) + " 🪙 Upgr");
+
+    const petDragonBtn = document.getElementById("petDragonBtn");
+    const petDroneBtn = document.getElementById("petDroneBtn");
+    const petFoxBtn = document.getElementById("petFoxBtn");
+    const petSlimeBtn = document.getElementById("petSlimeBtn");
+
+    if (petDragonBtn) petDragonBtn.innerHTML = `🐉 Dragon ${ownedPets['🐉'] ? '(Owned)' : '(3000 🪙)'}<br><small>Fire Dmg</small>`;
+    if (petDroneBtn) petDroneBtn.innerHTML = `🤖 Drone ${ownedPets['🤖'] ? '(Owned)' : '(4500 🪙)'}<br><small>Shock Dmg</small>`;
+    if (petFoxBtn) petFoxBtn.innerHTML = `🧊 Frost Fox ${ownedPets['🧊'] ? '(Owned)' : '(6000 🪙)'}<br><small>Ice Dmg</small>`;
+    if (petSlimeBtn) petSlimeBtn.innerHTML = `🧪 Venom Slime ${ownedPets['🧪'] ? '(Owned)' : '(7500 🪙)'}<br><small>Venom Dmg</small>`;
+
+    const petDogBtn = document.getElementById("petDogBtn");
+    const petCatBtn = document.getElementById("petCatBtn");
+    const petPhoenixBtn = document.getElementById("petPhoenixBtn");
+    const petTigerBtn = document.getElementById("petTigerBtn");
+
+    if (petDogBtn) petDogBtn.innerHTML = (petDogUnlocked ? "🐶 Dog (Owned)" : "🐶 Dog (📺 Ad)") + "<br><small>+20% Coins</small>";
+    if (petCatBtn) petCatBtn.innerHTML = (petCatUnlocked ? "🐱 Cat (Owned)" : "🐱 Cat (📺 Ad)") + "<br><small>+15% Crit</small>";
+    if (petPhoenixBtn) petPhoenixBtn.innerHTML = (petPhoenixUnlocked ? "🦅 Phoenix (Owned)" : "🦅 Phoenix (📺 Ad)") + "<br><small>Ice + Fire Dmg</small>";
+    if (petTigerBtn) petTigerBtn.innerHTML = (petTigerUnlocked ? "⚡ Volt Tiger (Owned)" : "⚡ Volt Tiger (📺 Ad)") + "<br><small>Venom + Shock</small>";
+
+    document.getElementById("basePwrLvl").textContent = upgPower + 1;
+    document.getElementById("basePwrBonus").textContent = upgPower * 5;
+    document.getElementById("powerCost").textContent = (upgPower + 1) * 450;
+
+    document.getElementById("critLvl").textContent = upgCrit + 1;
+    document.getElementById("critBonus").textContent = 10 + (upgCrit * 5);
+    document.getElementById("critCost").textContent = (upgCrit + 1) * 600;
+
+    document.getElementById("autoLvl").textContent = upgAuto;
+    document.getElementById("autoCost").textContent = (upgAuto + 1) * 1500;
+
+    document.getElementById("magnetLvl").textContent = upgMagnet;
+    document.getElementById("magnetCost").textContent = (upgMagnet + 1) * 1200;
+
+    const artDiv = document.getElementById("artifactsList");
+    artDiv.innerHTML = "";
+    Object.keys(artifacts).forEach(key => {
+        const a = artifacts[key];
+        const box = document.createElement("div");
+        box.className = "artifactBox " + (a.equipped ? "equipped" : "");
+        box.innerHTML = `<strong>${a.title}</strong> - ${a.desc} <br>
+        <button onclick="toggleArtifact('${key}')">${a.equipped ? 'Unequip' : 'Equip'}</button>`;
+        artDiv.appendChild(box);
+    });
+
+    const achDiv = document.getElementById("achievementsList");
+    achDiv.innerHTML = "";
+    Object.keys(achievements).forEach(key => {
+        const a = achievements[key];
+        const box = document.createElement("div");
+        box.className = "achievementBox " + (a.unlocked ? "unlocked" : "");
+        box.innerHTML = `<strong>${a.title}</strong> - ${a.desc} <br><small>Status: ${a.unlocked ? '✅ Unlocked' : '🔒 Locked'}</small>`;
+        achDiv.appendChild(box);
+    });
+}
+
+function buyUpgrade(type) {
+    if (type === 'power') {
+        let cost = (upgPower + 1) * 450;
+        if (coins >= cost) { coins -= cost; upgPower++; }
+    } else if (type === 'crit') {
+        let cost = (upgCrit + 1) * 600;
+        if (coins >= cost && upgCrit < 10) { coins -= cost; upgCrit++; }
+    } else if (type === 'auto') {
+        let cost = (upgAuto + 1) * 1500;
+        if (coins >= cost) { coins -= cost; upgAuto++; }
+    } else if (type === 'magnet') {
+        let cost = (upgMagnet + 1) * 1200;
+        if (coins >= cost && upgMagnet < 1) { coins -= cost; upgMagnet++; }
+    }
+    updateUpgradesUI();
     updateScoreboard();
     saveGame();
-    maintainBagCount();
 }
 
-function spawnDropItem(x, y) {
+function createParticles(x, y, color, count = 6) {
+    for (let i = 0; i < count; i++) {
+        const p = document.createElement("div");
+        p.className = "particle";
+        p.style.left = x + "px";
+        p.style.top = y + "px";
+        p.style.width = (Math.random() * 6 + 3) + "px";
+        p.style.height = p.style.width;
+        p.style.background = color;
+
+        arena.appendChild(p);
+
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 40 + 15;
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed;
+
+        p.animate([
+            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+            { transform: `translate(${vx}px, ${vy}px) scale(0)`, opacity: 0 }
+        ], { duration: 400, easing: 'ease-out' });
+
+        setTimeout(() => p.remove(), 400);
+    }
+}
+
+function triggerShake(intensity = 6) {
+    let startTime = performance.now();
+    let duration = 150;
+
+    function shakeFrame(now) {
+        let elapsed = now - startTime;
+        if (elapsed < duration) {
+            let dx = (Math.random() - 0.5) * intensity * 2;
+            let dy = (Math.random() - 0.5) * intensity * 2;
+            arena.style.transform = `translate(${dx}px, ${dy}px)`;
+            requestAnimationFrame(shakeFrame);
+        } else {
+            arena.style.transform = "translate(0, 0)";
+        }
+    }
+    requestAnimationFrame(shakeFrame);
+}
+
+function popup(text, color, x, y) {
+    const p = document.createElement("div");
+    p.innerHTML = text;
+    p.style.position = "absolute";
+    p.style.left = x + "px";
+    p.style.top = y + "px";
+    p.style.color = color;
+    p.style.fontWeight = "900";
+    p.style.fontSize = "16px";
+    p.style.pointerEvents = "none";
+    p.style.zIndex = "10000";
+    p.style.textShadow = "0 2px 4px rgba(0,0,0,0.9)";
+
+    arena.appendChild(p);
+
+    const vx = (Math.random() - 0.5) * 40;
+    const vy = -35 - Math.random() * 20;
+
+    p.animate([
+        { transform: 'translate(0, 0) scale(0.8)', opacity: 1 },
+        { transform: `translate(${vx}px, ${vy}px) scale(0)`, opacity: 0 }
+    ], { duration: 500, easing: 'ease-out' });
+
+    setTimeout(() => p.remove(), 500);
+}
+
+function triggerUltimate() {
+    if (coins < 9000) {
+        popup("❌ Need 9000 Coins!", "red", arena.clientWidth / 2 - 70, 50);
+        return;
+    }
+    coins -= 9000;
+    triggerShake(16);
+    playSound("explosion");
+
+    arena.style.filter = "brightness(3)";
+    setTimeout(() => arena.style.filter = "none", 200);
+
+    for (let i = activeBags.length - 1; i >= 0; i--) {
+        const bag = activeBags[i];
+        if (!bag.isBomb) {
+            const rect = bag.element.getBoundingClientRect();
+            const arenaRect = arena.getBoundingClientRect();
+            createParticles(rect.left - arenaRect.left + 30, rect.top - arenaRect.top + 30, "#ffdd00", 8);
+            score += bag.reward || 500;
+            coins += Math.floor((bag.reward || 500) / 10);
+            removeBagFromGame(bag);
+        }
+    }
+
+    popup("💥 ULTIMATE CLEAR!", "gold", arena.clientWidth / 2 - 100, 80);
+    updateScoreboard();
+    saveGame();
+
+    setTimeout(() => {
+        if (activeBags.length === 0) createBag();
+    }, 500);
+}
+
+function spawnDroppedItem(x, y) {
     const item = document.createElement("div");
     item.className = "dropItem";
-    item.style.left = x + "px";
-    item.style.top = y + "px";
+    item.style.left = Math.max(10, Math.min(arena.clientWidth - 40, x)) + "px";
+    item.style.top = Math.max(10, Math.min(arena.clientHeight - 40, y)) + "px";
 
-    const types = ['🪙', '💖', '⚔️'];
-    const chosen = types[Math.floor(Math.random() * types.length)];
-    item.textContent = chosen;
+    const roll = Math.random();
+    let type = "coin";
+    if (roll < 0.25) { item.textContent = "❤️"; type = "heart"; }
+    else if (roll < 0.60) { item.textContent = "🪙"; type = "coin"; }
+    else if (roll < 0.80) { item.textContent = "⚔️"; type = "sword"; }
+    else { item.textContent = "❄️"; type = "freeze"; }
 
-    item.collect = function() {
-        if (chosen === '🪙') {
-            coins += 50;
-            popup("🪙 +50 Coins", "gold", x, y);
-        } else if (chosen === '💖') {
-            hearts = Math.min(maxHearts, hearts + 1);
-            updateHearts();
-            popup("💖 +1 Heart", "pink", x, y);
-        } else if (chosen === '⚔️') {
-            swordHits += 10;
-            popup("⚔️ +10 Sword Hits", "lime", x, y);
-        }
+    item.collect = () => {
         playSound("coin");
-        item.remove();
         advanceQuestProgress('loot');
-        updateScoreboard();
-        saveGame();
+        if (type === "heart") {
+            hearts = Math.min(maxHearts, hearts + 1);
+            popup("❤️ +1 HEART", "pink", parseFloat(item.style.left), parseFloat(item.style.top));
+            updateHearts();
+        } else if (type === "coin") {
+            let gain = achievements.bossSlayer.unlocked ? 555 : 450;
+            coins += gain;
+            popup("🪙 +" + gain + " COINS", "gold", parseFloat(item.style.left), parseFloat(item.style.top));
+        } else if (type === "sword") {
+            swordHits += 25;
+            popup("⚔️ SWORD (25 HITS)", "lime", parseFloat(item.style.left), parseFloat(item.style.top));
+        } else if (type === "freeze") {
+            freezeActive = true;
+            popup("❄️ FREEZE (10s)", "cyan", parseFloat(item.style.left), parseFloat(item.style.top));
+            setTimeout(() => { freezeActive = false; updateActivePowerupsUI(); }, 10000);
+        }
+        item.remove();
+        updateActivePowerupsUI(); updateScoreboard(); saveGame();
     };
 
     item.addEventListener("pointerdown", (e) => {
         e.stopPropagation();
+        e.preventDefault();
         item.collect();
     });
 
     arena.appendChild(item);
-    setTimeout(() => { if (item.parentNode) item.remove(); }, 7000);
+    setTimeout(() => { if (item.parentNode) item.remove(); }, 8000);
+}
+
+function createBag() {
+    spawnBagLogic("normal");
+}
+
+function spawnBagLogic(forcedType = "normal") {
+    const bagElem = document.createElement("div");
+    bagElem.className = "bag";
+
+    let baseHp = Math.floor(40 + level * 8); 
+    let hp = baseHp;
+    let reward = 900;
+    let timer = 30;
+    let typeName = "🥊 NORMAL";
+    let sizeMultiplier = 1.0;
+    
+    let bagObj = {
+        element: bagElem,
+        isHighTier: false,
+        hp: hp, maxHp: hp,
+        reward: reward, timeLeft: timer,
+        moveSpeed: (Math.random() - 0.5) * 2.0
+    };
+
+    if (forcedType === "omegaGod") {
+        bagElem.classList.add("boss", "omegaGod");
+        bagObj.isHighTier = true;
+        bagObj.isBoss = true;
+        hp = Math.floor(baseHp * 7.0); reward = 60000; timer = 75; typeName = "👑 OMEGA GOD";
+        sizeMultiplier = 1.85;
+        finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
+        return;
+    } else if (forcedType === "golden") {
+        bagElem.classList.add("golden");
+        bagObj.isGolden = true;
+        bagObj.isHighTier = true;
+        hp = Math.floor(baseHp * 1.5); reward = 7500; timer = 12; typeName = "🪙 GOLDEN";
+        finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
+        return;
+    }
+
+    // LEGENDARY BAG SPAWNS EVERY 75 LEVELS
+    if (level % 75 === 0) {
+        bagElem.classList.add("boss", "legendary");
+        bagObj.isHighTier = true;
+        bagObj.isLegendary = true;
+        hp = Math.floor(baseHp * 10.0); reward = 100000; timer = 85; typeName = "🌟 LEGENDARY BAG";
+        sizeMultiplier = 2.0;
+
+        triggerSpawnWarning("LEGENDARY WARNING", `LEVEL ${level}: LEGENDARY BAG`, () => {
+            finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
+        });
+        return;
+    } else if (level === 30) {
+        bagElem.classList.add("boss", "magmaTitan");
+        bagObj.isHighTier = true;
+        bagObj.isBoss = true;
+        hp = Math.floor(baseHp * 4.5); reward = 25000; timer = 60; typeName = "🔥 LVL 30: MAGMA TITAN";
+        sizeMultiplier = 1.6;
+
+        triggerSpawnWarning("BOSS APPROACHING", "🔥 LVL 30: MAGMA TITAN", () => {
+            finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
+        });
+        return;
+    } else if (level === 50) {
+        bagElem.classList.add("boss", "omegaGod");
+        bagObj.isHighTier = true;
+        bagObj.isBoss = true;
+        hp = Math.floor(baseHp * 7.0); reward = 60000; timer = 75; typeName = "👑 LVL 50: OMEGA GOD";
+        sizeMultiplier = 1.85;
+
+        triggerSpawnWarning("BOSS APPROACHING", "👑 LVL 50: OMEGA GOD", () => {
+            finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
+        });
+        return;
+    } else if (level % 10 === 0) {
+        bagElem.classList.add("boss");
+        bagObj.isHighTier = true;
+        bagObj.isBoss = true;
+        hp = Math.floor(baseHp * 3.5); reward = 12000; timer = 50; typeName = "👹 BIG BOSS";
+        sizeMultiplier = 1.4;
+
+        triggerSpawnWarning("BOSS APPROACHING", `LEVEL ${level} BIG BOSS`, () => {
+            finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
+        });
+        return;
+    }
+
+    const specialRoll = Math.random();
+
+    if (specialRoll < 0.10) {
+        bagElem.classList.add("veryfast");
+        bagObj.isVeryFast = true;
+        bagObj.isHighTier = true;
+        hp = Math.floor(baseHp * 0.8); reward = 4500; timer = 8; typeName = "⚡ VERY FAST";
+        bagObj.moveSpeed = (Math.random() - 0.5) * 12.0;
+    } else if (specialRoll < 0.12) {
+        bagElem.classList.add("void");
+        bagObj.isVoid = true;
+        bagObj.isHighTier = true;
+        hp = Math.floor(baseHp * 2.2); reward = 9000; timer = 18; typeName = "🧲 GRAVITY (MAGNET)";
+    } else if (specialRoll < 0.20) {
+        bagElem.classList.add("rainbow");
+        bagObj.isRainbow = true;
+        bagObj.isHighTier = true;
+        hp = Math.floor(baseHp * 2.0); reward = 10000; timer = 15; typeName = "🌈 RAINBOW";
+    } else if (specialRoll < 0.28) {
+        bagElem.classList.add("ninja");
+        bagObj.isNinja = true;
+        bagObj.isHighTier = true;
+        hp = 3; bagObj.ninjaHitsLeft = 3; reward = 5000; timer = 15; typeName = "🥷 NINJA (3 Hits)";
+    } else if (specialRoll < 0.38) {
+        bagElem.classList.add("golden");
+        bagObj.isGolden = true;
+        bagObj.isHighTier = true;
+        hp = Math.floor(baseHp * 1.5); reward = 7500; timer = 12; typeName = "🪙 GOLDEN";
+    } else if (level >= 20 && specialRoll < 0.42) {
+        bagElem.classList.add("inferno");
+        bagObj.elementType = "ice"; 
+        hp = Math.floor(baseHp * 1.3); reward = 3000; timer = 16; typeName = "🔥 INFERNO";
+    } else if (level >= 20 && specialRoll < 0.46) {
+        bagElem.classList.add("frost");
+        bagObj.elementType = "fire"; 
+        hp = Math.floor(baseHp * 1.3); reward = 3000; timer = 16; typeName = "🧊 FROST";
+    } else if (level >= 20 && specialRoll < 0.50) {
+        bagElem.classList.add("shock");
+        bagObj.elementType = "shock";
+        hp = Math.floor(baseHp * 1.4); reward = 3600; timer = 16; typeName = "⚡ SHOCK";
+    } else if (level >= 20 && specialRoll < 0.54) {
+        bagElem.classList.add("toxic");
+        bagObj.elementType = "toxic";
+        hp = Math.floor(baseHp * 1.4); reward = 3600; timer = 16; typeName = "🧪 TOXIC";
+    } else if (specialRoll < 0.57) {
+        bagElem.classList.add("bouncy");
+        bagObj.isBouncy = true; hp = Math.floor(baseHp * 1.2); reward = 2400; timer = 20; typeName = "🌀 BOUNCY";
+    } else if (specialRoll < 0.63) {
+        bagElem.classList.add("splitter");
+        bagObj.isSplitter = true; hp = Math.floor(baseHp * 1.1); reward = 1800; timer = 16; typeName = "✂️ SPLITTER";
+    } else if (specialRoll < 0.70) {
+        bagElem.classList.add("bomb");
+        bagObj.isBomb = true; hp = 1; timer = 16; typeName = "💣 BOMB!";
+    } else if (specialRoll < 0.76) {
+        bagElem.classList.add("ghost");
+        bagObj.isGhost = true; hp = baseHp; reward = 2400; timer = 15; typeName = "👻 GHOST";
+    } else if (specialRoll < 0.82) {
+        bagElem.classList.add("healer");
+        bagObj.isHealer = true; hp = Math.floor(baseHp * 1.2); reward = 2700; timer = 20; typeName = "💚 HEALER";
+    } else if (specialRoll < 0.88) {
+        bagElem.classList.add("combobreaker");
+        bagObj.isComboBreaker = true; hp = Math.floor(baseHp * 0.7); reward = 1500; timer = 10; typeName = "⚡ NO-COMBO";
+    } else if (specialRoll < 0.94) {
+        bagElem.classList.add("goblin");
+        bagObj.isGoblin = true; hp = Math.floor(baseHp * 0.8); reward = 3600; timer = 6; typeName = "💰 GOBLIN";
+    } else if (level % 25 === 0) {
+        bagElem.classList.add("champion");
+        bagObj.isHighTier = true;
+        hp = Math.floor(baseHp * 3); reward = 15000; timer = 90; typeName = "👑 CHAMPION";
+    } else if (level % 5 === 0) {
+        bagElem.classList.add("elite");
+        bagObj.isHighTier = true;
+        hp = Math.floor(baseHp * 1.5); reward = 4000; timer = 20; typeName = "⚡ ELITE";
+    }
+
+    finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
+}
+
+function finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier) {
+    if (bagObj.isNinja) {
+        hp = 3;
+        bagObj.ninjaHitsLeft = 3;
+    }
+
+    if (artifacts.cursedBandage && artifacts.cursedBandage.equipped) {
+        timer = Math.max(4, Math.floor(timer * 0.8));
+    }
+
+    if (!bagObj.isBomb && Math.random() < 0.2) {
+        bagElem.classList.add("shielded");
+        bagObj.shield = Math.floor(2 + level / 8);
+    }
+
+    bagObj.hp = hp; bagObj.maxHp = hp; bagObj.reward = reward; bagObj.timeLeft = timer;
+
+    const size = Math.max(75, Math.min(110, arena.clientWidth * 0.22)) * sizeMultiplier;
+    bagObj.size = size;
+    bagElem.style.width = size + "px";
+    bagElem.style.height = (size * 1.25) + "px";
+
+    const maxLeft = Math.max(10, arena.clientWidth - size - 10);
+    bagElem.style.left = (Math.random() * maxLeft) + "px";
+    const maxTop = Math.max(20, arena.clientHeight - (size * 1.25) - 20);
+    bagElem.style.top = (Math.random() * (maxTop - 20) + 20) + "px";
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "bagWrapper";
+
+    const img = document.createElement("img");
+    img.src = uploadedPhoto || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50'><circle cx='25' cy='25' r='20' fill='%23ccc'/></svg>";
+
+    const faceOverlay = document.createElement("div");
+    faceOverlay.className = "faceOverlay";
+
+    const hatOverlay = document.createElement("div");
+    hatOverlay.className = "hatOverlay";
+    hatOverlay.textContent = activeHat;
+
+    wrapper.appendChild(img);
+    wrapper.appendChild(faceOverlay);
+    wrapper.appendChild(hatOverlay);
+
+    const typeText = document.createElement("div");
+    typeText.className = "typeText";
+    typeText.innerHTML = typeName;
+
+    const timerText = document.createElement("div");
+    timerText.className = "timerText";
+    timerText.innerHTML = "⏳ " + timer;
+
+    const hpText = document.createElement("div");
+    hpText.className = "hpText";
+    hpText.textContent = Math.floor(hp) + "/" + Math.floor(hp);
+
+    const hpContainer = document.createElement("div");
+    hpContainer.className = "hpBarContainer";
+    const hpBar = document.createElement("div");
+    hpBar.className = "hpBar";
+    hpContainer.appendChild(hpBar);
+
+    bagElem.appendChild(wrapper);
+    bagElem.appendChild(typeText);
+    bagElem.appendChild(timerText);
+    bagElem.appendChild(hpText);
+    bagElem.appendChild(hpContainer);
+
+    if (Math.random() < 0.35) {
+        const bullseye = document.createElement("div");
+        bullseye.className = "bullseye";
+        bullseye.style.top = (Math.random() * 40 + 20) + "%";
+        bullseye.style.left = (Math.random() * 40 + 20) + "%";
+        bullseye.addEventListener("pointerdown", (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            punch(bagObj, false, true, e.clientX, e.clientY);
+            bullseye.remove();
+        });
+        bagElem.appendChild(bullseye);
+    }
+
+    bagElem.addEventListener("pointerdown", (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        punch(bagObj, false, false, e.clientX, e.clientY);
+    });
+
+    activeBags.push(bagObj);
+    bagsContainer.appendChild(bagElem);
+    updateScoreboard();
 }
 </script>
-
 </body>
 </html>
