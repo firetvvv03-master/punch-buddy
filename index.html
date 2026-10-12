@@ -1,2757 +1,1205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Punch Buddy V9.2 - Arc FX & Elemental Overhaul</title>
-
-<style>
-* {
-    box-sizing: border-box;
-    touch-action: manipulation;
-}
-
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #07070b;
-    color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: center;
-    user-select: none;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-}
-
-/* ENHANCED NEON BANNER UI */
-#uiHeader {
-    flex: 0 0 auto;
-    padding: 8px 12px;
-    background: linear-gradient(180deg, #121220 0%, #07070c 100%);
-    border-bottom: 2px solid #00ffcc;
-    box-shadow: 0 4px 20px rgba(0, 255, 204, 0.25);
-    z-index: 100;
-}
-
-h1 {
-    margin: 0 0 6px 0;
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: 2px;
-    background: linear-gradient(90deg, #ff0055, #ffcc00, #00ffcc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
-}
-
-#topControls {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 6px;
-    flex-wrap: wrap;
-}
-
-#topControls button, #topControls select {
-    font-size: 11px;
-    padding: 6px 12px;
-    background: #1a1a2e;
-    border: 1px solid #00ffcc;
-    border-radius: 20px;
-    color: #e0e0e0;
-    cursor: pointer;
-    font-weight: bold;
-    outline: none;
-    box-shadow: 0 0 6px rgba(0, 255, 204, 0.2);
-    transition: all 0.2s;
-}
-
-#topControls button:hover, #topControls select:hover {
-    background: #00ffcc;
-    color: #000;
-    box-shadow: 0 0 12px #00ffcc;
-}
-
-#topControls select option {
-    background: #14141e;
-    color: #fff;
-}
-
-#scoreboard {
-    font-size: 12px;
-    margin: 4px auto;
-    background: rgba(17, 17, 25, 0.85);
-    padding: 6px 14px;
-    border-radius: 12px;
-    display: inline-block;
-    border: 1px solid #333355;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-}
-
-#scoreboard div { margin: 2px 0; }
-
-#questContainer {
-    background: linear-gradient(90deg, #1a1500, #2a2000);
-    border: 1px solid #ffcc00;
-    border-radius: 10px;
-    padding: 4px 10px;
-    margin: 4px auto;
-    max-width: 360px;
-    font-size: 11px;
-    color: #ffdd66;
-    box-shadow: 0 0 8px rgba(255, 204, 0, 0.2);
-}
-
-#hearts {
-    font-size: 18px;
-    margin: 2px 0;
-    letter-spacing: 3px;
-}
-
-#feverBarContainer {
-    width: 220px;
-    height: 12px;
-    background: #11111a;
-    border-radius: 8px;
-    margin: 4px auto;
-    overflow: hidden;
-    border: 1px solid #ff0055;
-    position: relative;
-    box-shadow: 0 0 8px rgba(255, 0, 85, 0.3);
-}
-
-#feverBar {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #ff8c00, #ff0055);
-    transition: width 0.1s linear;
-}
-
-#feverText {
-    position: absolute;
-    inset: 0;
-    font-size: 9px;
-    font-weight: 900;
-    line-height: 12px;
-    letter-spacing: 1px;
-    text-shadow: 0 0 3px black;
-}
-
-#shop {
-    margin: 4px 2px;
-    position: relative;
-    z-index: 100;
-}
-
-#shop button {
-    margin: 2px;
-    padding: 5px 9px;
-    border: 1px solid #3b3b5c;
-    border-radius: 8px;
-    background: #1c1c2b;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 10px;
-    transition: background 0.2s, transform 0.1s;
-}
-
-#shop button:active { transform: scale(0.95); }
-#shop button:hover { background: #2e2e4a; }
-
-#gloveSelector {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    margin: 4px 0;
-    flex-wrap: wrap;
-}
-
-#gloveSelector button {
-    padding: 4px 8px;
-    font-size: 10px;
-    border-radius: 8px;
-    border: 1px solid #444;
-    background: #151520;
-    color: #aaa;
-    cursor: pointer;
-}
-
-#gloveSelector button.activeGlove {
-    border-color: #00ffcc;
-    background: #00ffcc;
-    color: #000;
-    font-weight: bold;
-    box-shadow: 0 0 10px #00ffcc;
-}
-
-#gloveSelector button.hubBtn {
-    background: linear-gradient(135deg, #4a1a7a, #7a2bca);
-    border-color: #d080ff;
-    color: #ffffff;
-    font-weight: bold;
-}
-
-#gloveSelector button.hubBtn:hover {
-    background: linear-gradient(135deg, #6024a0, #9038f0);
-    box-shadow: 0 0 10px #aa55ff;
-}
-
-#ultBtn {
-    background: linear-gradient(135deg, #ff0055, #ffcc00) !important;
-    color: black !important;
-    border: 1px solid #fff !important;
-    font-weight: 900 !important;
-}
-
-#activePowerups {
-    color: #00ffcc;
-    font-size: 10px;
-    font-weight: bold;
-    margin: 2px 0;
-    min-height: 14px;
-}
-
-/* FLEXBOX RESPONSIVE ARENA */
-#arena {
-    flex: 1 1 auto;
-    position: relative;
-    width: 100vw;
-    min-height: 200px;
-    overflow: hidden;
-    border-top: 2px solid #2a2a3d;
-    transition: background 0.5s, box-shadow 0.2s, filter 0.2s, transform 0.1s ease-out;
-    touch-action: none;
-}
-
-#arena.zoomPulse { transform: scale(1.02); }
-
-#arena.theme-cyberpunk {
-    background: radial-gradient(circle at center, #1e0036 0%, #05000a 100%);
-    box-shadow: inset 0 0 30px #9900ff;
-}
-
-#arena.theme-dojo {
-    background: radial-gradient(circle at center, #2b1d0f 0%, #0d0804 100%);
-    box-shadow: inset 0 0 30px #8b4513;
-}
-
-#arena.theme-volcano {
-    background: radial-gradient(circle at center, #360000 0%, #0a0000 100%);
-    box-shadow: inset 0 0 30px #ff3300;
-}
-
-#arena.damageFlash { box-shadow: inset 0 0 40px #ff0000 !important; }
-#arena.feverFlash { box-shadow: inset 0 0 40px #ffd700 !important; }
-
-#combo {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: gold;
-    font-size: 24px;
-    font-weight: bold;
-    z-index: 999;
-    pointer-events: none;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
-}
-
-#announcerText {
-    position: absolute;
-    top: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #00ffff;
-    font-size: 18px;
-    font-weight: 900;
-    z-index: 998;
-    pointer-events: none;
-    text-shadow: 0 0 8px #00ffff;
-    opacity: 0;
-    transition: opacity 0.3s, transform 0.3s;
-}
-
-#activePet {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    font-size: 28px;
-    z-index: 900;
-    pointer-events: none;
-    animation: petFloat 2s ease-in-out infinite alternate;
-}
-
-@keyframes petFloat {
-    from { transform: translateY(0px); }
-    to { transform: translateY(-12px); }
-}
-
-.bag {
-    position: absolute;
-    background: #a31c1c;
-    border-radius: 20px;
-    transform-origin: top center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    padding: 4px;
-    transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s, filter 0.2s, left 0.2s ease, top 0.2s ease;
-    z-index: 10;
-}
-
-.bag * { pointer-events: none; }
-.bag .bullseye { pointer-events: auto; }
-
-.bag.inferno {
-    background: linear-gradient(135deg, #ff2200, #990000);
-    border: 2px solid #ffaa00;
-    box-shadow: 0 0 18px #ff4500;
-}
-
-.bag.frost {
-    background: linear-gradient(135deg, #00d2ff, #004080);
-    border: 2px solid #ffffff;
-    box-shadow: 0 0 18px #00d2ff;
-}
-
-.bag.shock {
-    background: linear-gradient(135deg, #fff000, #998800);
-    border: 2px solid #ffffff;
-    box-shadow: 0 0 18px #ffff00;
-    color: black;
-}
-
-.bag.toxic {
-    background: linear-gradient(135deg, #00ff66, #005511);
-    border: 2px solid #aaff00;
-    box-shadow: 0 0 18px #00ff66;
-}
-
-.bag.golden {
-    background: linear-gradient(135deg, #ffd700, #ff8c00);
-    border: 2px solid #fff;
-    box-shadow: 0 0 20px #ffd700;
-    color: black;
-}
-
-.bag.ninja {
-    background: linear-gradient(135deg, #2b1055, #110522);
-    border: 2px solid #9933ff;
-    box-shadow: 0 0 20px #aa00ff;
-}
-
-.bag.rainbow {
-    background: linear-gradient(135deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
-    border: 2px solid #ffffff;
-    box-shadow: 0 0 25px #ff00ff;
-}
-
-.bag.veryfast {
-    background: linear-gradient(135deg, #ff3300, #ff00ff);
-    border: 2px solid #ffff00;
-    box-shadow: 0 0 20px #ff3300;
-    animation: fastPulse 0.2s infinite alternate;
-}
-
-@keyframes fastPulse {
-    from { transform: scale(0.95); }
-    to { transform: scale(1.05); }
-}
-
-.bag.void {
-    background: radial-gradient(circle, #4b0082 0%, #000000 100%);
-    border: 2px solid #a855f7;
-    box-shadow: 0 0 30px #a855f7, inset 0 0 15px #000;
-    animation: voidSpin 4s linear infinite;
-}
-
-@keyframes voidSpin {
-    0% { filter: hue-rotate(0deg); }
-    100% { filter: hue-rotate(360deg); }
-}
-
-.bag.splitter {
-    background: linear-gradient(135deg, #00bfff, #00008b);
-    border: 2px dashed #00ffff;
-}
-
-.bag.minibag { border-radius: 12px; }
-
-.bag.ghost {
-    background: linear-gradient(135deg, #a8c0ff, #3f2b96);
-    border: 2px dashed #ffffff;
-    opacity: 0.9;
-}
-
-.bag.ghost.invisible {
-    opacity: 0.15;
-    pointer-events: none !important;
-}
-
-.bag.healer {
-    background: linear-gradient(135deg, #11998e, #38ef7d);
-    border: 2px solid #00ff88;
-    box-shadow: 0 0 12px #00ff88;
-}
-
-.bag.combobreaker {
-    background: linear-gradient(135deg, #ff416c, #ff4b2b);
-    border: 2px dashed #ffff00;
-    box-shadow: 0 0 12px #ffff00;
-}
-
-.bag.shielded {
-    border: 3px solid #00aaff !important;
-    box-shadow: 0 0 15px #00aaff !important;
-}
-
-.bag.elite {
-    background: linear-gradient(135deg, #1e90ff, #00008b);
-    border: 2px solid #00ffff;
-    box-shadow: 0 0 12px #00ffff;
-}
-
-.bag.boss {
-    background: linear-gradient(135deg, #8b0000, #4a0000);
-    border: 2px solid #ff4500;
-    box-shadow: 0 0 15px #ff4500;
-}
-
-/* SPECIAL BOSS & LEGENDARY STYLES */
-.bag.magmaTitan {
-    background: radial-gradient(circle, #ff3300 0%, #4a0000 100%);
-    border: 3px solid #ffaa00;
-    box-shadow: 0 0 30px #ff3300, 0 0 10px #ffff00;
-    animation: magmaPulse 1s infinite alternate;
-}
-
-@keyframes magmaPulse {
-    from { filter: drop-shadow(0 0 5px #ff3300); }
-    to { filter: drop-shadow(0 0 20px #ffaa00); }
-}
-
-.bag.omegaGod {
-    background: linear-gradient(135deg, #bf00ff, #00ffff, #ff0077);
-    border: 3px solid #ffffff;
-    box-shadow: 0 0 40px #00ffff, 0 0 20px #bf00ff;
-    animation: omegaRotate 3s linear infinite;
-}
-
-@keyframes omegaRotate {
-    0% { filter: hue-rotate(0deg); }
-    100% { filter: hue-rotate(360deg); }
-}
-
-.bag.legendary {
-    background: linear-gradient(135deg, #ff0055, #ffd700, #00ffcc);
-    border: 3px solid #ffff00;
-    box-shadow: 0 0 40px #ffd700, 0 0 20px #ff0055;
-    animation: legendaryGlow 1.5s infinite alternate;
-}
-
-@keyframes legendaryGlow {
-    0% { filter: drop-shadow(0 0 10px #ffd700); }
-    100% { filter: drop-shadow(0 0 25px #00ffcc); }
-}
-
-.bag.champion {
-    background: linear-gradient(135deg, #ffd700, #ff8c00);
-    border: 2px solid #ffffff;
-    box-shadow: 0 0 20px #ffd700;
-    color: black;
-}
-
-.bag.bomb {
-    background: radial-gradient(circle, #ff6600 0%, #330000 100%);
-    border: 2px dashed #ffaa00;
-    box-shadow: 0 0 20px #ff6600;
-}
-
-.bag.goblin {
-    background: linear-gradient(135deg, #ffea00, #ffaa00);
-    border: 2px solid #ffffff;
-    box-shadow: 0 0 15px #ffea00;
-    color: black;
-}
-
-.bag.bouncy {
-    background: linear-gradient(135deg, #ff00cc, #330066);
-    border: 2px solid #ff66ff;
-    box-shadow: 0 0 18px #ff00cc;
-}
-
-.bag.invulnerable {
-    filter: brightness(1.8);
-    box-shadow: 0 0 25px #ffffff !important;
-}
-
-.bag.burning { animation: burnEffect 0.5s infinite alternate; }
-.bag.poisoned { animation: poisonEffect 0.5s infinite alternate; }
-
-@keyframes burnEffect {
-    from { filter: drop-shadow(0 0 4px #ff3300); }
-    to { filter: drop-shadow(0 0 12px #ff8800); }
-}
-
-@keyframes poisonEffect {
-    from { filter: drop-shadow(0 0 4px #00ff33); }
-    to { filter: drop-shadow(0 0 12px #aaff00); }
-}
-
-.bag::before {
-    content: "";
-    position: absolute;
-    top: -60px;
-    left: 50%;
-    width: 4px;
-    height: 60px;
-    background: #666;
-    transform: translateX(-50%);
-}
-
-.bagWrapper {
-    position: relative;
-    width: 42px;
-    height: 42px;
-}
-
-.bag img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    transition: filter 0.2s;
-}
-
-.bag .faceOverlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-}
-
-.bag .hatOverlay {
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 18px;
-    z-index: 10;
-}
-
-.typeText, .timerText, .hpText, .shieldText {
-    font-size: clamp(9px, 2vw, 11px);
-    font-weight: bold;
-    line-height: 1.1;
-}
-
-.timerText { color: lime; }
-.typeText { color: white; }
-.hpText { color: #fff; }
-.shieldText { color: #00e1ff; }
-
-.hpBarContainer {
-    width: 85%;
-    height: 6px;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #222;
-}
-
-.hpBar {
-    width: 100%;
-    height: 100%;
-    background: limegreen;
-    transition: width 0.1s linear;
-}
-
-.bullseye {
-    position: absolute;
-    width: 28px;
-    height: 28px;
-    border: 3px dashed #ff0055;
-    border-radius: 50%;
-    background: rgba(255, 0, 85, 0.3);
-    animation: spin 2s linear infinite;
-    z-index: 100;
-}
-
-@keyframes spin { 100% { transform: rotate(360deg); } }
-
-.dropItem {
-    position: absolute;
-    width: 32px;
-    height: 32px;
-    font-size: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 900;
-    animation: dropBounce 0.6s ease-out, dropGlow 1.2s infinite alternate;
-}
-
-@keyframes dropBounce {
-    0% { transform: translateY(-30px) scale(0.5); }
-    70% { transform: translateY(10px) scale(1.2); }
-    100% { transform: translateY(0) scale(1); }
-}
-
-@keyframes dropGlow {
-    from { filter: drop-shadow(0 0 2px gold); }
-    to { filter: drop-shadow(0 0 8px gold); }
-}
-
-#glove {
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-    font-size: 55px;
-    pointer-events: none;
-    z-index: 1000;
-    transition: transform 0.12s ease-out;
-}
-
-.particle {
-    position: absolute;
-    pointer-events: none;
-    border-radius: 50%;
-    z-index: 9999;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    z-index: 99999;
-    align-items: center;
-    justify-content: center;
-}
-
-.modalBox {
-    background: #14141e;
-    padding: 18px;
-    border-radius: 15px;
-    width: 350px;
-    max-width: 92%;
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
-    text-align: center;
-    border: 1px solid #2d2d42;
-    max-height: 85vh;
-    overflow-y: auto;
-}
-
-.modalBox button {
-    margin: 4px;
-    padding: 7px 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 11px;
-}
-
-.upgradeRow, .statRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 6px 0;
-    background: #202030;
-    padding: 6px 10px;
-    border-radius: 8px;
-}
-
-.upgradeRow button { background: #ff9900; color: black; }
-
-.achievementBox, .artifactBox {
-    background: #1c1c28;
-    border: 1px solid #33334d;
-    border-radius: 6px;
-    padding: 6px;
-    margin: 4px 0;
-    font-size: 10px;
-    text-align: left;
-}
-
-.achievementBox.unlocked, .artifactBox.equipped {
-    border-color: #00ff88;
-    background: #0d2b1a;
-}
-
-.confirmBtn { background: #cc0000; color: white; }
-.continueBtn { background: #00cc66; color: white; }
-.cancelBtn { background: #555; color: white; }
-
-.leaderboardTabs {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-
-.leaderboardTabBtn {
-    background: #1a1a28;
-    border: 1px solid #3d3d5c;
-    color: #e0e0e0;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.leaderboardTabBtn.active {
-    background: #00ffcc;
-    color: #000;
-    border-color: #00ffcc;
-}
-
-.leaderboardRow {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 10px;
-    margin: 4px 0;
-    background: #202030;
-    border-radius: 6px;
-    font-size: 11px;
-}
-
-.leaderboardRow.currentUser {
-    border: 1px solid #00ffcc;
-    background: #132832;
-}
-
-#adProgressBarContainer {
-    width: 100%;
-    height: 12px;
-    background: #222;
-    border-radius: 6px;
-    margin: 15px 0;
-    overflow: hidden;
-    border: 1px solid #444;
-}
-
-#adProgressBar {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #00ff88, #00d2ff);
-    transition: width 0.1s linear;
-}
-
-.petCategoryHeader {
-    font-size: 11px;
-    color: #00ffcc;
-    margin: 6px 0 2px 0;
-    border-bottom: 1px solid #2a2a40;
-    padding-bottom: 2px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cute Character Quest! 🐰✨</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', cursive, sans-serif;
+            background: radial-gradient(circle at center, #fff0f6 0%, #e0e7ff 50%, #fef3c7 100%);
+            touch-action: manipulation;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(14px);
+            border: 4px solid #ffffff;
+            box-shadow: 0 12px 30px -5px rgba(244, 114, 182, 0.35), 0 8px 12px -6px rgba(168, 85, 247, 0.2);
+        }
+
+        .btn-cute {
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-cute:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-cute:active {
+            transform: translateY(3px) scale(0.97);
+            box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .dice-container {
+            perspective: 1000px;
+        }
+
+        .dice-3d {
+            width: 72px;
+            height: 72px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 72px;
+            height: 72px;
+            background: #ffffff;
+            border: 3.5px solid #f472b6;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: #ec4899;
+            box-shadow: inset 0 0 12px rgba(244, 114, 182, 0.25);
+        }
+
+        .face-1 { transform: translateZ(36px); }
+        .face-2 { transform: rotateY(180deg) translateZ(36px); }
+        .face-3 { transform: rotateY(-90deg) translateZ(36px); }
+        .face-4 { transform: rotateY(90deg) translateZ(36px); }
+        .face-5 { transform: rotateX(-90deg) translateZ(36px); }
+        .face-6 { transform: rotateX(90deg) translateZ(36px); }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fbcfe8;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f472b6;
+            border-radius: 10px;
+        }
+    </style>
 </head>
+<body class="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 text-slate-700">
 
-<body>
+    <!-- CHARACTER, BOARD STYLE & MODE SELECTION SCREEN -->
+    <div id="char-select-screen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/40 backdrop-blur-md overflow-y-auto">
+        <div class="glass-panel rounded-3xl p-6 sm:p-8 max-w-2xl w-full text-center shadow-2xl border-4 border-pink-300 my-6">
+            <h1 class="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 mb-1">
+                Cute Character Quest! 🐰✨
+            </h1>
+            <p class="text-slate-600 text-xs sm:text-sm mb-3 font-semibold">Choose your category & select from 30 unique chibi hero skins!</p>
 
-<div id="uiHeader">
-    <h1>🥊 PUNCH BUDDY V9.2</h1>
-
-    <div id="topControls">
-        <input type="file" id="upload" accept="image/*" style="display:none">
-        <select id="menuSelect">
-            <option value="upload">📷 Face Upload</option>
-            <option value="audio" id="optAudio">🔊 Sound: ON</option>
-            <option value="music" id="optMusic">🎵 Music: OFF</option>
-            <option value="vib" id="optVib">📳 Vib: ON</option>
-            <option value="stats">📊 Stats</option>
-            <option value="leaderboard">🏆 Leaderboard</option>
-            <option value="reset">🔄 Reset</option>
-            <option value="pause" id="optPause">⏸️ Pause</option>
-        </select>
-        <button onclick="handleDropdownAction()">Go</button>
-    </div>
-
-    <div id="scoreboard">
-        <div>
-            🏆 High: <span id="highScore">0</span>
-            &nbsp;|&nbsp;
-            🎯 Score: <span id="score">0</span>
-            &nbsp;|&nbsp;
-            ⭐ Level: <span id="level">1</span>
-        </div>
-        <div>
-            🪙 Coins: <span id="coins">0</span>
-            &nbsp;|&nbsp;
-            🥊 Bags: <span id="bagCount">0</span>
-            &nbsp;|&nbsp;
-            ⚔️ Sword: <span id="swordCount">0</span>
-        </div>
-    </div>
-
-    <div id="questContainer">
-        <strong>🎯 QUEST:</strong> <span id="questText">Loading Quest...</span>
-    </div>
-
-    <div id="feverBarContainer">
-        <div id="feverBar"></div>
-        <div id="feverText">🔥 FEVER METER</div>
-    </div>
-
-    <div id="shop">
-        <div id="activePowerups">No Powerups Active</div>
-
-        <div id="gloveSelector">
-            <button id="gloveStandardBtn" class="activeGlove" onclick="selectActiveGlove('standard')">🥊 Standard</button>
-            <button id="gloveFireBtn" onclick="selectActiveGlove('fire')">🔥 Fire</button>
-            <button id="gloveIceBtn" onclick="selectActiveGlove('ice')">🧊 Ice</button>
-            <button id="gloveLightningBtn" onclick="selectActiveGlove('lightning')">⚡ Shock</button>
-            <button id="gloveToxicBtn" onclick="selectActiveGlove('toxic')">🧪 Venom</button>
-            <button class="hubBtn" onclick="openUpgradesModal()">🏋️ Shop / Upgrade</button>
-        </div>
-
-        <button onclick="buyDoubleDamage()">⚔️ Sword 2x (30 Hits) (600 🪙)</button>
-        <button onclick="buyFreezeTime()">❄️ Freeze (900 🪙)</button>
-        <button onclick="buyRageMode()">🔥 Rage Mode (1500 🪙)</button>
-        <button id="ultBtn" onclick="triggerUltimate()">💥 ULTIMATE CLEAR (9000 🪙)</button>
-    </div>
-
-    <div id="hearts"></div>
-</div>
-
-<div id="arena" class="theme-cyberpunk">
-    <div id="activePet"></div>
-    <div id="combo"></div>
-    <div id="announcerText"></div>
-    <div id="bags"></div>
-    <div id="glove">🥊</div>
-</div>
-
-<!-- Modals -->
-<div id="dailyRewardModal" class="modal">
-    <div class="modalBox">
-        <h2>🎁 Daily Login Reward!</h2>
-        <p>Come back every day to claim your free random prize!</p>
-        <div id="dailyRewardDisplay" style="font-size: 14px; margin: 15px 0; font-weight: bold; color: #00ffcc;">
-            Ready to spin/open!
-        </div>
-        <button id="claimDailyBtn" class="continueBtn" onclick="claimDailyReward()">🎁 Claim Reward</button>
-    </div>
-</div>
-
-<div id="restartModal" class="modal">
-    <div class="modalBox">
-        <h2>⚠️ Start New Game?</h2>
-        <p>Your current score, level, and upgrades will reset.</p>
-        <button class="confirmBtn" onclick="confirmNewGame()">✅ Reset</button>
-        <button class="cancelBtn" onclick="closeModal('restartModal')">❌ Cancel</button>
-    </div>
-</div>
-
-<div id="gameOverModal" class="modal">
-    <div class="modalBox">
-        <h2>☠️ GAME OVER</h2>
-        <p>You ran out of lives!</p>
-        <p>Final Score: <strong id="finalScore">0</strong></p>
-        <button class="continueBtn" onclick="continueGame()">❤️ Continue (+3 Hearts for 3000 🪙)</button>
-        <button class="confirmBtn" onclick="confirmNewGame()">🔄 New Game (Reset All Except High Score)</button>
-    </div>
-</div>
-
-<div id="statsModal" class="modal">
-    <div class="modalBox">
-        <h2>📊 Lifetime Statistics</h2>
-        <div class="statRow"><span>Total Punches:</span><strong id="stPunches">0</strong></div>
-        <div class="statRow"><span>Total KOs:</span><strong id="stKills">0</strong></div>
-        <div class="statRow"><span>Bosses Defeated:</span><strong id="stBosses">0</strong></div>
-        <div class="statRow"><span>Crit Hits Landed:</span><strong id="stCrits">0</strong></div>
-        <div class="statRow"><span>Highest Combo:</span><strong id="stMaxCombo">0</strong></div>
-        <br>
-        <button class="cancelBtn" onclick="closeModal('statsModal')">Close</button>
-    </div>
-</div>
-
-<div id="leaderboardModal" class="modal">
-    <div class="modalBox">
-        <h2>🏆 Leaderboards</h2>
-        <div class="leaderboardTabs">
-            <button class="leaderboardTabBtn active" id="tabWeeklyBtn" onclick="switchLeaderboardTab('weekly')">📅 Weekly</button>
-            <button class="leaderboardTabBtn" id="tabMonthlyBtn" onclick="switchLeaderboardTab('monthly')">🗓️ Monthly</button>
-        </div>
-        <div id="leaderboardList"></div>
-        <br>
-        <button class="cancelBtn" onclick="closeModal('leaderboardModal')">Close</button>
-    </div>
-</div>
-
-<div id="adModal" class="modal">
-    <div class="modalBox">
-        <h2 id="adTitle">📺 Watching Ad...</h2>
-        <p id="adSub">Please wait to claim your reward!</p>
-        <div id="adProgressBarContainer">
-            <div id="adProgressBar"></div>
-        </div>
-        <button id="adCloseBtn" class="continueBtn" style="display:none;" onclick="finishAd()">✅ Claim Reward</button>
-    </div>
-</div>
-
-<div id="upgradesModal" class="modal">
-    <div class="modalBox">
-        <h2>🏋️ Arcade Hub</h2>
-
-        <h3>🔥 Special Elemental Gloves & Levels</h3>
-        <div class="upgradeRow">
-            <div style="text-align:left">
-                <strong>Fire Glove (Lvl <span id="fireGloveLvl">1</span>/3)</strong><br>
-                <small>Hits <span id="fireHitCount">1</span> addl. target(s) | Burn DoT</small>
+            <!-- Mode Selection Tabs -->
+            <div class="flex justify-center gap-2 mb-3">
+                <button onclick="setGameMode('com')" id="mode-com-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-pink-500 text-white border-2 border-white shadow">
+                    🤖 vs COM Bot
+                </button>
+                <button onclick="setGameMode('friend')" id="mode-friend-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-300 text-purple-900 border-2 border-white">
+                    👥 2-Player
+                </button>
             </div>
-            <button id="buyFireBtn" onclick="upgradeOrBuyGlove('fire')">2250 🪙</button>
-        </div>
-        <div class="upgradeRow">
-            <div style="text-align:left">
-                <strong>Ice Glove (Lvl <span id="iceGloveLvl">1</span>/3)</strong><br>
-                <small>Hits <span id="iceHitCount">1</span> addl. target(s) | Slow Timers</small>
+
+            <!-- Skin Category Tabs -->
+            <div class="flex justify-center gap-2 mb-3">
+                <button onclick="setCategory('animal')" id="cat-animal-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-rose-500 text-white border-2 border-white shadow">🐾 Animals</button>
+                <button onclick="setCategory('fruit')" id="cat-fruit-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white">🍓 Fruits</button>
+                <button onclick="setCategory('transport')" id="cat-transport-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white">🚀 Vehicles</button>
             </div>
-            <button id="buyIceBtn" onclick="upgradeOrBuyGlove('ice')">2250 🪙</button>
-        </div>
-        <div class="upgradeRow">
-            <div style="text-align:left">
-                <strong>Shock Glove (Lvl <span id="lightningGloveLvl">1</span>/3)</strong><br>
-                <small>Hits <span id="lightningHitCount">1</span> addl. target(s) | Chain Dmg</small>
+
+            <div class="text-left font-bold text-xs text-purple-700 uppercase tracking-wider mb-2">Select Hero Skin (10 per Category):</div>
+            <div id="setup-chars-grid" class="grid grid-cols-5 gap-2 mb-4 max-h-[150px] overflow-y-auto pr-1">
+                <!-- Populated via JS -->
             </div>
-            <button id="buyLightningBtn" onclick="upgradeOrBuyGlove('lightning')">2700 🪙</button>
-        </div>
-        <div class="upgradeRow">
-            <div style="text-align:left">
-                <strong>Venom Glove (Lvl <span id="toxicGloveLvl">1</span>/3)</strong><br>
-                <small>Hits <span id="toxicHitCount">1</span> addl. target(s) | Stacking Poison</small>
+
+            <div class="text-left font-bold text-xs text-purple-700 uppercase tracking-wider mb-2">Select Board Style (11 Unique Map Topologies):</div>
+            <div id="setup-boards-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5 max-h-[110px] overflow-y-auto pr-1">
+                <!-- Populated via JS -->
             </div>
-            <button id="buyToxicBtn" onclick="upgradeOrBuyGlove('toxic')">2700 🪙</button>
-        </div>
 
-        <h3>💖 Health Upgrades</h3>
-        <div class="upgradeRow">
-            <div style="text-align:left">
-                <strong>+5 Max Hearts</strong><br>
-                <small>Increases Max Hearts (Max 14)</small>
-            </div>
-            <button onclick="buyExtraHearts()">1200 🪙</button>
+            <button onclick="startGame()" class="btn-cute w-full bg-gradient-to-r from-pink-400 via-rose-400 to-purple-500 text-white font-extrabold text-lg py-3 rounded-2xl shadow-lg border-2 border-white">
+                START ADVENTURE! 🚀
+            </button>
         </div>
-
-        <h3>🐉 Sidekick Pets</h3>
-        <button onclick="setPet('')" style="margin-bottom:6px;">❌ Unequip Pet</button>
-        
-        <div class="petCategoryHeader">🪙 COIN PETS (ELEMENTAL DAMAGE - MAX 2 SLOTS)</div>
-        <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:4px; margin-bottom:10px;">
-            <button id="petDragonBtn" onclick="buyOrEquipCoinPet('🐉', 3000)">🐉 Dragon (3000 🪙)<br><small>Fire Dmg</small></button>
-            <button id="petDroneBtn" onclick="buyOrEquipCoinPet('🤖', 4500)">🤖 Drone (4500 🪙)<br><small>Shock Dmg</small></button>
-            <button id="petFoxBtn" onclick="buyOrEquipCoinPet('🧊', 6000)">🧊 Frost Fox (6000 🪙)<br><small>Ice Dmg</small></button>
-            <button id="petSlimeBtn" onclick="buyOrEquipCoinPet('🧪', 7500)">🧪 Venom Slime (7500 🪙)<br><small>Venom Dmg</small></button>
-        </div>
-
-        <div class="petCategoryHeader">📺 ADS PETS (SLIGHTLY BETTER - MAX 2 SLOTS)</div>
-        <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:4px; margin-bottom:10px;">
-            <button id="petDogBtn" onclick="handlePetAdUnlock('🐶')">🐶 Dog (📺 Ad)<br><small>+20% Coins</small></button>
-            <button id="petCatBtn" onclick="handlePetAdUnlock('🐱')">🐱 Cat (📺 Ad)<br><small>+15% Crit</small></button>
-            <button id="petPhoenixBtn" onclick="handlePetAdUnlock('🦅')">🦅 Phoenix (📺 Ad)<br><small>Ice + Fire Dmg</small></button>
-            <button id="petTigerBtn" onclick="handlePetAdUnlock('⚡')">⚡ Volt Tiger (📺 Ad)<br><small>Venom + Shock</small></button>
-        </div>
-
-        <h3>🕶️ Wardrobe Cosmetics</h3>
-        <div style="display:flex; justify-content:space-around; flex-wrap:wrap; margin-bottom:10px;">
-            <button onclick="setHat('')">❌ None</button>
-            <button onclick="setHat('😎')">😎 Shades</button>
-            <button onclick="setHat('👑')">👑 Crown</button>
-            <button onclick="setHat('😈')">😈 Horns</button>
-            <button onclick="setHat('🎭')">🎭 Mask</button>
-        </div>
-
-        <h3>💪 Upgrades</h3>
-        <div class="upgradeRow">
-            <div style="text-align:left">
-                <strong>Base Power</strong><br>
-                <small>Lvl <span id="basePwrLvl">1</span> (+<span id="basePwrBonus">0</span> dmg)</small>
-            </div>
-            <button onclick="buyUpgrade('power')"><span id="powerCost">450</span> 🪙</button>
-        </div>
-        <div class="upgradeRow">
-            <div style="text-align:left">
-                <strong>Crit Chance</strong><br>
-                <small>Lvl <span id="critLvl">1</span> (<span id="critBonus">10</span>%)</small>
-            </div>
-            <button onclick="buyUpgrade('crit')"><span id="critCost">600</span> 🪙</button>
-        </div>
-        <div class="upgradeRow">
-            <div style="text-align:left">
-                <strong>Auto Glove</strong><br>
-                <small>Hits bags auto/sec (<span id="autoLvl">0</span>)</small>
-            </div>
-            <button onclick="buyUpgrade('auto')"><span id="autoCost">1500</span> 🪙</button>
-        </div>
-        <div class="upgradeRow">
-            <div style="text-align:left">
-                <strong>Loot Magnet</strong><br>
-                <small>Auto collects items (<span id="magnetLvl">0</span>)</small>
-            </div>
-            <button onclick="buyUpgrade('magnet')"><span id="magnetCost">1200</span> 🪙</button>
-        </div>
-
-        <h3>🏺 Equippable Artifacts</h3>
-        <div id="artifactsList"></div>
-
-        <h3>🎨 Arena Themes</h3>
-        <div style="display:flex; justify-content:space-around; margin-top:5px;">
-            <button onclick="setTheme('cyberpunk')">🌌 Cyber</button>
-            <button onclick="setTheme('dojo')">🪵 Dojo</button>
-            <button onclick="setTheme('volcano')">🌋 Lava</button>
-        </div>
-
-        <h3>🥊 Glove Skins (Standard)</h3>
-        <div style="display:flex; justify-content:space-around; margin-top:5px;">
-            <button onclick="setGloveSkin('🥊')">🥊 Glove</button>
-            <button onclick="setGloveSkin('🤛')">🤛 Knuckle</button>
-            <button onclick="setGloveSkin('🧶')">🧶 Whip</button>
-        </div>
-
-        <h3>🏆 Achievements</h3>
-        <div id="achievementsList"></div>
-
-        <br>
-        <button class="cancelBtn" onclick="closeModal('upgradesModal')">Close</button>
     </div>
-</div>
 
-<script>
-let activeBags = [];
-let audioCtx = null;
-let soundEnabled = true;
-let musicEnabled = false;
-let vibEnabled = true;
-let musicInterval = null;
+    <!-- MAIN GAME LAYOUT -->
+    <div class="w-full max-w-5xl flex flex-col items-center">
+        <!-- Top Stats & Menu Navigation Bar -->
+        <header class="w-full glass-panel rounded-2xl p-3 sm:p-4 mb-4 flex flex-wrap items-center justify-between gap-3 shadow-sm relative z-30">
+            <div class="flex items-center gap-3">
+                <span id="player-avatar-badge" class="text-3xl bg-cyan-100 p-2 rounded-2xl border-2 border-cyan-300 shadow-sm">🐰</span>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h2 id="player-name-text" class="font-bold text-pink-600 text-sm sm:text-base">Cyan Glow Bunny</h2>
+                        <span id="player-level-badge" class="bg-amber-100 border border-amber-300 text-amber-700 text-[10px] font-black px-2 py-0.5 rounded-full">Lv. 1</span>
+                    </div>
+                    <!-- Health Bar -->
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <div class="w-24 sm:w-32 h-3.5 bg-slate-200 rounded-full overflow-hidden border border-slate-300 relative shadow-inner">
+                            <div id="player-hp-bar" class="h-full bg-gradient-to-r from-emerald-400 to-green-500 transition-all duration-500" style="width: 100%;"></div>
+                        </div>
+                        <span id="player-hp-text" class="text-[11px] font-bold text-slate-600">100/100</span>
+                    </div>
+                </div>
+            </div>
 
-function handleDropdownAction() {
-    const val = document.getElementById("menuSelect").value;
-    switch(val) {
-        case "upload": document.getElementById("upload").click(); break;
-        case "audio": toggleAudio(); break;
-        case "music": toggleMusic(); break;
-        case "vib": toggleVib(); break;
-        case "stats": openStatsModal(); break;
-        case "leaderboard": openLeaderboardModal(); break;
-        case "reset": openRestartModal(); break;
-        case "pause": togglePause(); break;
-    }
-}
+            <!-- Currency & Turn Indicators -->
+            <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1 bg-amber-100 border-2 border-amber-300 px-2.5 py-1 rounded-xl font-bold text-amber-700 text-xs">
+                    <span>⭐</span>
+                    <span id="player-coins">0</span>
+                </div>
+                <div class="flex items-center gap-1 bg-cyan-100 border-2 border-cyan-300 px-2.5 py-1 rounded-xl font-bold text-cyan-700 text-xs">
+                    <span>💎</span>
+                    <span id="player-gems">5</span>
+                </div>
+                <div class="hidden" id="current-turn-text">player</div>
+            </div>
 
-document.getElementById("upload").addEventListener("change", function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-            uploadedPhoto = evt.target.result;
-            saveGame();
-            activeBags.forEach(b => {
-                const img = b.element.querySelector("img");
-                if (img) img.src = uploadedPhoto;
-            });
-        };
-        reader.readAsDataURL(file);
-    }
-});
+            <!-- Menu Dropdown Container -->
+            <div class="relative">
+                <button onclick="toggleMenuDropdown()" class="btn-cute bg-purple-500 hover:bg-purple-600 text-white font-bold px-3.5 py-2 rounded-xl text-xs border-2 border-white shadow flex items-center gap-1.5">
+                    ⚙️ Menu ▾
+                </button>
+                <div id="menu-dropdown" class="absolute right-0 mt-2 w-48 glass-panel rounded-2xl p-2 shadow-2xl flex flex-col gap-1.5 z-50 hidden border-2 border-purple-300">
+                    <button onclick="openModal('shop-modal'); toggleMenuDropdown();" class="btn-cute text-left bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold px-3 py-2 rounded-xl text-xs w-full">🛍️ Star Shop</button>
+                    <button onclick="openModal('quests-modal'); toggleMenuDropdown();" class="btn-cute text-left bg-pink-100 hover:bg-pink-200 text-pink-800 font-bold px-3 py-2 rounded-xl text-xs w-full">📜 Quests</button>
+                    <button onclick="openModal('achieve-modal'); toggleMenuDropdown();" class="btn-cute text-left bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold px-3 py-2 rounded-xl text-xs w-full">🏆 Badges</button>
+                    <button onclick="openModal('sound-modal'); toggleMenuDropdown();" class="btn-cute text-left bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold px-3 py-2 rounded-xl text-xs w-full">🎵 Sound</button>
+                    <button onclick="openModal('pause-modal'); toggleMenuDropdown();" class="btn-cute text-left bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold px-3 py-2 rounded-xl text-xs w-full">⏸️ Pause</button>
+                    <button onclick="location.reload()" class="btn-cute text-left bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-3 py-2 rounded-xl text-xs w-full">🔄 New Game</button>
+                </div>
+            </div>
+        </header>
 
-function initAudio() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-}
+        <!-- Main Arena Grid -->
+        <div class="w-full grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+            
+            <!-- Left Side: Canvas Board (Occupies 2 cols) -->
+            <div class="lg:col-span-2 glass-panel rounded-3xl p-2 sm:p-4 flex flex-col items-center justify-center relative min-h-[420px] sm:min-h-[480px]">
+                <div class="absolute top-3 left-4 text-xs font-bold text-purple-500 bg-purple-100 px-3 py-1 rounded-full border border-purple-200 flex items-center gap-2">
+                    <span id="current-board-name">🐻 Bear-Face Realm</span>
+                </div>
+                <canvas id="boardCanvas" class="w-full h-full max-w-[500px] max-h-[500px] rounded-2xl"></canvas>
+            </div>
 
-function playSound(type, pitchMultiplier = 1.0) {
-    if (!soundEnabled) return;
-    initAudio();
-    if (!audioCtx) return;
+            <!-- Right Side: Control Dashboard & Log -->
+            <div class="flex flex-col gap-4">
+                <!-- Dice Control Box -->
+                <div class="glass-panel rounded-3xl p-4 flex flex-col items-center justify-center text-center relative">
+                    <div class="dice-container mb-3 mt-1">
+                        <div id="dice-3d" class="dice-3d">
+                            <div class="dice-face face-1">1</div>
+                            <div class="dice-face face-2">2</div>
+                            <div class="dice-face face-3">3</div>
+                            <div class="dice-face face-4">4</div>
+                            <div class="dice-face face-5">5</div>
+                            <div class="dice-face face-6">6</div>
+                        </div>
+                    </div>
 
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    const now = audioCtx.currentTime;
+                    <button id="roll-btn" onclick="handleDiceRoll()" class="btn-cute w-full bg-gradient-to-r from-pink-500 via-rose-400 to-amber-400 text-white font-extrabold text-lg py-3 rounded-2xl border-2 border-white shadow-md">
+                        ROLL DICE! 🎲
+                    </button>
+                    <p id="status-hint" class="text-xs text-pink-500 font-semibold mt-2 animate-pulse">It's your turn to roll!</p>
+                </div>
 
-    if (type === "punch") {
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(150 * pitchMultiplier, now);
-        osc.frequency.exponentialRampToValueAtTime(20 * pitchMultiplier, now + 0.1);
-        gain.gain.setValueAtTime(0.6, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-        osc.start(now); osc.stop(now + 0.1);
-    } else if (type === "crit") {
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(320 * pitchMultiplier, now);
-        osc.frequency.exponentialRampToValueAtTime(90 * pitchMultiplier, now + 0.18);
-        gain.gain.setValueAtTime(0.7, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
-        osc.start(now); osc.stop(now + 0.18);
-    } else if (type === "ko") {
-        osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(200, now);
-        osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
-        gain.gain.setValueAtTime(0.8, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
-        osc.start(now); osc.stop(now + 0.35);
-    } else if (type === "coin") {
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(800, now);
-        osc.frequency.setValueAtTime(1200, now + 0.05);
-        gain.gain.setValueAtTime(0.3, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-        osc.start(now); osc.stop(now + 0.15);
-    } else if (type === "explosion") {
-        osc.type = "square";
-        osc.frequency.setValueAtTime(100, now);
-        osc.frequency.exponentialRampToValueAtTime(20, now + 0.4);
-        gain.gain.setValueAtTime(0.9, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-        osc.start(now); osc.stop(now + 0.4);
-    } else if (type === "shield") {
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(400, now);
-        osc.frequency.exponentialRampToValueAtTime(150, now + 0.15);
-        gain.gain.setValueAtTime(0.4, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-        osc.start(now); osc.stop(now + 0.15);
-    } else if (type === "siren") {
-        osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(180, now);
-        osc.frequency.linearRampToValueAtTime(600, now + 0.3);
-        osc.frequency.linearRampToValueAtTime(180, now + 0.6);
-        gain.gain.setValueAtTime(0.5, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
-        osc.start(now); osc.stop(now + 0.6);
-    }
-}
+                <!-- Inventory / Power-Up Cards -->
+                <div class="glass-panel rounded-3xl p-4 flex-1 flex flex-col">
+                    <h3 class="font-extrabold text-purple-600 text-sm mb-2 flex items-center justify-between">
+                        <span>🎒 Power-Up Cards</span>
+                        <span id="card-count" class="text-xs bg-purple-200 text-purple-700 px-2 py-0.5 rounded-full font-bold">0/4</span>
+                    </h3>
+                    <div id="inventory-container" class="grid grid-cols-2 gap-2 flex-1 min-h-[90px]">
+                        <!-- Cards dynamically rendered -->
+                    </div>
+                </div>
 
-function toggleMusic() {
-    musicEnabled = !musicEnabled;
-    document.getElementById("optMusic").textContent = "🎵 Music: " + (musicEnabled ? "ON" : "OFF");
-    if (musicEnabled) startMusic();
-    else stopMusic();
-}
+                <!-- Turn Activity Feed -->
+                <div class="glass-panel rounded-3xl p-3 max-h-[140px] flex flex-col">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Adventure Log</h4>
+                    <div id="log-feed" class="overflow-y-auto flex-1 space-y-1 text-xs pr-1 font-medium text-slate-600">
+                        <div class="text-pink-500">✨ Welcome to Cute Character Quest! Roll the dice to begin!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-function startMusic() {
-    initAudio();
-    stopMusic();
-    const notes = [130.81, 146.83, 164.81, 174.61, 196.00, 220.00];
-    let step = 0;
-    musicInterval = setInterval(() => {
-        if (!musicEnabled || gamePaused || !audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        const now = audioCtx.currentTime;
-        osc.type = "square";
-        osc.frequency.setValueAtTime(notes[step % notes.length], now);
-        gain.gain.setValueAtTime(0.04, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-        osc.start(now);
-        osc.stop(now + 0.18);
-        step++;
-    }, 220);
-}
+    <!-- MODAL POPUPS: SHOP, DAILY QUESTS, ACHIEVEMENTS, SOUND, PAUSE -->
+    
+    <!-- SHOP MODAL -->
+    <div id="shop-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/60 backdrop-blur-md hidden">
+        <div class="glass-panel rounded-3xl p-6 max-w-md w-full text-center border-4 border-amber-300 shadow-2xl">
+            <h2 class="text-2xl font-black text-amber-600 mb-1">🛍️ Star Shop</h2>
+            <p class="text-xs text-slate-500 mb-4">Spend your hard-earned stars & gems on boosters!</p>
+            <div class="space-y-3 mb-6 text-left">
+                <div class="flex items-center justify-between bg-amber-50 p-3 rounded-2xl border border-amber-200">
+                    <div>
+                        <div class="font-bold text-xs text-slate-700">⚡ Sugar Rush Card</div>
+                        <div class="text-[10px] text-slate-500">Instant +3 forward movement</div>
+                    </div>
+                    <button onclick="buyShopItem('card', 30)" class="btn-cute bg-amber-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl">30 ⭐</button>
+                </div>
+                <div class="flex items-center justify-between bg-cyan-50 p-3 rounded-2xl border border-cyan-200">
+                    <div>
+                        <div class="font-bold text-xs text-slate-700">🧁 Cupcake Heal</div>
+                        <div class="text-[10px] text-slate-500">Restore +35 HP instantly</div>
+                    </div>
+                    <button onclick="buyShopItem('heal', 2)" class="btn-cute bg-cyan-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl">2 💎</button>
+                </div>
+            </div>
+            <button onclick="closeModal('shop-modal')" class="btn-cute w-full bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl">Close</button>
+        </div>
+    </div>
 
-function stopMusic() {
-    if (musicInterval) clearInterval(musicInterval);
-}
+    <!-- DAILY QUESTS MODAL -->
+    <div id="quests-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/60 backdrop-blur-md hidden">
+        <div class="glass-panel rounded-3xl p-6 max-w-md w-full text-center border-4 border-pink-300 shadow-2xl">
+            <h2 class="text-2xl font-black text-pink-600 mb-1">📜 Daily Quests</h2>
+            <p class="text-xs text-slate-500 mb-4">Complete goals for bonus rewards!</p>
+            <div class="space-y-3 mb-6 text-left text-xs">
+                <div class="bg-pink-50 p-3 rounded-2xl border border-pink-200 flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-slate-700">🎲 Roll the Dice 10 Times</div>
+                        <div class="text-[10px] text-slate-500">Progress: <span id="q1-prog">0</span>/10</div>
+                    </div>
+                    <span class="bg-amber-100 text-amber-700 font-bold px-2.5 py-1 rounded-xl">50 ⭐</span>
+                </div>
+                <div class="bg-pink-50 p-3 rounded-2xl border border-pink-200 flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-slate-700">⭐ Collect 100 Stars</div>
+                        <div class="text-[10px] text-slate-500">Progress: <span id="q2-prog">0</span>/100</div>
+                    </div>
+                    <span class="bg-cyan-100 text-cyan-700 font-bold px-2.5 py-1 rounded-xl">5 💎</span>
+                </div>
+            </div>
+            <button onclick="closeModal('quests-modal')" class="btn-cute w-full bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl">Close</button>
+        </div>
+    </div>
 
-function toggleAudio() {
-    soundEnabled = !soundEnabled;
-    document.getElementById("optAudio").textContent = "🔊 Sound: " + (soundEnabled ? "ON" : "OFF");
-}
+    <!-- ACHIEVEMENTS MODAL -->
+    <div id="achieve-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/60 backdrop-blur-md hidden">
+        <div class="glass-panel rounded-3xl p-6 max-w-md w-full text-center border-4 border-purple-300 shadow-2xl">
+            <h2 class="text-2xl font-black text-purple-600 mb-1">🏆 Badges & Achievements</h2>
+            <p class="text-xs text-slate-500 mb-4">Unlock milestones on your quest!</p>
+            <div class="space-y-3 mb-6 text-left text-xs">
+                <div class="bg-purple-50 p-3 rounded-2xl border border-purple-200 flex items-center gap-3">
+                    <span class="text-2xl">🏰</span>
+                    <div>
+                        <div class="font-bold text-purple-900">First Steps</div>
+                        <div class="text-[10px] text-slate-500">Begin your adventure on any map. (Unlocked!)</div>
+                    </div>
+                </div>
+                <div class="bg-purple-50 p-3 rounded-2xl border border-purple-200 flex items-center gap-3 opacity-60">
+                    <span class="text-2xl">👑</span>
+                    <div>
+                        <div class="font-bold text-purple-900">Boss Slayer</div>
+                        <div class="text-[10px] text-slate-500">Defeat the Gummy Bear King.</div>
+                    </div>
+                </div>
+            </div>
+            <button onclick="closeModal('achieve-modal')" class="btn-cute w-full bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl">Close</button>
+        </div>
+    </div>
 
-function toggleVib() {
-    vibEnabled = !vibEnabled;
-    document.getElementById("optVib").textContent = "📳 Vib: " + (vibEnabled ? "ON" : "OFF");
-}
+    <!-- SOUND SETTINGS MODAL -->
+    <div id="sound-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/60 backdrop-blur-md hidden">
+        <div class="glass-panel rounded-3xl p-6 max-w-sm w-full text-center border-4 border-indigo-300 shadow-2xl">
+            <h2 class="text-2xl font-black text-indigo-600 mb-1">🎵 Sound & Music</h2>
+            <p class="text-xs text-slate-500 mb-6">Toggle sound effects on or off.</p>
+            <div class="flex items-center justify-between bg-indigo-50 p-4 rounded-2xl border border-indigo-200 mb-6">
+                <span class="font-bold text-xs text-slate-700">Sound Effects (SFX)</span>
+                <button onclick="toggleSound()" id="sound-toggle-btn" class="btn-cute bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-xl">ENABLED 🔊</button>
+            </div>
+            <button onclick="closeModal('sound-modal')" class="btn-cute w-full bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl">Close</button>
+        </div>
+    </div>
 
-function triggerVib(ms) {
-    if (vibEnabled && navigator.vibrate) navigator.vibrate(ms);
-}
+    <!-- PAUSE MODAL -->
+    <div id="pause-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/60 backdrop-blur-md hidden">
+        <div class="glass-panel rounded-3xl p-6 max-w-sm w-full text-center border-4 border-rose-300 shadow-2xl">
+            <h2 class="text-2xl font-black text-rose-600 mb-1">⏸️ Game Paused</h2>
+            <p class="text-xs text-slate-500 mb-6">Take a breather or restart your run.</p>
+            <div class="space-y-3 mb-6">
+                <button onclick="closeModal('pause-modal')" class="btn-cute w-full bg-pink-500 text-white font-bold py-3 rounded-xl">Resume Game</button>
+                <button onclick="location.reload()" class="btn-cute w-full bg-rose-500 text-white font-bold py-3 rounded-xl">Restart Adventure</button>
+            </div>
+            <button onclick="closeModal('pause-modal')" class="btn-cute w-full bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl">Close</button>
+        </div>
+    </div>
 
-let score = Number(localStorage.score) || 0;
-let highScore = Number(localStorage.highScore) || 0;
-let level = Number(localStorage.level) || 1;
-let baseMaxHearts = 9;
-let maxHearts = Number(localStorage.maxHearts) || 9;
-let hearts = localStorage.hearts !== undefined ? Number(localStorage.hearts) : maxHearts;
-let coins = Number(localStorage.coins) || 0;
-let swordHits = Number(localStorage.swordHits) || 0;
-let totalKills = Number(localStorage.totalKills) || 0;
-let totalBossesDefeated = Number(localStorage.totalBossesDefeated) || 0;
-let totalPunches = Number(localStorage.totalPunches) || 0;
-let totalCrits = Number(localStorage.totalCrits) || 0;
-let maxComboStreak = Number(localStorage.maxComboStreak) || 0;
+    <!-- LEVEL UP MODAL -->
+    <div id="levelup-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/60 backdrop-blur-md hidden">
+        <div class="glass-panel rounded-3xl p-6 max-w-sm w-full text-center border-4 border-amber-300 shadow-2xl">
+            <div class="text-6xl mb-2 animate-bounce">✨🎉</div>
+            <h2 class="text-3xl font-black text-amber-500 mb-1">LEVEL UP!</h2>
+            <p id="levelup-desc" class="text-xs text-slate-600 mb-4">You reached Level 2! Max HP & Power increased!</p>
+            <button onclick="closeLevelUpModal()" class="btn-cute w-full bg-gradient-to-r from-amber-400 to-rose-500 text-white font-black text-lg py-3 rounded-2xl border-2 border-white">
+                AWESOME! 🚀
+            </button>
+        </div>
+    </div>
 
-let ownedPets = { '🐉': false, '🤖': false, '🧊': false, '🧪': false };
-if (localStorage.ownedPets) {
-    try { ownedPets = JSON.parse(localStorage.ownedPets); } catch(e){}
-}
+    <!-- BOSS BATTLE OVERLAY MODAL -->
+    <div id="boss-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md hidden">
+        <div class="glass-panel rounded-3xl p-6 max-w-md w-full text-center relative border-4 border-rose-400 shadow-2xl">
+            <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-rose-500 to-amber-500 text-white px-6 py-1 rounded-full font-black text-xs border-2 border-white shadow-md uppercase tracking-wider">
+                ⚡ Boss Encounter!
+            </div>
 
-let petDogUnlocked = localStorage.petDogUnlocked === "true";
-let petCatUnlocked = localStorage.petCatUnlocked === "true";
-let petPhoenixUnlocked = localStorage.petPhoenixUnlocked === "true";
-let petTigerUnlocked = localStorage.petTigerUnlocked === "true";
-let pendingAdPet = "";
+            <!-- Boss Visual -->
+            <div id="boss-sprite" class="text-7xl my-3 animate-bounce">👑</div>
+            <h2 id="boss-title" class="text-2xl font-black text-rose-600">Gummy Bear King</h2>
+            <p id="boss-subtitle" class="text-xs text-slate-500 mb-3">Guarding the Center Treasure!</p>
 
-let weeklyHighScore = Number(localStorage.weeklyHighScore) || 0;
-let monthlyHighScore = Number(localStorage.monthlyHighScore) || 0;
-let activeLeaderboardTab = 'weekly';
+            <!-- Boss Health -->
+            <div class="w-full bg-slate-200 h-5 rounded-full overflow-hidden border border-slate-300 mb-4 relative shadow-inner">
+                <div id="boss-hp-bar" class="h-full bg-gradient-to-r from-rose-500 to-red-600 transition-all duration-300" style="width: 100%;"></div>
+                <span id="boss-hp-text" class="absolute inset-0 flex items-center justify-center text-xs font-black text-white drop-shadow">80/80 HP</span>
+            </div>
 
-let gamePaused = false;
-let uploadedPhoto = localStorage.photo || "";
-let currentTheme = localStorage.currentTheme || "cyberpunk";
-let activeHat = localStorage.activeHat || "";
-let activePet = localStorage.activePet || "";
+            <!-- Combat Action Log Box -->
+            <div class="bg-pink-50/90 border-2 border-pink-200 rounded-2xl p-3 mb-4 text-xs text-slate-600">
+                <span id="boss-combat-log" class="font-bold text-purple-700">The Boss yawns cute & threateningly! Choose your move!</span>
+            </div>
 
-let upgPower = Number(localStorage.upgPower) || 0;
-let upgCrit = Number(localStorage.upgCrit) || 0;
-let upgAuto = Number(localStorage.upgAuto) || 0;
-let upgMagnet = Number(localStorage.upgMagnet) || 0;
-let gloveSkin = localStorage.gloveSkin || "🥊";
+            <!-- Combat Controls -->
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="executeBossAttack('attack')" class="btn-cute bg-gradient-to-r from-rose-500 to-pink-500 text-white font-extrabold py-3 rounded-xl border border-white text-sm">
+                    ⚔️ Attack
+                </button>
+                <button onclick="executeBossAttack('card')" class="btn-cute bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-extrabold py-3 rounded-xl border border-white text-sm">
+                    🪄 Use Power-Up
+                </button>
+            </div>
+        </div>
+    </div>
 
-let ownedGloves = { standard: true, fire: false, ice: false, lightning: false, toxic: false };
-if (localStorage.ownedGloves) {
-    try { ownedGloves = JSON.parse(localStorage.ownedGloves); } catch(e){}
-}
-let activeGloveType = localStorage.activeGloveType || "standard";
+    <!-- VICTORY / DEFEAT MODAL -->
+    <div id="game-over-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md hidden">
+        <div class="glass-panel rounded-3xl p-6 max-w-sm w-full text-center border-4 border-amber-300 shadow-2xl">
+            <div id="end-emoji" class="text-6xl mb-2">🏆</div>
+            <h2 id="end-title" class="text-3xl font-black text-amber-500 mb-1">VICTORY!</h2>
+            <p id="end-desc" class="text-xs text-slate-600 mb-4">You conquered the realm!</p>
 
-let elementalLevels = {
-    fire: Number(localStorage.fireGloveLvl) || 0,
-    ice: Number(localStorage.iceGloveLvl) || 0,
-    lightning: Number(localStorage.lightningGloveLvl) || 0,
-    toxic: Number(localStorage.toxicGloveLvl) || 0
-};
+            <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3 mb-6 text-sm font-bold text-amber-800 flex justify-around">
+                <div>Stars: <span id="final-stars-count" class="text-pink-600">0</span> ⭐</div>
+                <div>Gems: <span id="final-gems-count" class="text-cyan-600">0</span> 💎</div>
+            </div>
 
-let artifacts = {
-    vampire: { title: "🩸 Vampire Glove", desc: "Heal 0.5 HP back every 50 punches", equipped: false },
-    luckyCoin: { title: "🪙 Lucky Coin", desc: "+15% Extra Coins from all bag KOs", equipped: false },
-    cursedBandage: { title: "🩹 Cursed Bandage", desc: "+50% DMG, but timers run 20% faster", equipped: false }
-};
-if (localStorage.artifacts) {
-    try { artifacts = JSON.parse(localStorage.artifacts); } catch(e){}
-}
+            <button onclick="location.reload()" class="btn-cute w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-black text-lg py-3 rounded-2xl border-2 border-white">
+                PLAY AGAIN! 🔄
+            </button>
+        </div>
+    </div>
 
-let punchCount = 0;
-
-let achievements = {
-    bossSlayer: { title: "👹 Boss Slayer", desc: "Defeat 5 Bosses (+10% Bonus Coins)", unlocked: false },
-    comboMaster: { title: "🔥 Combo Master", desc: "Reach a 20x Combo Streak (+10% Crit Chance)", unlocked: false },
-    collector: { title: "🪙 Loot Hoarder", desc: "Collect 20 Dropped Items (+50 Base Dmg)", unlocked: false }
-};
-if (localStorage.achievements) {
-    try { achievements = JSON.parse(localStorage.achievements); } catch(e){}
-}
-
-let feverPoints = 0;
-let feverActive = false;
-
-let freezeActive = false;
-let rageActive = false;
-let combo = 0;
-let comboTimer;
-
-let questsList = [
-    { type: 'crit', target: 5, progress: 0, text: 'Landing 5 Critical Hits', reward: 900 },
-    { type: 'ko', target: 4, progress: 0, text: 'KO 4 Bags', reward: 750 },
-    { type: 'bullseye', target: 3, progress: 0, text: 'Hit 3 Bullseyes', reward: 1200 },
-    { type: 'loot', target: 5, progress: 0, text: 'Collect 5 Dropped Items', reward: 1050 }
-];
-let currentQuestIndex = 0;
-
-const arena = document.getElementById("arena");
-const bagsContainer = document.getElementById("bags");
-const glove = document.getElementById("glove");
-
-setTheme(currentTheme);
-setPetUI();
-selectActiveGlove(activeGloveType);
-updateHearts();
-updateScoreboard();
-updateUpgradesUI();
-updateActivePowerupsUI();
-updateQuestUI();
-
-createBag();
-
-let pendingDailyReward = null;
-
-function checkDailyLoginReward() {
-    const todayStr = new Date().toDateString();
-    const lastClaimDate = localStorage.getItem("lastLoginRewardDate");
-
-    if (lastClaimDate !== todayStr) {
-        const randRoll = Math.random();
-        if (randRoll < 0.5) {
-            const amt = Math.floor(Math.random() * 41) * 100 + 1000;
-            pendingDailyReward = { type: 'coins', amount: amt, text: `🪙 +${amt} Coins!` };
-        } else if (randRoll < 0.8) {
-            const amt = Math.floor(Math.random() * 31) + 20;
-            pendingDailyReward = { type: 'sword', amount: amt, text: `⚔️ +${amt} Sword Hits!` };
-        } else {
-            pendingDailyReward = { type: 'heart', amount: 1, text: `❤️ +1 Max Heart Upgrade & Refill!` };
-        }
-
-        document.getElementById("dailyRewardDisplay").textContent = pendingDailyReward.text;
-        document.getElementById("dailyRewardModal").style.display = "flex";
-        gamePaused = true;
-    }
-}
-
-function claimDailyReward() {
-    if (!pendingDailyReward) return;
-    const todayStr = new Date().toDateString();
-
-    if (pendingDailyReward.type === 'coins') {
-        coins += pendingDailyReward.amount;
-    } else if (pendingDailyReward.type === 'sword') {
-        swordHits += pendingDailyReward.amount;
-    } else if (pendingDailyReward.type === 'heart') {
-        maxHearts = Math.min(14, maxHearts + 1);
-        hearts = maxHearts;
-        updateHearts();
-    }
-
-    localStorage.setItem("lastLoginRewardDate", todayStr);
-    playSound("coin");
-    popup(pendingDailyReward.text, "gold", arena.clientWidth / 2 - 80, 50);
-
-    closeModal("dailyRewardModal");
-    updateScoreboard();
-    updateActivePowerupsUI();
-    saveGame();
-}
-
-setTimeout(checkDailyLoginReward, 500);
-
-let lastTime = performance.now();
-let autoTimerAcc = 0;
-let magnetTimerAcc = 0;
-
-function gameLoop(now) {
-    let deltaTime = (now - lastTime) / 1000;
-    lastTime = now;
-
-    if (!gamePaused) {
-        updateBagTimers(deltaTime);
-
-        autoTimerAcc += deltaTime;
-        if (autoTimerAcc >= 1.2) {
-            autoTimerAcc = 0;
-            if (upgAuto > 0 && activeBags.length > 0) {
-                const nonBombs = activeBags.filter(b => !b.isBomb);
-                if (nonBombs.length > 0) {
-                    const randomBag = nonBombs[Math.floor(Math.random() * nonBombs.length)];
-                    punch(randomBag, true);
-                }
+    <script>
+        /* --- WEB AUDIO SYNTHESIZER --- */
+        class CuteAudio {
+            constructor() { this.ctx = null; this.enabled = true; }
+            init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+            playTone(freq, type = 'sine', duration = 0.15) {
+                if (!this.enabled || !this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain); gain.connect(this.ctx.destination);
+                    osc.start(); osc.stop(this.ctx.currentTime + duration);
+                } catch(e) {}
             }
-            if (activePet !== "" && activeBags.length > 0) {
-                const nonBombs = activeBags.filter(b => !b.isBomb);
-                if (nonBombs.length > 0) {
-                    const randomBag = nonBombs[Math.floor(Math.random() * nonBombs.length)];
-                    const rect = randomBag.element.getBoundingClientRect();
-                    const arenaRect = arena.getBoundingClientRect();
-                    
-                    if (activePet === '🐉') {
-                        popup("🐉 FIRE BLAST!", "orange", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
-                        randomBag.isBurning = true;
-                        randomBag.element.classList.add("burning");
-                    } else if (activePet === '🤖') {
-                        popup("🤖 SHOCK DISCHARGE!", "yellow", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
-                        applyChainLightning(randomBag, 35);
-                    } else if (activePet === '🧊') {
-                        popup("🧊 ICE BLAST!", "cyan", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
-                        randomBag.timeLeft += 2;
-                    } else if (activePet === '🧪') {
-                        popup("🧪 VENOM SPLASH!", "#00ff66", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
-                        randomBag.isPoisoned = true;
-                        randomBag.poisonStacks = (randomBag.poisonStacks || 0) + 1;
-                        randomBag.element.classList.add("poisoned");
-                    } else if (activePet === '🦅') {
-                        popup("🦅 PHOENIX STRIKE!", "#ffaa00", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
-                        randomBag.timeLeft += 2;
-                        randomBag.isBurning = true;
-                        randomBag.element.classList.add("burning");
-                    } else if (activePet === '⚡') {
-                        popup("⚡ VOLT TIGER CLAW!", "#00ffff", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
-                        applyChainLightning(randomBag, 50);
-                        randomBag.isPoisoned = true;
-                        randomBag.poisonStacks = (randomBag.poisonStacks || 0) + 1;
-                        randomBag.element.classList.add("poisoned");
-                    } else {
-                        popup(activePet + " ATTACK!", "orange", rect.left - arenaRect.left, rect.top - arenaRect.top - 10);
-                    }
-                    applyDirectDamage(randomBag, Math.floor(10 + upgPower * 2), "🐾 -", "#00ffff");
-                }
+            playRoll() { this.init(); this.playTone(320, 'triangle', 0.08); }
+            playJump() { this.init(); this.playTone(580, 'sine', 0.12); }
+            playCoin() {
+                this.init();
+                this.playTone(987.77, 'sine', 0.08);
+                setTimeout(() => this.playTone(1318.51, 'sine', 0.15), 80);
+            }
+            playTrap() { this.init(); this.playTone(170, 'sawtooth', 0.25); }
+            playLevelUp() {
+                this.init();
+                [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((n, i) => {
+                    setTimeout(() => this.playTone(n, 'sine', 0.2), i * 100);
+                });
+            }
+            playVictory() {
+                this.init();
+                [523.25, 659.25, 783.99, 1046.50].forEach((n, i) => {
+                    setTimeout(() => this.playTone(n, 'sine', 0.2), i * 120);
+                });
             }
         }
+        const audio = new CuteAudio();
 
-        magnetTimerAcc += deltaTime;
-        if (magnetTimerAcc >= 2.0) {
-            magnetTimerAcc = 0;
-            if (upgMagnet > 0) {
-                const drops = document.querySelectorAll(".dropItem");
-                drops.forEach(item => { if (item.collect) item.collect(); });
-            }
-        }
-    }
-    requestAnimationFrame(gameLoop);
-}
-requestAnimationFrame(gameLoop);
-
-function updateBagTimers(dt) {
-    const voidBags = activeBags.filter(b => b.isVoid);
-
-    for (let i = activeBags.length - 1; i >= 0; i--) {
-        const bag = activeBags[i];
-
-        if (!bag.isVoid && voidBags.length > 0 && !freezeActive) {
-            const vBag = voidBags[0];
-            let cX = parseFloat(bag.element.style.left);
-            let cY = parseFloat(bag.element.style.top);
-            let vX = parseFloat(vBag.element.style.left);
-            let vY = parseFloat(vBag.element.style.top);
-
-            let dx = vX - cX;
-            let dy = vY - cY;
-            let dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist > 10) {
-                let pullForce = 120 / (dist + 50);
-                bag.vx = (bag.vx || 0) + (dx / dist) * pullForce;
-                bag.vy = (bag.vy || 0) + (dy / dist) * pullForce;
-            }
-        }
-
-        // PHYSICAL BOUNCE LOGIC FOR BOUNCY BAGS
-        if (bag.isBouncy && !freezeActive) {
-            if (bag.vx === undefined || bag.vx === 0) bag.vx = (Math.random() > 0.5 ? 1 : -1) * 350;
-            if (bag.vy === undefined || bag.vy === 0) bag.vy = (Math.random() > 0.5 ? 1 : -1) * 350;
-
-            let curLeft = parseFloat(bag.element.style.left);
-            let curTop = parseFloat(bag.element.style.top);
-            let height = bag.size * 1.25;
-
-            curLeft += bag.vx * dt;
-            curTop += bag.vy * dt;
-
-            const maxLeft = Math.max(10, arena.clientWidth - bag.size - 10);
-            const maxTop = Math.max(20, arena.clientHeight - height - 20);
-
-            if (curLeft <= 10 || curLeft >= maxLeft) {
-                bag.vx *= -1;
-                curLeft = Math.max(10, Math.min(maxLeft, curLeft));
-                playSound("punch", 0.6);
-            }
-            if (curTop <= 20 || curTop >= maxTop) {
-                bag.vy *= -1;
-                curTop = Math.max(20, Math.min(maxTop, curTop));
-                playSound("punch", 0.6);
-            }
-
-            bag.element.style.left = curLeft + "px";
-            bag.element.style.top = curTop + "px";
-        } else if (bag.vx || bag.vy || bag.moveSpeed) {
-            let curLeft = parseFloat(bag.element.style.left);
-            let curTop = parseFloat(bag.element.style.top);
-            let height = bag.size * 1.25;
-
-            if (bag.vx || bag.vy) {
-                curLeft += bag.vx * dt * 60;
-                curTop += bag.vy * dt * 60;
-
-                const maxLeft = Math.max(10, arena.clientWidth - bag.size - 10);
-                const maxTop = Math.max(20, arena.clientHeight - height - 20);
-
-                if (curLeft <= 10 || curLeft >= maxLeft) {
-                    bag.vx *= -1;
-                    curLeft = Math.max(10, Math.min(maxLeft, curLeft));
-                    playSound("punch", 0.5);
-                }
-                if (curTop <= 20 || curTop >= maxTop) {
-                    bag.vy *= -1;
-                    curTop = Math.max(20, Math.min(maxTop, curTop));
-                    playSound("punch", 0.5);
-                }
-
-                bag.vx *= 0.96;
-                bag.vy *= 0.96;
-                if (Math.abs(bag.vx) < 0.2) bag.vx = 0;
-                if (Math.abs(bag.vy) < 0.2) bag.vy = 0;
-            } else if (bag.moveSpeed && !freezeActive) {
-                const maxLeft = Math.max(10, arena.clientWidth - bag.size - 10);
-                curLeft += bag.moveSpeed * dt * 60;
-                if (curLeft >= maxLeft || curLeft <= 10) {
-                    bag.moveSpeed *= -1;
-                    curLeft = Math.max(10, Math.min(maxLeft, curLeft));
-                }
-            }
-
-            bag.element.style.left = curLeft + "px";
-            bag.element.style.top = curTop + "px";
-        }
-
-        if (bag.isGhost) {
-            bag.ghostAcc = (bag.ghostAcc || 0) + dt;
-            if (bag.ghostAcc >= 1.5) {
-                bag.ghostAcc = 0;
-                bag.element.classList.toggle("invisible");
-            }
-        }
-
-        if (bag.isBurning && bag.hp > 0) {
-            bag.burnAcc = (bag.burnAcc || 0) + dt;
-            if (bag.burnAcc >= 1.0) {
-                bag.burnAcc = 0;
-                let burnDmg = Math.max(5, Math.floor(bag.maxHp * 0.05));
-                applyDirectDamage(bag, burnDmg, "🔥 -", "#ff5500");
-                bag.burnTicks = (bag.burnTicks || 0) + 1;
-                if (bag.burnTicks >= 4) {
-                    bag.isBurning = false;
-                    bag.element.classList.remove("burning");
-                }
-            }
-        }
-
-        if (bag.isPoisoned && bag.hp > 0) {
-            bag.poisonAcc = (bag.poisonAcc || 0) + dt;
-            if (bag.poisonAcc >= 0.7) {
-                bag.poisonAcc = 0;
-                let poisonDmg = Math.max(4, Math.floor(bag.maxHp * 0.04)) * (bag.poisonStacks || 1);
-                applyDirectDamage(bag, poisonDmg, "🧪 -", "#00ff66");
-                bag.poisonTicks = (bag.poisonTicks || 0) + 1;
-                if (bag.poisonTicks >= 5) {
-                    bag.isPoisoned = false;
-                    bag.element.classList.remove("poisoned");
-                }
-            }
-        }
-
-        if (!freezeActive) {
-            let timerSpeed = (activeGloveType === "ice") ? 0.70 : 1.0;
-            if (bag.isVeryFast) timerSpeed *= 1.8;
-            bag.timeLeft -= dt * timerSpeed;
-        }
-
-        const timerText = bag.element.querySelector(".timerText");
-        if (timerText) timerText.innerHTML = "⏳ " + Math.max(0, Math.ceil(bag.timeLeft));
-
-        if (bag.timeLeft <= 0) {
-            const rect = bag.element.getBoundingClientRect();
-            const arenaRect = arena.getBoundingClientRect();
-
-            if (!bag.isBomb) {
-                let heartLoss = (bag.isGolden || bag.isRainbow || bag.isHighTier || bag.isBoss || bag.isLegendary || bag.isNinja || bag.isBouncy || bag.isSplitter || bag.isHealer || bag.isVeryFast || bag.isVoid) ? 1 : 2;
-                popup(`💔 ${heartLoss} HEART${heartLoss > 1 ? 'S' : ''} LOST`, "red", rect.left - arenaRect.left, rect.top - arenaRect.top);
-                hearts = Math.max(0, hearts - heartLoss);
-                flashDamage();
-                updateHearts();
+        function toggleSound() {
+            audio.enabled = !audio.enabled;
+            const btn = document.getElementById('sound-toggle-btn');
+            if (audio.enabled) {
+                btn.className = 'btn-cute bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-xl';
+                btn.innerText = 'ENABLED 🔊';
             } else {
-                popup("💨 BOMB EXPIRED", "gray", rect.left - arenaRect.left, rect.top - arenaRect.top);
-            }
-
-            removeBagFromGame(bag);
-
-            if (hearts <= 0) gameOver();
-            else { createBag(); saveGame(); }
-        }
-    }
-}
-
-function applyDirectDamage(bag, dmg, prefix, color) {
-    bag.hp -= dmg;
-    const rect = bag.element.getBoundingClientRect();
-    const arenaRect = arena.getBoundingClientRect();
-    popup(prefix + dmg, color, rect.left - arenaRect.left + 15, rect.top - arenaRect.top);
-
-    const hpText = bag.element.querySelector(".hpText");
-    const hpBar = bag.element.querySelector(".hpBar");
-    if (hpText) hpText.textContent = Math.max(0, Math.floor(bag.hp)) + "/" + Math.floor(bag.maxHp);
-    if (hpBar) hpBar.style.width = Math.max(0, (bag.hp / bag.maxHp) * 100) + "%";
-
-    if (bag.hp <= 0) handleBagKO(bag);
-}
-
-function applyChainLightning(targetBag, baseDmg) {
-    const targetRect = targetBag.element.getBoundingClientRect();
-    activeBags.forEach(b => {
-        if (b !== targetBag && b.hp > 0) {
-            const bRect = b.element.getBoundingClientRect();
-            const dist = Math.hypot(bRect.left - targetRect.left, bRect.top - targetRect.top);
-            if (dist < 220) {
-                applyDirectDamage(b, Math.floor(baseDmg * 0.6), "⚡ -", "yellow");
+                btn.className = 'btn-cute bg-slate-400 text-white font-bold text-xs px-4 py-2 rounded-xl';
+                btn.innerText = 'MUTED 🔇';
             }
         }
-    });
-}
 
-function handleBagKO(bag) {
-    const rect = bag.element.getBoundingClientRect();
-    const arenaRect = arena.getBoundingClientRect();
-    createParticles(rect.left - arenaRect.left + bag.size/2, rect.top - arenaRect.top + bag.size/2, "#ff3300", 12);
-    playSound("ko");
-
-    score += bag.reward || 1000;
-    coins += Math.floor((bag.reward || 1000) / 10);
-    totalKills++;
-
-    if (bag.isBoss || bag.isLegendary) {
-        totalBossesDefeated++;
-        checkAchievements();
-    }
-
-    advanceQuestProgress('ko');
-
-    if (Math.random() < 0.45) {
-        spawnDroppedItem(rect.left - arenaRect.left, rect.top - arenaRect.top);
-    }
-
-    if (bag.isLegendary) {
-        popup("🌟 LEGENDARY DEFEATED! SPAWNING OMEGA + 2 BAGS!", "#00ffcc", rect.left - arenaRect.left - 50, rect.top - arenaRect.top);
-        removeBagFromGame(bag);
-        spawnBagLogic("omegaGod");
-        spawnBagLogic("golden");
-        spawnBagLogic("normal");
-    } else {
-        removeBagFromGame(bag);
-        level++;
-        if (activeBags.length === 0) createBag();
-    }
-
-    updateScoreboard();
-    saveGame();
-}
-
-function removeBagFromGame(bag) {
-    if (bag.element && bag.element.parentNode) bag.element.remove();
-    activeBags = activeBags.filter(b => b !== bag);
-}
-
-function saveGame() {
-    localStorage.score = score;
-    localStorage.level = level;
-    localStorage.hearts = hearts;
-    localStorage.maxHearts = maxHearts;
-    localStorage.coins = coins;
-    localStorage.swordHits = swordHits;
-    localStorage.totalKills = totalKills;
-    localStorage.totalBossesDefeated = totalBossesDefeated;
-    localStorage.totalPunches = totalPunches;
-    localStorage.totalCrits = totalCrits;
-    localStorage.maxComboStreak = maxComboStreak;
-    localStorage.photo = uploadedPhoto;
-    localStorage.upgPower = upgPower;
-    localStorage.upgCrit = upgCrit;
-    localStorage.upgAuto = upgAuto;
-    localStorage.upgMagnet = upgMagnet;
-    localStorage.gloveSkin = gloveSkin;
-    localStorage.currentTheme = currentTheme;
-    localStorage.activeHat = activeHat;
-    localStorage.activePet = activePet;
-    localStorage.ownedPets = JSON.stringify(ownedPets);
-    localStorage.petDogUnlocked = petDogUnlocked;
-    localStorage.petCatUnlocked = petCatUnlocked;
-    localStorage.petPhoenixUnlocked = petPhoenixUnlocked;
-    localStorage.petTigerUnlocked = petTigerUnlocked;
-    localStorage.ownedGloves = JSON.stringify(ownedGloves);
-    localStorage.activeGloveType = activeGloveType;
-    localStorage.fireGloveLvl = elementalLevels.fire;
-    localStorage.iceGloveLvl = elementalLevels.ice;
-    localStorage.lightningGloveLvl = elementalLevels.lightning;
-    localStorage.toxicGloveLvl = elementalLevels.toxic;
-    localStorage.achievements = JSON.stringify(achievements);
-    localStorage.artifacts = JSON.stringify(artifacts);
-
-    if (score > highScore) { highScore = score; localStorage.highScore = highScore; }
-    if (score > weeklyHighScore) { weeklyHighScore = score; localStorage.weeklyHighScore = weeklyHighScore; }
-    if (score > monthlyHighScore) { monthlyHighScore = score; localStorage.monthlyHighScore = monthlyHighScore; }
-}
-
-function selectActiveGlove(type) {
-    if (!ownedGloves[type]) {
-        popup("🔒 Unlock in Arcade Hub!", "red", arena.clientWidth / 2 - 90, 50);
-        return;
-    }
-    activeGloveType = type;
-    document.querySelectorAll("#gloveSelector button:not(.hubBtn)").forEach(b => b.classList.remove("activeGlove"));
-
-    if (type === 'standard') {
-        document.getElementById("gloveStandardBtn").classList.add("activeGlove");
-        glove.textContent = gloveSkin;
-    } else if (type === 'fire') {
-        document.getElementById("gloveFireBtn").classList.add("activeGlove");
-        glove.textContent = "🔥";
-    } else if (type === 'ice') {
-        document.getElementById("gloveIceBtn").classList.add("activeGlove");
-        glove.textContent = "🧊";
-    } else if (type === 'lightning') {
-        document.getElementById("gloveLightningBtn").classList.add("activeGlove");
-        glove.textContent = "⚡";
-    } else if (type === 'toxic') {
-        document.getElementById("gloveToxicBtn").classList.add("activeGlove");
-        glove.textContent = "🧪";
-    }
-    saveGame();
-}
-
-function buyGlove(type) {
-    if (ownedGloves[type]) return;
-    let cost = (type === 'lightning' || type === 'toxic') ? 2700 : 2250;
-    if (coins >= cost) {
-        coins -= cost;
-        ownedGloves[type] = true;
-        elementalLevels[type] = 1; 
-        selectActiveGlove(type);
-        updateUpgradesUI();
-        updateScoreboard();
-        saveGame();
-        popup("🔓 Glove Unlocked!", "#00ff88", arena.clientWidth / 2 - 80, 50);
-    } else {
-        popup("❌ Need " + cost + " Coins!", "red", arena.clientWidth / 2 - 60, 50);
-    }
-}
-
-function upgradeOrBuyGlove(type) {
-    if (!ownedGloves[type]) {
-        buyGlove(type);
-    } else {
-        let currentLvl = elementalLevels[type];
-        if (currentLvl >= 3) {
-            popup("⭐ Max Elemental Level Reached!", "gold", arena.clientWidth / 2 - 110, 50);
-            return;
+        function toggleMenuDropdown() {
+            const menu = document.getElementById('menu-dropdown');
+            menu.classList.toggle('hidden');
         }
-        let upgradeCost = (currentLvl + 1) * 1500;
-        if (coins >= upgradeCost) {
-            coins -= upgradeCost;
-            elementalLevels[type]++;
-            updateUpgradesUI();
-            updateScoreboard();
-            saveGame();
-            popup("⚡ Elemental Lvl Up! (" + elementalLevels[type] + "/3)", "#00ffcc", arena.clientWidth / 2 - 90, 50);
-        } else {
-            popup("❌ Need " + upgradeCost + " Coins to Upgrade!", "red", arena.clientWidth / 2 - 100, 50);
+
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function buyShopItem(type, cost) {
+            if (type === 'card' && state.player.coins >= cost) {
+                state.player.coins -= cost;
+                state.player.inventory.push(CARD_TYPES[0]);
+                addLog(`🛍️ Purchased Sugar Rush Card!`);
+                audio.playCoin(); updateUI();
+            } else if (type === 'heal' && state.player.gems >= cost) {
+                state.player.gems -= cost;
+                state.player.hp = Math.min(state.player.maxHp, state.player.hp + 35);
+                addLog(`🛍️ Purchased Cupcake Heal! (+35 HP)`);
+                audio.playCoin(); updateUI();
+            } else {
+                addLog(`❌ Not enough currency!`);
+                audio.playTrap();
+            }
         }
-    }
-}
 
-function setTheme(theme) {
-    currentTheme = theme;
-    arena.className = "theme-" + theme;
-    saveGame();
-}
-
-function setHat(hat) {
-    activeHat = hat;
-    document.querySelectorAll(".hatOverlay").forEach(el => el.textContent = hat);
-    saveGame();
-}
-
-function setPet(pet) {
-    activePet = pet;
-    setPetUI();
-    saveGame();
-    updateScoreboard();
-}
-
-function buyOrEquipCoinPet(pet, cost) {
-    if (!ownedPets[pet]) {
-        if (coins < cost) {
-            popup("❌ Need " + cost + " Coins!", "red", arena.clientWidth / 2 - 70, 50);
-            return;
-        }
-        coins -= cost;
-        ownedPets[pet] = true;
-        popup("🐾 PET UNLOCKED!", "#00ff88", arena.clientWidth / 2 - 70, 50);
-    }
-    setPet(pet);
-    updateUpgradesUI();
-}
-
-function handlePetAdUnlock(pet) {
-    if (pet === '🐶') {
-        if (petDogUnlocked) setPet('🐶');
-        else { pendingAdPet = '🐶'; startAdSimulator(); }
-    } else if (pet === '🐱') {
-        if (petCatUnlocked) setPet('🐱');
-        else { pendingAdPet = '🐱'; startAdSimulator(); }
-    } else if (pet === '🦅') {
-        if (petPhoenixUnlocked) setPet('🦅');
-        else { pendingAdPet = '🦅'; startAdSimulator(); }
-    } else if (pet === '⚡') {
-        if (petTigerUnlocked) setPet('⚡');
-        else { pendingAdPet = '⚡'; startAdSimulator(); }
-    }
-}
-
-function startAdSimulator() {
-    document.getElementById("adTitle").textContent = "📺 Watching Ad...";
-    document.getElementById("adSub").textContent = "Please wait to unlock your Pet!";
-    document.getElementById("adCloseBtn").style.display = "none";
-    document.getElementById("adProgressBar").style.width = "0%";
-    document.getElementById("adModal").style.display = "flex";
-    
-    let progress = 0;
-    const interval = setInterval(() => {
-        progress += 10;
-        document.getElementById("adProgressBar").style.width = progress + "%";
-        if (progress >= 100) {
-            clearInterval(interval);
-            document.getElementById("adTitle").textContent = "🎉 Ad Complete!";
-            document.getElementById("adSub").textContent = "Click below to claim your new pet!";
-            document.getElementById("adCloseBtn").style.display = "inline-block";
-        }
-    }, 300);
-}
-
-function finishAd() {
-    document.getElementById("adModal").style.display = "none";
-    if (pendingAdPet === '🐶') {
-        petDogUnlocked = true;
-        setPet('🐶');
-        popup("🐶 DOG UNLOCKED! (+20% COINS)", "#00ff88", arena.clientWidth / 2 - 120, 50);
-    } else if (pendingAdPet === '🐱') {
-        petCatUnlocked = true;
-        setPet('🐱');
-        popup("🐱 CAT UNLOCKED! (+15% CRIT RATE)", "#00ff88", arena.clientWidth / 2 - 120, 50);
-    } else if (pendingAdPet === '🦅') {
-        petPhoenixUnlocked = true;
-        setPet('🦅');
-        popup("🦅 PHOENIX UNLOCKED! (ICE + FIRE)", "#00ff88", arena.clientWidth / 2 - 120, 50);
-    } else if (pendingAdPet === '⚡') {
-        petTigerUnlocked = true;
-        setPet('⚡');
-        popup("⚡ VOLT TIGER UNLOCKED! (VENOM + SHOCK)", "#00ff88", arena.clientWidth / 2 - 140, 50);
-    }
-    pendingAdPet = "";
-    updateUpgradesUI();
-    saveGame();
-}
-
-function setPetUI() { document.getElementById("activePet").textContent = activePet; }
-
-function triggerAnnouncer(text) {
-    const el = document.getElementById("announcerText");
-    el.textContent = text;
-    el.style.opacity = "1";
-    el.style.transform = "translateX(-50%) scale(1.2)";
-    setTimeout(() => {
-        el.style.opacity = "0";
-        el.style.transform = "translateX(-50%) scale(1)";
-    }, 1200);
-}
-
-function triggerSpawnWarning(title, subtitle, spawnCallback) {
-    triggerAnnouncer(`⚠️ ${title}: ${subtitle} ⚠️`);
-    playSound("siren");
-    setTimeout(() => {
-        spawnCallback();
-    }, 500); // 0.5 sec delay before boss spawn
-}
-
-function togglePause() {
-    gamePaused = !gamePaused;
-    document.getElementById("optPause").textContent = gamePaused ? "▶️ Resume" : "⏸️ Pause";
-    if (gamePaused) {
-        document.getElementById("activePowerups").innerHTML = "⏸️ GAME PAUSED";
-    } else {
-        updateActivePowerupsUI();
-    }
-}
-
-function updateActivePowerupsUI() {
-    let activeText = [];
-    if (swordHits > 0) activeText.push("⚔️ Sword (" + swordHits + " hits)");
-    if (rageActive) activeText.push("🔥 Rage 3x Dmg");
-    if (freezeActive) activeText.push("❄️ Freeze Active");
-    if (maxHearts > 9) activeText.push("💖 Over-Hearts Active");
-
-    document.getElementById("activePowerups").innerHTML = activeText.length > 0 ? activeText.join(" | ") : "No Powerups Active";
-}
-
-function updateScoreboard() {
-    document.getElementById("score").textContent = Math.floor(score);
-    document.getElementById("highScore").textContent = Math.floor(highScore);
-    document.getElementById("level").textContent = Math.floor(level);
-    document.getElementById("coins").textContent = Math.floor(coins);
-    document.getElementById("bagCount").textContent = activeBags.length;
-    document.getElementById("swordCount").textContent = Math.floor(swordHits);
-}
-
-function updateQuestUI() {
-    let q = questsList[currentQuestIndex];
-    document.getElementById("questText").textContent = `${q.text} (${q.progress}/${q.target}) - Reward: ${q.reward} 🪙`;
-}
-
-function advanceQuestProgress(type) {
-    let q = questsList[currentQuestIndex];
-    if (q.type === type) {
-        q.progress++;
-        if (q.progress >= q.target) {
-            coins += q.reward;
-            playSound("coin");
-            popup("🎯 QUEST COMPLETE! +" + q.reward + "🪙", "gold", arena.clientWidth / 2 - 100, 80);
-            q.progress = 0;
-            currentQuestIndex = (currentQuestIndex + 1) % questsList.length;
-        }
-        updateQuestUI();
-    }
-}
-
-function checkAchievements() {
-    if (totalBossesDefeated >= 5 && !achievements.bossSlayer.unlocked) {
-        achievements.bossSlayer.unlocked = true;
-        popup("🏆 UNLOCKED: Boss Slayer!", "#00ff88", arena.clientWidth / 2 - 100, 100);
-    }
-    if (combo >= 20 && !achievements.comboMaster.unlocked) {
-        achievements.comboMaster.unlocked = true;
-        popup("🏆 UNLOCKED: Combo Master!", "#00ff88", arena.clientWidth / 2 - 100, 100);
-    }
-}
-
-function openLeaderboardModal() {
-    renderLeaderboard();
-    document.getElementById("leaderboardModal").style.display = "flex";
-    gamePaused = true;
-}
-
-function switchLeaderboardTab(type) {
-    activeLeaderboardTab = type;
-    document.getElementById("tabWeeklyBtn").classList.toggle("active", type === 'weekly');
-    document.getElementById("tabMonthlyBtn").classList.toggle("active", type === 'monthly');
-    renderLeaderboard();
-}
-
-function renderLeaderboard() {
-    const list = document.getElementById("leaderboardList");
-    list.innerHTML = "";
-    
-    const isWeekly = activeLeaderboardTab === 'weekly';
-    const userScore = isWeekly ? weeklyHighScore : monthlyHighScore;
-    
-    const mockData = isWeekly ? [
-        { name: "PunchKing", score: 150000 },
-        { name: "ShadowBoxer", score: 120000 },
-        { name: "IronFist", score: 95000 },
-        { name: "Knockout99", score: 70000 },
-        { name: "You", score: userScore, isUser: true }
-    ] : [
-        { name: "PunchKing", score: 500000 },
-        { name: "TitanPunch", score: 420000 },
-        { name: "ShadowBoxer", score: 350000 },
-        { name: "Champ2026", score: 280000 },
-        { name: "You", score: userScore, isUser: true }
-    ];
-
-    mockData.sort((a, b) => b.score - a.score);
-
-    mockData.forEach((entry, index) => {
-        const row = document.createElement("div");
-        row.className = "leaderboardRow" + (entry.isUser ? " currentUser" : "");
-        row.innerHTML = `<span>#${index + 1} ${entry.name}</span><strong>${entry.score.toLocaleString()} pts</strong>`;
-        list.appendChild(row);
-    });
-}
-
-function openRestartModal() { document.getElementById("restartModal").style.display = "flex"; gamePaused = true; }
-function openUpgradesModal() { updateUpgradesUI(); document.getElementById("upgradesModal").style.display = "flex"; gamePaused = true; }
-function openStatsModal() {
-    document.getElementById("stPunches").textContent = totalPunches;
-    document.getElementById("stKills").textContent = totalKills;
-    document.getElementById("stBosses").textContent = totalBossesDefeated;
-    document.getElementById("stCrits").textContent = totalCrits;
-    document.getElementById("stMaxCombo").textContent = maxComboStreak + "x";
-    document.getElementById("statsModal").style.display = "flex";
-    gamePaused = true;
-}
-function closeModal(id) { document.getElementById(id).style.display = "none"; gamePaused = false; updateActivePowerupsUI(); }
-
-function confirmNewGame() {
-    const savedHighScore = localStorage.highScore || 0;
-    const savedWeekly = localStorage.weeklyHighScore || 0;
-    const savedMonthly = localStorage.monthlyHighScore || 0;
-    
-    localStorage.clear();
-    
-    localStorage.highScore = savedHighScore;
-    localStorage.weeklyHighScore = savedWeekly;
-    localStorage.monthlyHighScore = savedMonthly;
-    highScore = Number(savedHighScore);
-    weeklyHighScore = Number(savedWeekly);
-    monthlyHighScore = Number(savedMonthly);
-    maxHearts = 9;
-    hearts = 9;
-    score = 0;
-    coins = 0;
-    level = 1;
-    swordHits = 0;
-    totalKills = 0;
-    totalBossesDefeated = 0;
-    totalPunches = 0;
-    totalCrits = 0;
-    maxComboStreak = 0;
-    
-    upgPower = 0;
-    upgCrit = 0;
-    upgAuto = 0;
-    upgMagnet = 0;
-    gloveSkin = "🥊";
-    activeGloveType = "standard";
-    ownedGloves = { standard: true, fire: false, ice: false, lightning: false, toxic: false };
-    elementalLevels = { fire: 0, ice: 0, lightning: 0, toxic: 0 };
-    activeHat = "";
-    activePet = "";
-    ownedPets = { '🐉': false, '🤖': false, '🧊': false, '🧪': false };
-    petDogUnlocked = false;
-    petCatUnlocked = false;
-    petPhoenixUnlocked = false;
-    petTigerUnlocked = false;
-    
-    freezeActive = false;
-    rageActive = false;
-    combo = 0;
-    
-    saveGame();
-    location.reload();
-}
-
-function continueGame() {
-    if (coins >= 3000) {
-        coins -= 3000;
-        hearts = 5;
-        updateHearts();
-        updateScoreboard();
-        closeModal("gameOverModal");
-        if (activeBags.length === 0) createBag();
-    } else {
-        popup("❌ Need 3000 Coins to Continue!", "red", arena.clientWidth / 2 - 110, 50);
-    }
-}
-
-function gameOver() {
-    document.getElementById("finalScore").textContent = Math.floor(score);
-    document.getElementById("gameOverModal").style.display = "flex";
-    gamePaused = true;
-}
-
-function updateHearts() {
-    let html = "";
-    let wholeHearts = Math.floor(hearts);
-    let hasHalf = (hearts - wholeHearts) >= 0.5;
-
-    for (let i = 0; i < maxHearts; i++) {
-        if (i < wholeHearts) html += "❤️";
-        else if (i === wholeHearts && hasHalf) html += "💔";
-        else html += "🖤";
-    }
-    document.getElementById("hearts").textContent = html;
-}
-
-function buyExtraHearts() {
-    if (maxHearts >= 14) {
-        popup("❌ Max Heart Limit Reached!", "orange", arena.clientWidth / 2 - 100, 50);
-        return;
-    }
-    if (coins >= 1200) {
-        coins -= 1200;
-        maxHearts = Math.min(14, maxHearts + 5);
-        hearts = maxHearts;
-        updateHearts();
-        updateScoreboard();
-        updateActivePowerupsUI();
-        saveGame();
-        popup("💖 MAX HEARTS INCREASED!", "#ff00a0", arena.clientWidth / 2 - 110, 50);
-    } else {
-        popup("❌ Need 1200 Coins!", "red", arena.clientWidth / 2 - 60, 50);
-    }
-}
-
-function buyDoubleDamage() {
-    if (coins >= 600) {
-        coins -= 600;
-        swordHits += 30;
-        updateScoreboard();
-        updateActivePowerupsUI();
-        saveGame();
-        popup("⚔️ SWORD POWERUP ACTIVATED!", "#00ff88", arena.clientWidth / 2 - 110, 50);
-    } else {
-        popup("❌ Need 600 Coins!", "red", arena.clientWidth / 2 - 60, 50);
-    }
-}
-
-function buyFreezeTime() {
-    if (coins >= 900) {
-        coins -= 900;
-        freezeActive = true;
-        updateScoreboard();
-        updateActivePowerupsUI();
-        saveGame();
-        popup("❄️ TIME FROZEN FOR 15s!", "#00d2ff", arena.clientWidth / 2 - 110, 50);
-        setTimeout(() => { freezeActive = false; updateActivePowerupsUI(); }, 15000);
-    } else {
-        popup("❌ Need 900 Coins!", "red", arena.clientWidth / 2 - 60, 50);
-    }
-}
-
-function buyRageMode() {
-    if (coins >= 1500) {
-        coins -= 1500;
-        rageActive = true;
-        updateScoreboard();
-        updateActivePowerupsUI();
-        saveGame();
-        popup("🔥 RAGE MODE 3x DAMAGE FOR 12s!", "#ff3300", arena.clientWidth / 2 - 130, 50);
-        setTimeout(() => { rageActive = false; updateActivePowerupsUI(); }, 12000);
-    } else {
-        popup("❌ Need 1500 Coins!", "red", arena.clientWidth / 2 - 60, 50);
-    }
-}
-
-function flashDamage() {
-    arena.classList.add("damageFlash");
-    setTimeout(() => arena.classList.remove("damageFlash"), 300);
-}
-
-function setGloveSkin(skin) {
-    gloveSkin = skin;
-    if (activeGloveType === 'standard') glove.textContent = skin;
-    saveGame();
-}
-
-function animateGloveToTarget(targetX, targetY) {
-    const arenaRect = arena.getBoundingClientRect();
-    const gloveRect = glove.getBoundingClientRect();
-    
-    // Glove natural resting position center relative to arena
-    const gloveCenterX = gloveRect.left + gloveRect.width / 2 - arenaRect.left;
-    const gloveCenterY = gloveRect.top + gloveRect.height / 2 - arenaRect.top;
-
-    const deltaX = targetX - gloveCenterX;
-    const deltaY = targetY - gloveCenterY;
-    const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-
-    glove.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${angle}deg) scale(1.35)`;
-    
-    setTimeout(() => {
-        glove.style.transform = `translate(0px, 0px) rotate(0deg) scale(1)`;
-    }, 120);
-}
-
-function punch(bagObj, isAuto = false, isBullseye = false, clickX = null, clickY = null) {
-    if (gamePaused) return;
-
-    totalPunches++;
-    punchCount++;
-
-    if (clickX !== null && clickY !== null) {
-        const arenaRect = arena.getBoundingClientRect();
-        const relX = clickX - arenaRect.left;
-        const relY = clickY - arenaRect.top;
-        animateGloveToTarget(relX, relY);
-    } else {
-        const rect = bagObj.element.getBoundingClientRect();
-        const arenaRect = arena.getBoundingClientRect();
-        animateGloveToTarget(rect.left + rect.width / 2 - arenaRect.left, rect.top + rect.height / 2 - arenaRect.top);
-    }
-
-    if (bagObj.isNinja) {
-        bagObj.ninjaHitsLeft = (bagObj.ninjaHitsLeft || 3) - 1;
-        playSound("punch");
-        if (bagObj.ninjaHitsLeft <= 0) {
-            handleBagKO(bagObj);
-        } else {
-            popup(`🥷 ${bagObj.ninjaHitsLeft} HITS LEFT!`, "#a855f7", bagObj.element.offsetLeft, bagObj.element.offsetTop);
-        }
-        return;
-    }
-
-    let baseDmg = 15 + (upgPower * 5);
-    if (swordHits > 0) {
-        baseDmg *= 2;
-        swordHits--;
-        if (swordHits <= 0) updateActivePowerupsUI();
-    }
-    if (rageActive) baseDmg *= 3;
-    if (isBullseye) {
-        baseDmg *= 2;
-        advanceQuestProgress('bullseye');
-    }
-
-    let critChance = 0.10 + (upgCrit * 0.05);
-    if (petCatUnlocked && activePet === '🐱') critChance += 0.15;
-    let isCrit = Math.random() < critChance;
-
-    if (isCrit) {
-        baseDmg *= 2;
-        totalCrits++;
-        playSound("crit");
-        advanceQuestProgress('crit');
-    } else {
-        playSound("punch");
-    }
-
-    if (bagObj.shield && bagObj.shield > 0) {
-        bagObj.shield--;
-        playSound("shield");
-        popup("🛡️ BLOCKED", "#00ffff", bagObj.element.offsetLeft, bagObj.element.offsetTop);
-        if (bagObj.shield <= 0) bagObj.element.classList.remove("shielded");
-        return;
-    }
-
-    combo++;
-    if (combo > maxComboStreak) maxComboStreak = combo;
-    if (combo > 1) {
-        document.getElementById("combo").textContent = combo + "x COMBO!";
-        clearTimeout(comboTimer);
-        comboTimer = setTimeout(() => {
-            combo = 0;
-            document.getElementById("combo").textContent = "";
-        }, 2000);
-    }
-
-    if (activeGloveType === "fire") {
-        bagObj.isBurning = true;
-        bagObj.element.classList.add("burning");
-    } else if (activeGloveType === "lightning") {
-        applyChainLightning(bagObj, baseDmg);
-    } else if (activeGloveType === "toxic") {
-        bagObj.isPoisoned = true;
-        bagObj.poisonStacks = (bagObj.poisonStacks || 0) + 1;
-        bagObj.element.classList.add("poisoned");
-    }
-
-    applyDirectDamage(bagObj, baseDmg, isCrit ? "💥 CRIT! -" : "-", isCrit ? "#ff0055" : "#ffffff");
-}
-
-function toggleArtifact(key) {
-    let equippedCount = Object.values(artifacts).filter(a => a.equipped).length;
-    if (!artifacts[key].equipped && equippedCount >= 2) {
-        popup("❌ Max 2 Artifacts!", "red", arena.clientWidth / 2 - 80, 50);
-        return;
-    }
-    artifacts[key].equipped = !artifacts[key].equipped;
-    updateUpgradesUI();
-    saveGame();
-}
-
-function updateUpgradesUI() {
-    const buyFireBtn = document.getElementById("buyFireBtn");
-    const buyIceBtn = document.getElementById("buyIceBtn");
-    const buyLightningBtn = document.getElementById("buyLightningBtn");
-    const buyToxicBtn = document.getElementById("buyToxicBtn");
-
-    document.getElementById("fireGloveLvl").textContent = Math.max(1, elementalLevels.fire);
-    document.getElementById("fireHitCount").textContent = elementalLevels.fire;
-    buyFireBtn.textContent = !ownedGloves.fire ? "2250 🪙" : (elementalLevels.fire >= 3 ? "⭐ MAX" : ((elementalLevels.fire + 1) * 1500) + " 🪙 Upgr");
-
-    document.getElementById("iceGloveLvl").textContent = Math.max(1, elementalLevels.ice);
-    document.getElementById("iceHitCount").textContent = elementalLevels.ice;
-    buyIceBtn.textContent = !ownedGloves.ice ? "2250 🪙" : (elementalLevels.ice >= 3 ? "⭐ MAX" : ((elementalLevels.ice + 1) * 1500) + " 🪙 Upgr");
-
-    document.getElementById("lightningGloveLvl").textContent = Math.max(1, elementalLevels.lightning);
-    document.getElementById("lightningHitCount").textContent = Math.max(1, elementalLevels.lightning);
-    buyLightningBtn.textContent = !ownedGloves.lightning ? "2700 🪙" : (elementalLevels.lightning >= 3 ? "⭐ MAX" : ((elementalLevels.lightning + 1) * 1500) + " 🪙 Upgr");
-
-    document.getElementById("toxicGloveLvl").textContent = Math.max(1, elementalLevels.toxic);
-    document.getElementById("toxicHitCount").textContent = elementalLevels.toxic;
-    buyToxicBtn.textContent = !ownedGloves.toxic ? "2700 🪙" : (elementalLevels.toxic >= 3 ? "⭐ MAX" : ((elementalLevels.toxic + 1) * 1500) + " 🪙 Upgr");
-
-    const petDragonBtn = document.getElementById("petDragonBtn");
-    const petDroneBtn = document.getElementById("petDroneBtn");
-    const petFoxBtn = document.getElementById("petFoxBtn");
-    const petSlimeBtn = document.getElementById("petSlimeBtn");
-
-    if (petDragonBtn) petDragonBtn.innerHTML = `🐉 Dragon ${ownedPets['🐉'] ? '(Owned)' : '(3000 🪙)'}<br><small>Fire Dmg</small>`;
-    if (petDroneBtn) petDroneBtn.innerHTML = `🤖 Drone ${ownedPets['🤖'] ? '(Owned)' : '(4500 🪙)'}<br><small>Shock Dmg</small>`;
-    if (petFoxBtn) petFoxBtn.innerHTML = `🧊 Frost Fox ${ownedPets['🧊'] ? '(Owned)' : '(6000 🪙)'}<br><small>Ice Dmg</small>`;
-    if (petSlimeBtn) petSlimeBtn.innerHTML = `🧪 Venom Slime ${ownedPets['🧪'] ? '(Owned)' : '(7500 🪙)'}<br><small>Venom Dmg</small>`;
-
-    const petDogBtn = document.getElementById("petDogBtn");
-    const petCatBtn = document.getElementById("petCatBtn");
-    const petPhoenixBtn = document.getElementById("petPhoenixBtn");
-    const petTigerBtn = document.getElementById("petTigerBtn");
-
-    if (petDogBtn) petDogBtn.innerHTML = (petDogUnlocked ? "🐶 Dog (Owned)" : "🐶 Dog (📺 Ad)") + "<br><small>+20% Coins</small>";
-    if (petCatBtn) petCatBtn.innerHTML = (petCatUnlocked ? "🐱 Cat (Owned)" : "🐱 Cat (📺 Ad)") + "<br><small>+15% Crit</small>";
-    if (petPhoenixBtn) petPhoenixBtn.innerHTML = (petPhoenixUnlocked ? "🦅 Phoenix (Owned)" : "🦅 Phoenix (📺 Ad)") + "<br><small>Ice + Fire Dmg</small>";
-    if (petTigerBtn) petTigerBtn.innerHTML = (petTigerUnlocked ? "⚡ Volt Tiger (Owned)" : "⚡ Volt Tiger (📺 Ad)") + "<br><small>Venom + Shock</small>";
-
-    document.getElementById("basePwrLvl").textContent = upgPower + 1;
-    document.getElementById("basePwrBonus").textContent = upgPower * 5;
-    document.getElementById("powerCost").textContent = (upgPower + 1) * 450;
-
-    document.getElementById("critLvl").textContent = upgCrit + 1;
-    document.getElementById("critBonus").textContent = 10 + (upgCrit * 5);
-    document.getElementById("critCost").textContent = (upgCrit + 1) * 600;
-
-    document.getElementById("autoLvl").textContent = upgAuto;
-    document.getElementById("autoCost").textContent = (upgAuto + 1) * 1500;
-
-    document.getElementById("magnetLvl").textContent = upgMagnet;
-    document.getElementById("magnetCost").textContent = (upgMagnet + 1) * 1200;
-
-    const artDiv = document.getElementById("artifactsList");
-    artDiv.innerHTML = "";
-    Object.keys(artifacts).forEach(key => {
-        const a = artifacts[key];
-        const box = document.createElement("div");
-        box.className = "artifactBox " + (a.equipped ? "equipped" : "");
-        box.innerHTML = `<strong>${a.title}</strong> - ${a.desc} <br>
-        <button onclick="toggleArtifact('${key}')">${a.equipped ? 'Unequip' : 'Equip'}</button>`;
-        artDiv.appendChild(box);
-    });
-
-    const achDiv = document.getElementById("achievementsList");
-    achDiv.innerHTML = "";
-    Object.keys(achievements).forEach(key => {
-        const a = achievements[key];
-        const box = document.createElement("div");
-        box.className = "achievementBox " + (a.unlocked ? "unlocked" : "");
-        box.innerHTML = `<strong>${a.title}</strong> - ${a.desc} <br><small>Status: ${a.unlocked ? '✅ Unlocked' : '🔒 Locked'}</small>`;
-        achDiv.appendChild(box);
-    });
-}
-
-function buyUpgrade(type) {
-    if (type === 'power') {
-        let cost = (upgPower + 1) * 450;
-        if (coins >= cost) { coins -= cost; upgPower++; }
-    } else if (type === 'crit') {
-        let cost = (upgCrit + 1) * 600;
-        if (coins >= cost && upgCrit < 10) { coins -= cost; upgCrit++; }
-    } else if (type === 'auto') {
-        let cost = (upgAuto + 1) * 1500;
-        if (coins >= cost) { coins -= cost; upgAuto++; }
-    } else if (type === 'magnet') {
-        let cost = (upgMagnet + 1) * 1200;
-        if (coins >= cost && upgMagnet < 1) { coins -= cost; upgMagnet++; }
-    }
-    updateUpgradesUI();
-    updateScoreboard();
-    saveGame();
-}
-
-function createParticles(x, y, color, count = 6) {
-    for (let i = 0; i < count; i++) {
-        const p = document.createElement("div");
-        p.className = "particle";
-        p.style.left = x + "px";
-        p.style.top = y + "px";
-        p.style.width = (Math.random() * 6 + 3) + "px";
-        p.style.height = p.style.width;
-        p.style.background = color;
-
-        arena.appendChild(p);
-
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 40 + 15;
-        const vx = Math.cos(angle) * speed;
-        const vy = Math.sin(angle) * speed;
-
-        p.animate([
-            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-            { transform: `translate(${vx}px, ${vy}px) scale(0)`, opacity: 0 }
-        ], { duration: 400, easing: 'ease-out' });
-
-        setTimeout(() => p.remove(), 400);
-    }
-}
-
-function triggerShake(intensity = 6) {
-    let startTime = performance.now();
-    let duration = 150;
-
-    function shakeFrame(now) {
-        let elapsed = now - startTime;
-        if (elapsed < duration) {
-            let dx = (Math.random() - 0.5) * intensity * 2;
-            let dy = (Math.random() - 0.5) * intensity * 2;
-            arena.style.transform = `translate(${dx}px, ${dy}px)`;
-            requestAnimationFrame(shakeFrame);
-        } else {
-            arena.style.transform = "translate(0, 0)";
-        }
-    }
-    requestAnimationFrame(shakeFrame);
-}
-
-function popup(text, color, x, y) {
-    const p = document.createElement("div");
-    p.innerHTML = text;
-    p.style.position = "absolute";
-    p.style.left = x + "px";
-    p.style.top = y + "px";
-    p.style.color = color;
-    p.style.fontWeight = "900";
-    p.style.fontSize = "16px";
-    p.style.pointerEvents = "none";
-    p.style.zIndex = "10000";
-    p.style.textShadow = "0 2px 4px rgba(0,0,0,0.9)";
-
-    arena.appendChild(p);
-
-    const vx = (Math.random() - 0.5) * 40;
-    const vy = -35 - Math.random() * 20;
-
-    p.animate([
-        { transform: 'translate(0, 0) scale(0.8)', opacity: 1 },
-        { transform: `translate(${vx}px, ${vy}px) scale(0)`, opacity: 0 }
-    ], { duration: 500, easing: 'ease-out' });
-
-    setTimeout(() => p.remove(), 500);
-}
-
-function triggerUltimate() {
-    if (coins < 9000) {
-        popup("❌ Need 9000 Coins!", "red", arena.clientWidth / 2 - 70, 50);
-        return;
-    }
-    coins -= 9000;
-    triggerShake(16);
-    playSound("explosion");
-
-    arena.style.filter = "brightness(3)";
-    setTimeout(() => arena.style.filter = "none", 200);
-
-    for (let i = activeBags.length - 1; i >= 0; i--) {
-        const bag = activeBags[i];
-        if (!bag.isBomb) {
-            const rect = bag.element.getBoundingClientRect();
-            const arenaRect = arena.getBoundingClientRect();
-            createParticles(rect.left - arenaRect.left + 30, rect.top - arenaRect.top + 30, "#ffdd00", 8);
-            score += bag.reward || 500;
-            coins += Math.floor((bag.reward || 500) / 10);
-            removeBagFromGame(bag);
-        }
-    }
-
-    popup("💥 ULTIMATE CLEAR!", "gold", arena.clientWidth / 2 - 100, 80);
-    updateScoreboard();
-    saveGame();
-
-    setTimeout(() => {
-        if (activeBags.length === 0) createBag();
-    }, 500);
-}
-
-function spawnDroppedItem(x, y) {
-    const item = document.createElement("div");
-    item.className = "dropItem";
-    item.style.left = Math.max(10, Math.min(arena.clientWidth - 40, x)) + "px";
-    item.style.top = Math.max(10, Math.min(arena.clientHeight - 40, y)) + "px";
-
-    const roll = Math.random();
-    let type = "coin";
-    if (roll < 0.25) { item.textContent = "❤️"; type = "heart"; }
-    else if (roll < 0.60) { item.textContent = "🪙"; type = "coin"; }
-    else if (roll < 0.80) { item.textContent = "⚔️"; type = "sword"; }
-    else { item.textContent = "❄️"; type = "freeze"; }
-
-    item.collect = () => {
-        playSound("coin");
-        advanceQuestProgress('loot');
-        if (type === "heart") {
-            hearts = Math.min(maxHearts, hearts + 1);
-            popup("❤️ +1 HEART", "pink", parseFloat(item.style.left), parseFloat(item.style.top));
-            updateHearts();
-        } else if (type === "coin") {
-            let gain = achievements.bossSlayer.unlocked ? 555 : 450;
-            coins += gain;
-            popup("🪙 +" + gain + " COINS", "gold", parseFloat(item.style.left), parseFloat(item.style.top));
-        } else if (type === "sword") {
-            swordHits += 25;
-            popup("⚔️ SWORD (25 HITS)", "lime", parseFloat(item.style.left), parseFloat(item.style.top));
-        } else if (type === "freeze") {
-            freezeActive = true;
-            popup("❄️ FREEZE (10s)", "cyan", parseFloat(item.style.left), parseFloat(item.style.top));
-            setTimeout(() => { freezeActive = false; updateActivePowerupsUI(); }, 10000);
-        }
-        item.remove();
-        updateActivePowerupsUI(); updateScoreboard(); saveGame();
-    };
-
-    item.addEventListener("pointerdown", (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        item.collect();
-    });
-
-    arena.appendChild(item);
-    setTimeout(() => { if (item.parentNode) item.remove(); }, 8000);
-}
-
-function createBag() {
-    spawnBagLogic("normal");
-}
-
-function spawnBagLogic(forcedType = "normal") {
-    const bagElem = document.createElement("div");
-    bagElem.className = "bag";
-
-    let baseHp = Math.floor(40 + level * 8); 
-    let hp = baseHp;
-    let reward = 900;
-    let timer = 30;
-    let typeName = "🥊 NORMAL";
-    let sizeMultiplier = 1.0;
-    
-    let bagObj = {
-        element: bagElem,
-        isHighTier: false,
-        hp: hp, maxHp: hp,
-        reward: reward, timeLeft: timer,
-        moveSpeed: (Math.random() - 0.5) * 2.0
-    };
-
-    if (forcedType === "omegaGod") {
-        bagElem.classList.add("boss", "omegaGod");
-        bagObj.isHighTier = true;
-        bagObj.isBoss = true;
-        hp = Math.floor(baseHp * 7.0); reward = 60000; timer = 75; typeName = "👑 OMEGA GOD";
-        sizeMultiplier = 1.85;
-        finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
-        return;
-    } else if (forcedType === "golden") {
-        bagElem.classList.add("golden");
-        bagObj.isGolden = true;
-        bagObj.isHighTier = true;
-        hp = Math.floor(baseHp * 1.5); reward = 7500; timer = 12; typeName = "🪙 GOLDEN";
-        finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
-        return;
-    }
-
-    // LEGENDARY BAG SPAWNS EVERY 75 LEVELS
-    if (level % 75 === 0) {
-        bagElem.classList.add("boss", "legendary");
-        bagObj.isHighTier = true;
-        bagObj.isLegendary = true;
-        hp = Math.floor(baseHp * 10.0); reward = 100000; timer = 85; typeName = "🌟 LEGENDARY BAG";
-        sizeMultiplier = 2.0;
-
-        triggerSpawnWarning("LEGENDARY WARNING", `LEVEL ${level}: LEGENDARY BAG`, () => {
-            finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
+        /* --- 30 DISTINCT SKINS WITH UNIQUE VISUAL CATEGORIES --- */
+        const CHARACTERS = {
+            cyan_bunny: { name: 'Cyan Glow Bunny', category: 'animal', species: 'bunny', bodyColor: '#00e5ff', outfitColor: '#ff4081', maxHp: 100, bonusCoin: 0.2 },
+            pink_bunny: { name: 'Neon Pink Bunny', category: 'animal', species: 'bunny', bodyColor: '#ff2a85', outfitColor: '#00e5ff', maxHp: 95, bonusCoin: 0.15 },
+            lime_kitty: { name: 'Lime Kitten', category: 'animal', species: 'cat', bodyColor: '#76ff03', outfitColor: '#9c27b0', maxHp: 90, bonusCard: true },
+            violet_fox: { name: 'Violet Fox', category: 'animal', species: 'fox', bodyColor: '#aa00ff', outfitColor: '#ffeb3b', maxHp: 95, bonusCoin: 0.15 },
+            sun_bear: { name: 'Sunny Bear', category: 'animal', species: 'bear', bodyColor: '#ffd600', outfitColor: '#e91e63', maxHp: 125 },
+            coral_panda: { name: 'Coral Panda', category: 'animal', species: 'panda', bodyColor: '#ff6e40', outfitColor: '#00bcd4', maxHp: 120 },
+            mint_penguin: { name: 'Mint Penguin', category: 'animal', species: 'penguin', bodyColor: '#1de9b6', outfitColor: '#ff9800', maxHp: 100, bonusCoin: 0.1 },
+            berry_koala: { name: 'Berry Koala', category: 'animal', species: 'koala', bodyColor: '#e91e63', outfitColor: '#8bc34a', maxHp: 110 },
+            electric_unicorn: { name: 'Electric Unicorn', category: 'animal', species: 'unicorn', bodyColor: '#00b0ff', outfitColor: '#ffeb3b', maxHp: 100, bonusCoin: 0.25 },
+            flare_dragon: { name: 'Flare Dragon', category: 'animal', species: 'dragon', bodyColor: '#ff3d00', outfitColor: '#4caf50', maxHp: 135, bonusCard: true },
+            strawberry_pie: { name: 'Strawberry Chibi', category: 'fruit', species: 'strawberry', bodyColor: '#ff1744', outfitColor: '#4caf50', maxHp: 90, bonusCoin: 0.2 },
+            juicy_melon: { name: 'Juicy Watermelon', category: 'fruit', species: 'watermelon', bodyColor: '#00e676', outfitColor: '#ff1744', maxHp: 110 },
+            sweet_peach: { name: 'Sweet Peach', category: 'fruit', species: 'peach', bodyColor: '#ff9e80', outfitColor: '#8bc34a', maxHp: 95, bonusCard: true },
+            sunny_lemon: { name: 'Sunny Lemon', category: 'fruit', species: 'lemon', bodyColor: '#ffea00', outfitColor: '#00e5ff', maxHp: 100 },
+            purple_grape: { name: 'Purple Grape', category: 'fruit', species: 'grape', bodyColor: '#b388ff', outfitColor: '#4caf50', maxHp: 105 },
+            chunky_orange: { name: 'Chunky Orange', category: 'fruit', species: 'orange', bodyColor: '#ff9100', outfitColor: '#00bcd4', maxHp: 115 },
+            blue_blueberry: { name: 'Blueberry Dot', category: 'fruit', species: 'blueberry', bodyColor: '#2979ff', outfitColor: '#ffeb3b', maxHp: 85, bonusCoin: 0.25 },
+            sweet_cupcake: { name: 'Cupcake Cutie', category: 'fruit', species: 'cupcake', bodyColor: '#ff80ab', outfitColor: '#7c4dff', maxHp: 120 },
+            boba_tea: { name: 'Boba Tea Bot', category: 'fruit', species: 'boba', bodyColor: '#8d6e63', outfitColor: '#ff4081', maxHp: 100, bonusCard: true },
+            donut_star: { name: 'Glazed Donut', category: 'fruit', species: 'donut', bodyColor: '#ff4081', outfitColor: '#ffeb3b', maxHp: 95 },
+            turbo_kart: { name: 'Turbo Kart', category: 'transport', species: 'kart', bodyColor: '#ff3d00', outfitColor: '#1e293b', maxHp: 110, bonusCoin: 0.2 },
+            sky_rocket: { name: 'Sky Rocket', category: 'transport', species: 'rocket', bodyColor: '#2979ff', outfitColor: '#ffea00', maxHp: 100, bonusCard: true },
+            cloud_balloon: { name: 'Cloud Balloon', category: 'transport', species: 'balloon', bodyColor: '#00e5ff', outfitColor: '#ff80ab', maxHp: 90 },
+            magic_train: { name: 'Choo Choo Train', category: 'transport', species: 'train', bodyColor: '#e91e63', outfitColor: '#ffd600', maxHp: 130 },
+            mini_copter: { name: 'Mini Copter', category: 'transport', species: 'copter', bodyColor: '#76ff03', outfitColor: '#3f51b5', maxHp: 95 },
+            speed_boat: { name: 'Speed Boat', category: 'transport', species: 'boat', bodyColor: '#00bcd4', outfitColor: '#ff5722', maxHp: 105 },
+            space_ufo: { name: 'Space UFO', category: 'transport', species: 'ufo', bodyColor: '#d500f9', outfitColor: '#00e676', maxHp: 120, bonusCard: true },
+            eco_bike: { name: 'Eco Cycle', category: 'transport', species: 'bike', bodyColor: '#ffeb3b', outfitColor: '#00e5ff', maxHp: 85, bonusCoin: 0.25 },
+            fire_engine: { name: 'Tiny Firetruck', category: 'transport', species: 'firetruck', bodyColor: '#f44336', outfitColor: '#ffeb3b', maxHp: 135 },
+            star_cruiser: { name: 'Star Cruiser', category: 'transport', species: 'cruiser', bodyColor: '#673ab7', outfitColor: '#00e5ff', maxHp: 115 }
+        };
+
+        const CARD_TYPES = [
+            { id: 'sugar_rush', name: 'Sugar Rush', icon: '⚡', desc: '+3 Jump Forward!', type: 'move', val: 3 },
+            { id: 'vortex', name: 'Singularity Vortex', icon: '🌀', desc: 'Random Teleport (2-5 tiles)', type: 'teleport', val: 0 },
+            { id: 'timewarp', name: 'Time Warp', icon: '⏳', desc: '-2 Tiles Backward', type: 'move', val: -2 },
+            { id: 'shield', name: 'Bubble Shield', icon: '🫧', desc: 'Blocks 1 Trap!', type: 'shield', val: 1 },
+            { id: 'wand', name: 'Star Wand', icon: '🪄', desc: '+35 Boss Damage', type: 'attack', val: 35 },
+            { id: 'heal', name: 'Cupcake Heal', icon: '🧁', desc: 'Restore +35 HP', type: 'heal', val: 35 }
+        ];
+
+        /* --- 11 UNIQUE BOARD LAYOUT TOPOLOGIES (20 Nodes Each) --- */
+        const BOARD_LAYOUTS = [
+            {
+                id: 'bear_face',
+                name: '🐻 Bear-Face Realm',
+                nodes: [
+                    { type: 'start', label: 'START', icon: '🏰', color: '#fbcfe8', border: '#f472b6', rx: 0.22, ry: 0.18 },
+                    { type: 'coin', label: 'Stars', icon: '⭐', color: '#fef08a', border: '#facc15', rx: 0.14, ry: 0.10 },
+                    { type: 'powerup', label: 'Card', icon: '🎁', color: '#e9d5ff', border: '#c084fc', rx: 0.24, ry: 0.05 },
+                    { type: 'gem', label: 'Gems', icon: '💎', color: '#cffaff', border: '#22d3ee', rx: 0.35, ry: 0.14 },
+                    { type: 'coin', label: 'Stars', icon: '⭐', color: '#fef08a', border: '#facc15', rx: 0.65, ry: 0.14 },
+                    { type: 'powerup', label: 'Card', icon: '🎁', color: '#e9d5ff', border: '#c084fc', rx: 0.76, ry: 0.05 },
+                    { type: 'portal', label: 'Portal', icon: '🕳️', color: '#ddd6fe', border: '#8b5cf6', rx: 0.86, ry: 0.10 },
+                    { type: 'gem', label: 'Gems', icon: '💎', color: '#cffaff', border: '#22d3ee', rx: 0.78, ry: 0.18 },
+                    { type: 'enemy', label: 'Boba', icon: '🧋', color: '#bbf7d0', border: '#4ade80', rx: 0.88, ry: 0.38 },
+                    { type: 'trap', label: 'Shock', icon: '⚡', color: '#fed7aa', border: '#fb923c', rx: 0.85, ry: 0.58 },
+                    { type: 'coin', label: 'Stars', icon: '⭐', color: '#fef08a', border: '#facc15', rx: 0.78, ry: 0.76 },
+                    { type: 'powerup', label: 'Card', icon: '🎁', color: '#e9d5ff', border: '#c084fc', rx: 0.64, ry: 0.88 },
+                    { type: 'boss', label: 'BOSS', icon: '👑', color: '#fecdd3', border: '#f43f5e', rx: 0.50, ry: 0.92 },
+                    { type: 'coin', label: 'Stars', icon: '⭐', color: '#fef08a', border: '#facc15', rx: 0.36, ry: 0.88 },
+                    { type: 'enemy', label: 'Goblin', icon: '🍬', color: '#bbf7d0', border: '#4ade80', rx: 0.22, ry: 0.76 },
+                    { type: 'portal', label: 'Portal', icon: '🕳️', color: '#ddd6fe', border: '#8b5cf6', rx: 0.15, ry: 0.58 },
+                    { type: 'gem', label: 'Gems', icon: '💎', color: '#cffaff', border: '#22d3ee', rx: 0.12, ry: 0.38 },
+                    { type: 'enemy', label: 'Dust', icon: '🐰', color: '#bbf7d0', border: '#4ade80', rx: 0.32, ry: 0.44 },
+                    { type: 'boss', label: 'NOSE', icon: '👃', color: '#fecdd3', border: '#f43f5e', rx: 0.50, ry: 0.52 },
+                    { type: 'powerup', label: 'Card', icon: '🎁', color: '#e9d5ff', border: '#c084fc', rx: 0.68, ry: 0.44 }
+                ]
+            }
+        ];
+
+        const layoutThemes = [
+            { id: 'candy_loop', name: '🍬 Candy Cane Loop' },
+            { id: 'frost_serpent', name: '❄️ Frost Serpent' },
+            { id: 'gingerbread_spiral', name: '🍪 Gingerbread Spiral' },
+            { id: 'peppermint_zigzag', name: '🍭 Peppermint Zigzag' },
+            { id: 'hearth_cross', name: '🔥 Hearth Cross' },
+            { id: 'aurora_wave', name: '🌌 Aurora Wave' },
+            { id: 'star_realm', name: '⭐ Sugar Plum Star' },
+            { id: 'workshop_circuit', name: '⚙️ Workshop Circuit' },
+            { id: 'glacier_lab', name: '🧊 Glacier Labyrinth' },
+            { id: 'golden_ring', name: '💍 Golden Ring' }
+        ];
+
+        layoutThemes.forEach((theme, idx) => {
+            let generatedNodes = [];
+            for (let i = 0; i < 20; i++) {
+                let angle = (i / 20) * Math.PI * 2;
+                let radiusX = 0.38 + 0.08 * Math.sin(i * 2);
+                let radiusY = 0.38 + 0.08 * Math.cos(i * 3);
+                if (idx % 2 === 1) {
+                    radiusX = 0.15 + (i % 5) * 0.17;
+                    radiusY = 0.15 + Math.floor(i / 5) * 0.22;
+                }
+                let type = 'coin';
+                let icon = '⭐';
+                let color = '#fef08a';
+                let border = '#facc15';
+                if (i === 0) { type = 'start'; icon = '🏰'; color = '#fbcfe8'; border = '#f472b6'; }
+                else if (i === 12 || i === 18) { type = 'boss'; icon = '👑'; color = '#fecdd3'; border = '#f43f5e'; }
+                else if (i % 3 === 0) { type = 'powerup'; icon = '🎁'; color = '#e9d5ff'; border = '#c084fc'; }
+                else if (i % 4 === 0) { type = 'portal'; icon = '🕳️'; color = '#ddd6fe'; border = '#8b5cf6'; }
+                else if (i % 5 === 0) { type = 'gem'; icon = '💎'; color = '#cffaff'; border = '#22d3ee'; }
+                else if (i % 7 === 0) { type = 'trap'; icon = '⚡'; color = '#fed7aa'; border = '#fb923c'; }
+
+                generatedNodes.push({
+                    type: type, label: type.toUpperCase(), icon: icon, color: color, border: border,
+                    rx: Math.max(0.1, Math.min(0.9, 0.5 + radiusX * Math.cos(angle))),
+                    ry: Math.max(0.1, Math.min(0.9, 0.5 + radiusY * Math.sin(angle)))
+                });
+            }
+            BOARD_LAYOUTS.push({ id: theme.id, name: theme.name, nodes: generatedNodes });
         });
-        return;
-    } else if (level === 30) {
-        bagElem.classList.add("boss", "magmaTitan");
-        bagObj.isHighTier = true;
-        bagObj.isBoss = true;
-        hp = Math.floor(baseHp * 4.5); reward = 25000; timer = 60; typeName = "🔥 LVL 30: MAGMA TITAN";
-        sizeMultiplier = 1.6;
 
-        triggerSpawnWarning("BOSS APPROACHING", "🔥 LVL 30: MAGMA TITAN", () => {
-            finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
-        });
-        return;
-    } else if (level === 50) {
-        bagElem.classList.add("boss", "omegaGod");
-        bagObj.isHighTier = true;
-        bagObj.isBoss = true;
-        hp = Math.floor(baseHp * 7.0); reward = 60000; timer = 75; typeName = "👑 LVL 50: OMEGA GOD";
-        sizeMultiplier = 1.85;
+        /* --- GAME STATE --- */
+        let state = {
+            gameMode: 'com',
+            boardLayoutIdx: 0,
+            currentCategory: 'animal',
+            rollsCount: 0,
+            player: {
+                charKey: 'cyan_bunny',
+                name: 'Cyan Glow Bunny',
+                hp: 100, maxHp: 100, level: 1, xp: 0, xpToNext: 40,
+                coins: 0, gems: 5, tileIndex: 0, inventory: [], shieldActive: false, jumpProgress: 0
+            },
+            opponent: {
+                name: 'Rival Fox', charKey: 'violet_fox', hp: 100, maxHp: 100, level: 1, tileIndex: 0, jumpProgress: 0
+            },
+            turn: 'player',
+            isRolling: false,
+            boss: { name: 'Gummy Bear King', sprite: '👑', hp: 80, maxHp: 80 }
+        };
 
-        triggerSpawnWarning("BOSS APPROACHING", "👑 LVL 50: OMEGA GOD", () => {
-            finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
-        });
-        return;
-    } else if (level % 10 === 0) {
-        bagElem.classList.add("boss");
-        bagObj.isHighTier = true;
-        bagObj.isBoss = true;
-        hp = Math.floor(baseHp * 3.5); reward = 12000; timer = 50; typeName = "👹 BIG BOSS";
-        sizeMultiplier = 1.4;
+        let canvas, ctx;
+        let selectedChar = 'cyan_bunny';
+        let selectedBoardIdx = 0;
+        let animStep = 0;
 
-        triggerSpawnWarning("BOSS APPROACHING", `LEVEL ${level} BIG BOSS`, () => {
-            finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
-        });
-        return;
-    }
+        function setGameMode(mode) {
+            state.gameMode = mode;
+            const comBtn = document.getElementById('mode-com-btn');
+            const friendBtn = document.getElementById('mode-friend-btn');
+            if (mode === 'com') {
+                comBtn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-pink-500 text-white border-2 border-white shadow';
+                friendBtn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-300 text-purple-900 border-2 border-white';
+                state.opponent.name = 'Rival COM Bot';
+                state.opponent.charKey = 'violet_fox';
+            } else {
+                friendBtn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-600 text-white border-2 border-white shadow';
+                comBtn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-pink-300 text-pink-900 border-2 border-white';
+                state.opponent.name = 'Player 2';
+                state.opponent.charKey = 'strawberry_pie';
+            }
+            audio.playTone(700, 'sine', 0.1);
+        }
 
-    const specialRoll = Math.random();
+        function setCategory(cat) {
+            state.currentCategory = cat;
+            ['animal', 'fruit', 'transport'].forEach(c => {
+                const btn = document.getElementById(`cat-${c}-btn`);
+                if (c === cat) {
+                    btn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-rose-500 text-white border-2 border-white shadow';
+                } else {
+                    btn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white';
+                }
+            });
+            const firstKey = Object.keys(CHARACTERS).find(k => CHARACTERS[k].category === cat);
+            if (firstKey) selectedChar = firstKey;
+            initSetupGrids();
+            audio.playTone(600, 'sine', 0.08);
+        }
 
-    if (specialRoll < 0.10) {
-        bagElem.classList.add("veryfast");
-        bagObj.isVeryFast = true;
-        bagObj.isHighTier = true;
-        hp = Math.floor(baseHp * 0.8); reward = 4500; timer = 8; typeName = "⚡ VERY FAST";
-        bagObj.moveSpeed = (Math.random() - 0.5) * 12.0;
-    } else if (specialRoll < 0.12) {
-        bagElem.classList.add("void");
-        bagObj.isVoid = true;
-        bagObj.isHighTier = true;
-        hp = Math.floor(baseHp * 2.2); reward = 9000; timer = 18; typeName = "🧲 GRAVITY (MAGNET)";
-    } else if (specialRoll < 0.20) {
-        bagElem.classList.add("rainbow");
-        bagObj.isRainbow = true;
-        bagObj.isHighTier = true;
-        hp = Math.floor(baseHp * 2.0); reward = 10000; timer = 15; typeName = "🌈 RAINBOW";
-    } else if (specialRoll < 0.28) {
-        bagElem.classList.add("ninja");
-        bagObj.isNinja = true;
-        bagObj.isHighTier = true;
-        hp = 3; bagObj.ninjaHitsLeft = 3; reward = 5000; timer = 15; typeName = "🥷 NINJA (3 Hits)";
-    } else if (specialRoll < 0.38) {
-        bagElem.classList.add("golden");
-        bagObj.isGolden = true;
-        bagObj.isHighTier = true;
-        hp = Math.floor(baseHp * 1.5); reward = 7500; timer = 12; typeName = "🪙 GOLDEN";
-    } else if (level >= 20 && specialRoll < 0.42) {
-        bagElem.classList.add("inferno");
-        bagObj.elementType = "ice"; 
-        hp = Math.floor(baseHp * 1.3); reward = 3000; timer = 16; typeName = "🔥 INFERNO";
-    } else if (level >= 20 && specialRoll < 0.46) {
-        bagElem.classList.add("frost");
-        bagObj.elementType = "fire"; 
-        hp = Math.floor(baseHp * 1.3); reward = 3000; timer = 16; typeName = "🧊 FROST";
-    } else if (level >= 20 && specialRoll < 0.50) {
-        bagElem.classList.add("shock");
-        bagObj.elementType = "shock";
-        hp = Math.floor(baseHp * 1.4); reward = 3600; timer = 16; typeName = "⚡ SHOCK";
-    } else if (level >= 20 && specialRoll < 0.54) {
-        bagElem.classList.add("toxic");
-        bagObj.elementType = "toxic";
-        hp = Math.floor(baseHp * 1.4); reward = 3600; timer = 16; typeName = "🧪 TOXIC";
-    } else if (specialRoll < 0.57) {
-        bagElem.classList.add("bouncy");
-        bagObj.isBouncy = true; hp = Math.floor(baseHp * 1.2); reward = 2400; timer = 20; typeName = "🌀 BOUNCY";
-    } else if (specialRoll < 0.63) {
-        bagElem.classList.add("splitter");
-        bagObj.isSplitter = true; hp = Math.floor(baseHp * 1.1); reward = 1800; timer = 16; typeName = "✂️ SPLITTER";
-    } else if (specialRoll < 0.70) {
-        bagElem.classList.add("bomb");
-        bagObj.isBomb = true; hp = 1; timer = 16; typeName = "💣 BOMB!";
-    } else if (specialRoll < 0.76) {
-        bagElem.classList.add("ghost");
-        bagObj.isGhost = true; hp = baseHp; reward = 2400; timer = 15; typeName = "👻 GHOST";
-    } else if (specialRoll < 0.82) {
-        bagElem.classList.add("healer");
-        bagObj.isHealer = true; hp = Math.floor(baseHp * 1.2); reward = 2700; timer = 20; typeName = "💚 HEALER";
-    } else if (specialRoll < 0.88) {
-        bagElem.classList.add("combobreaker");
-        bagObj.isComboBreaker = true; hp = Math.floor(baseHp * 0.7); reward = 1500; timer = 10; typeName = "⚡ NO-COMBO";
-    } else if (specialRoll < 0.94) {
-        bagElem.classList.add("goblin");
-        bagObj.isGoblin = true; hp = Math.floor(baseHp * 0.8); reward = 3600; timer = 6; typeName = "💰 GOBLIN";
-    } else if (level % 25 === 0) {
-        bagElem.classList.add("champion");
-        bagObj.isHighTier = true;
-        hp = Math.floor(baseHp * 3); reward = 15000; timer = 90; typeName = "👑 CHAMPION";
-    } else if (level % 5 === 0) {
-        bagElem.classList.add("elite");
-        bagObj.isHighTier = true;
-        hp = Math.floor(baseHp * 1.5); reward = 4000; timer = 20; typeName = "⚡ ELITE";
-    }
+        function initSetupGrids() {
+            const charGrid = document.getElementById('setup-chars-grid');
+            charGrid.innerHTML = '';
+            Object.keys(CHARACTERS).forEach(key => {
+                const char = CHARACTERS[key];
+                if (char.category !== state.currentCategory) return;
+                const isSelected = key === selectedChar;
+                const el = document.createElement('div');
+                el.className = `cursor-pointer rounded-2xl p-2 transition transform hover:-translate-y-1 text-center border-4 ${isSelected ? 'border-pink-500 bg-pink-50 ring-2 ring-pink-300' : 'border-purple-200 bg-white'}`;
+                el.onclick = () => { selectedChar = key; initSetupGrids(); audio.playTone(600, 'sine', 0.08); };
+                el.innerHTML = `
+                    <div class="w-8 h-8 mx-auto rounded-full shadow-md mb-1 border-2 border-white flex items-center justify-center font-bold text-[10px] text-white" style="background: ${char.bodyColor}">✨</div>
+                    <div class="font-bold text-slate-700 text-[10px] truncate">${char.name}</div>
+                `;
+                charGrid.appendChild(el);
+            });
 
-    finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier);
-}
+            const boardGrid = document.getElementById('setup-boards-grid');
+            boardGrid.innerHTML = '';
+            BOARD_LAYOUTS.forEach((board, idx) => {
+                const isSelected = idx === selectedBoardIdx;
+                const el = document.createElement('div');
+                el.className = `cursor-pointer rounded-2xl p-2 transition text-center border-4 ${isSelected ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-300' : 'border-purple-200 bg-white'}`;
+                el.onclick = () => { selectedBoardIdx = idx; initSetupGrids(); audio.playTone(650, 'sine', 0.08); };
+                el.innerHTML = `
+                    <div class="font-bold text-purple-700 text-xs truncate">${board.name}</div>
+                `;
+                boardGrid.appendChild(el);
+            });
+        }
 
-function finishBagInstantiation(bagObj, bagElem, hp, reward, timer, typeName, sizeMultiplier) {
-    if (bagObj.isNinja) {
-        hp = 3;
-        bagObj.ninjaHitsLeft = 3;
-    }
+        function startGame() {
+            const char = CHARACTERS[selectedChar];
+            state.player.charKey = selectedChar;
+            state.player.name = char.name;
+            state.player.maxHp = char.maxHp;
+            state.player.hp = char.maxHp;
+            state.player.level = 1;
+            state.player.xp = 0;
+            state.player.coins = 0;
+            state.player.gems = 5;
+            state.player.tileIndex = 0;
+            state.player.inventory = [];
+            state.player.shieldActive = false;
+            state.opponent.tileIndex = 0;
+            state.boardLayoutIdx = selectedBoardIdx;
 
-    if (artifacts.cursedBandage && artifacts.cursedBandage.equipped) {
-        timer = Math.max(4, Math.floor(timer * 0.8));
-    }
+            if (char.bonusCard) state.player.inventory.push(CARD_TYPES[0]);
 
-    if (!bagObj.isBomb && Math.random() < 0.2) {
-        bagElem.classList.add("shielded");
-        bagObj.shield = Math.floor(2 + level / 8);
-    }
+            document.getElementById('player-name-text').innerText = char.name;
+            document.getElementById('current-board-name').innerText = BOARD_LAYOUTS[selectedBoardIdx].name;
+            document.getElementById('char-select-screen').classList.add('hidden');
 
-    bagObj.hp = hp; bagObj.maxHp = hp; bagObj.reward = reward; bagObj.timeLeft = timer;
+            updateUI();
+            initCanvas();
+            addLog(`✨ ${char.name} started adventure on ${BOARD_LAYOUTS[selectedBoardIdx].name}!`);
+            audio.playVictory();
+        }
 
-    const size = Math.max(75, Math.min(110, arena.clientWidth * 0.22)) * sizeMultiplier;
-    bagObj.size = size;
-    bagElem.style.width = size + "px";
-    bagElem.style.height = (size * 1.25) + "px";
+        function initCanvas() {
+            canvas = document.getElementById('boardCanvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+        }
 
-    const maxLeft = Math.max(10, arena.clientWidth - size - 10);
-    bagElem.style.left = (Math.random() * maxLeft) + "px";
-    const maxTop = Math.max(20, arena.clientHeight - (size * 1.25) - 20);
-    bagElem.style.top = (Math.random() * (maxTop - 20) + 20) + "px";
+        function resizeCanvas() {
+            if (!canvas) return;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            const size = Math.min(rect.width - 20, 480);
+            canvas.width = size;
+            canvas.height = size;
+            drawBoard();
+        }
 
-    const wrapper = document.createElement("div");
-    wrapper.className = "bagWrapper";
+        function getActiveNodes() {
+            return BOARD_LAYOUTS[state.boardLayoutIdx].nodes;
+        }
 
-    const img = document.createElement("img");
-    img.src = uploadedPhoto || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50'><circle cx='25' cy='25' r='20' fill='%23ccc'/></svg>";
+        function getTileCoordinates(index) {
+            const size = canvas.width;
+            const nodes = getActiveNodes();
+            const node = nodes[index] || nodes[0];
+            return { x: node.rx * size, y: node.ry * size };
+        }
 
-    const faceOverlay = document.createElement("div");
-    faceOverlay.className = "faceOverlay";
+        function drawBoard() {
+            if (!ctx) return;
+            const size = canvas.width;
+            const nodes = getActiveNodes();
+            ctx.clearRect(0, 0, size, size);
 
-    const hatOverlay = document.createElement("div");
-    hatOverlay.className = "hatOverlay";
-    hatOverlay.textContent = activeHat;
+            ctx.beginPath();
+            for (let i = 0; i < nodes.length; i++) {
+                const pos = getTileCoordinates(i);
+                if (i === 0) ctx.moveTo(pos.x, pos.y);
+                else ctx.lineTo(pos.x, pos.y);
+            }
+            ctx.closePath();
+            ctx.lineWidth = 14; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+            ctx.lineWidth = 6; ctx.strokeStyle = '#ec4899'; ctx.stroke();
 
-    wrapper.appendChild(img);
-    wrapper.appendChild(faceOverlay);
-    wrapper.appendChild(hatOverlay);
+            nodes.forEach((tile, i) => {
+                const { x, y } = getTileCoordinates(i);
+                const boxSize = size * 0.085;
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.fillStyle = tile.color;
+                ctx.strokeStyle = tile.border;
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.roundRect(-boxSize/2, -boxSize/2, boxSize, boxSize, 10);
+                ctx.fill(); ctx.stroke();
 
-    const typeText = document.createElement("div");
-    typeText.className = "typeText";
-    typeText.innerHTML = typeName;
+                ctx.font = `${boxSize * 0.55}px Fredoka`;
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(tile.icon, 0, 0);
+                ctx.restore();
+            });
 
-    const timerText = document.createElement("div");
-    timerText.className = "timerText";
-    timerText.innerHTML = "⏳ " + timer;
+            drawCategoryDistinctSkin(state.player.tileIndex, CHARACTERS[state.player.charKey], -16, state.player.jumpProgress);
+            drawCategoryDistinctSkin(state.opponent.tileIndex, CHARACTERS[state.opponent.charKey], 16, state.opponent.jumpProgress);
+        }
 
-    const hpText = document.createElement("div");
-    hpText.className = "hpText";
-    hpText.textContent = Math.floor(hp) + "/" + Math.floor(hp);
+        /* --- CATEGORY-DISTINCT CHARACTER SILHOUETTE RENDERER --- */
+        function drawCategoryDistinctSkin(tileIdx, charConfig, offsetX = 0, jumpHeight = 0) {
+            const { x, y } = getTileCoordinates(tileIdx);
+            const size = canvas.width;
+            const actualY = y - jumpHeight - 12;
+            const scale = size * 0.0022;
 
-    const hpContainer = document.createElement("div");
-    hpContainer.className = "hpBarContainer";
-    const hpBar = document.createElement("div");
-    hpBar.className = "hpBar";
-    hpContainer.appendChild(hpBar);
+            ctx.save();
+            ctx.translate(x + offsetX, actualY);
 
-    bagElem.appendChild(wrapper);
-    bagElem.appendChild(typeText);
-    bagElem.appendChild(timerText);
-    bagElem.appendChild(hpText);
-    bagElem.appendChild(hpContainer);
+            ctx.beginPath();
+            ctx.ellipse(0, jumpHeight + 16, 16 * scale, 6 * scale, 0, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0,0,0,0.18)';
+            ctx.fill();
 
-    if (Math.random() < 0.35) {
-        const bullseye = document.createElement("div");
-        bullseye.className = "bullseye";
-        bullseye.style.top = (Math.random() * 40 + 20) + "%";
-        bullseye.style.left = (Math.random() * 40 + 20) + "%";
-        bullseye.addEventListener("pointerdown", (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            punch(bagObj, false, true, e.clientX, e.clientY);
-            bullseye.remove();
-        });
-        bagElem.appendChild(bullseye);
-    }
+            ctx.shadowColor = charConfig.bodyColor;
+            ctx.shadowBlur = 14 * scale;
 
-    bagElem.addEventListener("pointerdown", (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        punch(bagObj, false, false, e.clientX, e.clientY);
-    });
+            const cat = charConfig.category;
+            const sp = charConfig.species;
 
-    activeBags.push(bagObj);
-    bagsContainer.appendChild(bagElem);
-    updateScoreboard();
-}
-</script>
+            if (cat === 'animal') {
+                if (sp === 'bunny' || sp === 'unicorn') {
+                    ctx.beginPath(); ctx.ellipse(-8 * scale, -28 * scale, 5.5 * scale, 15 * scale, -0.15, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                    ctx.beginPath(); ctx.ellipse(8 * scale, -28 * scale, 5.5 * scale, 15 * scale, 0.15, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                    if (sp === 'unicorn') {
+                        ctx.beginPath(); ctx.moveTo(0, -22 * scale); ctx.lineTo(-3 * scale, -34 * scale); ctx.lineTo(3 * scale, -34 * scale); ctx.fillStyle = '#ffd700'; ctx.fill();
+                    }
+                } else if (sp === 'cat' || sp === 'fox' || sp === 'tiger') {
+                    ctx.beginPath(); ctx.moveTo(-14 * scale, -12 * scale); ctx.lineTo(-9 * scale, -26 * scale); ctx.lineTo(-2 * scale, -14 * scale); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                    ctx.beginPath(); ctx.moveTo(2 * scale, -14 * scale); ctx.lineTo(9 * scale, -26 * scale); ctx.lineTo(14 * scale, -12 * scale); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                } else if (sp === 'bear' || sp === 'panda' || sp === 'koala') {
+                    ctx.beginPath(); ctx.arc(-12 * scale, -18 * scale, 6 * scale, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                    ctx.beginPath(); ctx.arc(12 * scale, -18 * scale, 6 * scale, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                } else if (sp === 'dragon') {
+                    ctx.beginPath(); ctx.moveTo(-10 * scale, -18 * scale); ctx.lineTo(-16 * scale, -28 * scale); ctx.lineTo(-4 * scale, -22 * scale); ctx.fillStyle = '#ff9800'; ctx.fill();
+                    ctx.beginPath(); ctx.moveTo(10 * scale, -18 * scale); ctx.lineTo(16 * scale, -28 * scale); ctx.lineTo(4 * scale, -22 * scale); ctx.fillStyle = '#ff9800'; ctx.fill();
+                } else {
+                    ctx.beginPath(); ctx.arc(0, -22 * scale, 4 * scale, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                }
+
+                ctx.fillStyle = charConfig.outfitColor;
+                ctx.beginPath(); ctx.roundRect(-size * 0.022, size * 0.005, size * 0.044, size * 0.04, 6); ctx.fill();
+
+                ctx.beginPath(); ctx.ellipse(0, -6 * scale, 17 * scale, 18 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.beginPath(); ctx.ellipse(0, -5 * scale, 12 * scale, 11 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+
+            } else if (cat === 'fruit') {
+                ctx.beginPath(); ctx.moveTo(0, -20 * scale); ctx.lineTo(-5 * scale, -30 * scale); ctx.lineTo(2 * scale, -28 * scale); ctx.fillStyle = '#4caf50'; ctx.fill();
+                ctx.beginPath(); ctx.arc(5 * scale, -28 * scale, 3.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#8bc34a'; ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.beginPath();
+                if (sp === 'donut') {
+                    ctx.arc(0, -6 * scale, 19 * scale, 0, Math.PI * 2);
+                    ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                    ctx.beginPath(); ctx.arc(0, -6 * scale, 7 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+                } else if (sp === 'cupcake') {
+                    ctx.beginPath(); ctx.moveTo(-12 * scale, 8 * scale); ctx.lineTo(12 * scale, 8 * scale); ctx.lineTo(8 * scale, 16 * scale); ctx.lineTo(-8 * scale, 16 * scale); ctx.closePath(); ctx.fillStyle = '#7c4dff'; ctx.fill();
+                    ctx.beginPath(); ctx.arc(0, -4 * scale, 18 * scale, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                } else {
+                    ctx.arc(0, -6 * scale, 18 * scale, 0, Math.PI * 2);
+                    ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                }
+                ctx.beginPath(); ctx.ellipse(0, -5 * scale, 11 * scale, 10 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+
+            } else if (cat === 'transport') {
+                if (sp === 'rocket') {
+                    ctx.beginPath(); ctx.moveTo(-10 * scale, 2 * scale); ctx.lineTo(-20 * scale, 10 * scale); ctx.lineTo(-6 * scale, 6 * scale); ctx.fillStyle = '#ff9800'; ctx.fill();
+                    ctx.beginPath(); ctx.moveTo(10 * scale, 2 * scale); ctx.lineTo(20 * scale, 10 * scale); ctx.lineTo(6 * scale, 6 * scale); ctx.fillStyle = '#ff9800'; ctx.fill();
+                } else if (sp === 'copter') {
+                    ctx.beginPath(); ctx.rect(-18 * scale, -24 * scale, 36 * scale, 3 * scale); ctx.fillStyle = '#1e293b'; ctx.fill();
+                }
+                ctx.shadowBlur = 0;
+                ctx.beginPath(); ctx.roundRect(-20 * scale, -16 * scale, 40 * scale, 22 * scale, 12); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                ctx.beginPath(); ctx.arc(0, -8 * scale, 10 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+            }
+
+            ctx.beginPath(); ctx.arc(-5 * scale, -6 * scale, 2.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+            ctx.beginPath(); ctx.arc(-5.8 * scale, -7 * scale, 0.9 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+            ctx.beginPath(); ctx.arc(5 * scale, -6 * scale, 2.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+            ctx.beginPath(); ctx.arc(4.2 * scale, -7 * scale, 0.9 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+
+            ctx.beginPath(); ctx.arc(0, -3.5 * scale, 0.8 * scale, 0, Math.PI * 2); ctx.fillStyle = '#475569'; ctx.fill();
+            ctx.beginPath(); ctx.arc(0, -2.5 * scale, 2 * scale, 0.2, Math.PI - 0.2); ctx.lineWidth = 1.2 * scale; ctx.strokeStyle = '#334155'; ctx.stroke();
+
+            const legOffset = Math.sin(animStep + (jumpHeight > 0 ? jumpHeight : 0)) * 3 * scale;
+            if (cat === 'transport') {
+                ctx.beginPath(); ctx.arc(-11 * scale, 8 * scale, 4.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(11 * scale, 8 * scale, 4.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+            } else {
+                ctx.beginPath(); ctx.ellipse(-6 * scale, 13 * scale + legOffset, 3.8 * scale, 2.2 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                ctx.beginPath(); ctx.ellipse(6 * scale, 13 * scale - legOffset, 3.8 * scale, 2.2 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+            }
+
+            ctx.restore();
+        }
+
+        function handleDiceRoll() {
+            if (state.isRolling || state.turn !== 'player') return;
+            state.isRolling = true;
+            state.rollsCount++;
+            document.getElementById('q1-prog').innerText = Math.min(10, state.rollsCount);
+            audio.playRoll();
+
+            const dice3d = document.getElementById('dice-3d');
+            const rollVal = Math.floor(Math.random() * 6) + 1;
+            const rotations = {
+                1: 'rotateX(0deg) rotateY(0deg)',
+                2: 'rotateY(-180deg)',
+                3: 'rotateY(90deg)',
+                4: 'rotateY(-90deg)',
+                5: 'rotateX(-90deg)',
+                6: 'rotateX(90deg)'
+            };
+
+            dice3d.style.transform = `rotateX(${720 + Math.random() * 360}deg) rotateY(${720 + Math.random() * 360}deg)`;
+
+            setTimeout(() => {
+                dice3d.style.transform = rotations[rollVal];
+                addLog(`🎲 ${state.player.name} rolled a <b>${rollVal}</b>!`);
+
+                setTimeout(() => {
+                    movePlayerWithJumps(state.player, rollVal, () => {
+                        handleTileEvent(state.player, () => {
+                            state.isRolling = false;
+                            switchTurn('opponent');
+                        });
+                    });
+                }, 500);
+            }, 750);
+        }
+
+        function movePlayerWithJumps(playerObj, steps, callback) {
+            let stepsTaken = 0;
+            const nodes = getActiveNodes();
+
+            function doSingleJump() {
+                if (stepsTaken >= Math.abs(steps)) {
+                    playerObj.jumpProgress = 0;
+                    drawBoard();
+                    if (callback) callback();
+                    return;
+                }
+
+                stepsTaken++;
+                if (steps > 0) {
+                    playerObj.tileIndex = (playerObj.tileIndex + 1) % nodes.length;
+                } else {
+                    playerObj.tileIndex = (playerObj.tileIndex - 1 + nodes.length) % nodes.length;
+                }
+                audio.playJump();
+
+                let jumpFrame = 0;
+                const totalJumpFrames = 12;
+
+                function animateJumpFrame() {
+                    jumpFrame++;
+                    animStep += 0.4;
+                    const progress = jumpFrame / totalJumpFrames;
+                    playerObj.jumpProgress = Math.sin(progress * Math.PI) * 28;
+                    drawBoard();
+
+                    if (jumpFrame < totalJumpFrames) {
+                        requestAnimationFrame(animateJumpFrame);
+                    } else {
+                        playerObj.jumpProgress = 0;
+                        drawBoard();
+                        setTimeout(doSingleJump, 120);
+                    }
+                }
+                requestAnimationFrame(animateJumpFrame);
+            }
+
+            doSingleJump();
+        }
+
+        function addXP(amount) {
+            state.player.xp += amount;
+            addLog(`✨ Gained +${amount} XP!`);
+            if (state.player.xp >= state.player.xpToNext) {
+                state.player.level++;
+                state.player.xp -= state.player.xpToNext;
+                state.player.xpToNext = Math.round(state.player.xpToNext * 1.4);
+                state.player.maxHp += 25;
+                state.player.hp = state.player.maxHp;
+                audio.playLevelUp();
+                document.getElementById('levelup-desc').innerText = `You reached Level ${state.player.level}! Max HP boosted to ${state.player.maxHp}!`;
+                document.getElementById('levelup-modal').classList.remove('hidden');
+            }
+            updateUI();
+        }
+
+        function closeLevelUpModal() { document.getElementById('levelup-modal').classList.add('hidden'); }
+
+        function handleTileEvent(playerObj, nextTurnCallback) {
+            const nodes = getActiveNodes();
+            const tile = nodes[playerObj.tileIndex];
+            addLog(`${playerObj.name} landed on <b>${tile.label}</b> (${tile.icon})`);
+
+            if (playerObj === state.player) addXP(20);
+
+            if (tile.type === 'start') {
+                playerObj.hp = Math.min(playerObj.maxHp, playerObj.hp + 25);
+                addLog(`💖 Rested at Castle! +25 HP.`);
+                audio.playCoin(); updateUI(); nextTurnCallback();
+            } else if (tile.type === 'coin') {
+                const bonus = (playerObj === state.player && CHARACTERS[state.player.charKey].bonusCoin) ? 1.2 : 1;
+                const earned = Math.round(20 * bonus);
+                if (playerObj === state.player) {
+                    state.player.coins += earned;
+                    document.getElementById('q2-prog').innerText = Math.min(100, state.player.coins);
+                }
+                addLog(`⭐ Gathered +${earned} Stars!`);
+                audio.playCoin(); updateUI(); nextTurnCallback();
+            } else if (tile.type === 'gem') {
+                if (playerObj === state.player) state.player.gems += 2;
+                addLog(`💎 Found +2 Gems!`);
+                audio.playCoin(); updateUI(); nextTurnCallback();
+            } else if (tile.type === 'powerup') {
+                if (playerObj === state.player) {
+                    if (state.player.inventory.length < 4) {
+                        const card = CARD_TYPES[Math.floor(Math.random() * CARD_TYPES.length)];
+                        state.player.inventory.push(card);
+                        addLog(`🎁 Got Card: <b>${card.name}</b>!`);
+                        audio.playCoin();
+                    } else { addLog(`🎒 Inventory full!`); }
+                }
+                updateUI(); nextTurnCallback();
+            } else if (tile.type === 'portal') {
+                const randomIdx = Math.floor(Math.random() * nodes.length);
+                playerObj.tileIndex = randomIdx;
+                addLog(`🕳️ Mystery Portal teleported ${playerObj.name} to tile #${randomIdx}!`);
+                audio.playVictory();
+                drawBoard();
+                updateUI();
+                nextTurnCallback();
+            } else if (tile.type === 'trap') {
+                if (playerObj.shieldActive) {
+                    playerObj.shieldActive = false;
+                    addLog(`🫧 Bubble Shield blocked the hazard!`);
+                    audio.playCoin();
+                } else {
+                    const dmg = 15;
+                    const lostCoins = Math.min(playerObj.coins || 0, 10);
+                    playerObj.hp = Math.max(0, playerObj.hp - dmg);
+                    if (playerObj === state.player) playerObj.coins -= lostCoins;
+                    addLog(`⚡ Shock Trap hit! Lost -${dmg} HP & -${lostCoins} Stars!`);
+                    audio.playTrap();
+                }
+                updateUI(); nextTurnCallback();
+            } else if (tile.type === 'enemy') {
+                const dmg = 12;
+                playerObj.hp = Math.max(0, playerObj.hp - dmg);
+                addLog(`⚔️ Fought enemy! Took ${dmg} damage.`);
+                audio.playTrap(); updateUI(); nextTurnCallback();
+            } else if (tile.type === 'boss') {
+                if (playerObj === state.player) { openBossModal(); }
+                else { addLog(`👑 Opponent challenged the Boss!`); nextTurnCallback(); }
+            } else { nextTurnCallback(); }
+        }
+
+        function switchTurn(nextTurn) {
+            state.turn = nextTurn;
+            const turnTextEl = document.getElementById('current-turn-text');
+            if (turnTextEl) turnTextEl.innerText = nextTurn === 'player' ? state.player.name : state.opponent.name;
+
+            if (nextTurn === 'opponent' && state.gameMode === 'com') {
+                document.getElementById('status-hint').innerText = "Rival COM Bot is rolling...";
+                setTimeout(() => {
+                    const aiRoll = Math.floor(Math.random() * 6) + 1;
+                    addLog(`🦊 Rival COM rolled a <b>${aiRoll}</b>!`);
+                    movePlayerWithJumps(state.opponent, aiRoll, () => {
+                        handleTileEvent(state.opponent, () => { switchTurn('player'); });
+                    });
+                }, 1200);
+            } else {
+                document.getElementById('status-hint').innerText = `${state.turn === 'player' ? state.player.name : state.opponent.name}'s turn to roll!`;
+            }
+        }
+
+        function useCard(cardIdx) {
+            if (state.turn !== 'player' || state.isRolling) return;
+            const card = state.player.inventory[cardIdx];
+            if (!card) return;
+
+            state.player.inventory.splice(cardIdx, 1);
+            addLog(`✨ Used Card: <b>${card.name}</b>!`);
+            audio.playCoin();
+
+            if (card.type === 'move') {
+                movePlayerWithJumps(state.player, card.val, () => { handleTileEvent(state.player, () => {}); });
+            } else if (card.type === 'teleport') {
+                const nodes = getActiveNodes();
+                const randomIdx = Math.floor(Math.random() * nodes.length);
+                state.player.tileIndex = randomIdx;
+                addLog(`🌀 Singularity Vortex warped you to tile #${randomIdx}!`);
+                audio.playVictory();
+                drawBoard();
+                handleTileEvent(state.player, () => {});
+            } else if (card.type === 'shield') {
+                state.player.shieldActive = true;
+                addLog(`🫧 Bubble Shield active!`);
+            } else if (card.type === 'heal') {
+                state.player.hp = Math.min(state.player.maxHp, state.player.hp + card.val);
+                addLog(`🧁 Restored +${card.val} HP.`);
+            } else if (card.type === 'attack') {
+                addLog(`🪄 Star Wand ready for Boss Battle!`);
+            }
+            updateUI();
+        }
+
+        function openBossModal() {
+            document.getElementById('boss-modal').classList.remove('hidden');
+            state.boss.hp = state.boss.maxHp;
+            updateBossUI();
+            audio.playVictory();
+        }
+
+        function updateBossUI() {
+            const pct = Math.max(0, (state.boss.hp / state.boss.maxHp) * 100);
+            document.getElementById('boss-hp-bar').style.width = `${pct}%`;
+            document.getElementById('boss-hp-text').innerText = `${state.boss.hp}/${state.boss.maxHp} HP`;
+        }
+
+        function executeBossAttack(type) {
+            const levelBonus = (state.player.level - 1) * 8;
+            if (type === 'attack') {
+                const playerDmg = Math.floor(Math.random() * 15) + 20 + levelBonus;
+                state.boss.hp = Math.max(0, state.boss.hp - playerDmg);
+                document.getElementById('boss-combat-log').innerText = `⚔️ Dealt ${playerDmg} damage to the Boss!`;
+                audio.playTone(420, 'sawtooth', 0.15);
+                updateBossUI();
+
+                if (state.boss.hp <= 0) {
+                    setTimeout(() => {
+                        document.getElementById('boss-modal').classList.add('hidden');
+                        state.player.coins += 80; state.player.gems += 5; addXP(50);
+                        addLog(`🏆 DEFEATED THE BOSS! Earned +80 Stars & +5 Gems!`);
+                        showGameOver(true);
+                    }, 800);
+                    return;
+                }
+
+                setTimeout(() => {
+                    const bossDmg = Math.max(8, (Math.floor(Math.random() * 10) + 12) - (state.player.level * 2));
+                    state.player.hp = Math.max(0, state.player.hp - bossDmg);
+                    document.getElementById('boss-combat-log').innerText = `💥 Boss retaliated (-${bossDmg} HP)!`;
+                    audio.playTrap(); updateUI();
+
+                    if (state.player.hp <= 0) {
+                        setTimeout(() => { document.getElementById('boss-modal').classList.add('hidden'); showGameOver(false); }, 800);
+                    }
+                }, 700);
+            } else if (type === 'card') {
+                const wandIdx = state.player.inventory.findIndex(c => c.type === 'attack');
+                if (wandIdx !== -1) {
+                    const card = state.player.inventory.splice(wandIdx, 1)[0];
+                    const totalDmg = card.val + levelBonus;
+                    state.boss.hp = Math.max(0, state.boss.hp - totalDmg);
+                    document.getElementById('boss-combat-log').innerText = `🪄 Star Wand Blast! Dealt ${totalDmg} damage!`;
+                    audio.playCoin(); updateBossUI(); updateUI();
+
+                    if (state.boss.hp <= 0) {
+                        setTimeout(() => {
+                            document.getElementById('boss-modal').classList.add('hidden');
+                            state.player.coins += 80; state.player.gems += 5; addXP(50);
+                            showGameOver(true);
+                        }, 800);
+                    }
+                } else {
+                    document.getElementById('boss-combat-log').innerText = `❌ No Star Wand in inventory!`;
+                }
+            }
+        }
+
+        function updateUI() {
+            const hpPct = Math.max(0, (state.player.hp / state.player.maxHp) * 100);
+            document.getElementById('player-hp-bar').style.width = `${hpPct}%`;
+            document.getElementById('player-hp-text').innerText = `${state.player.hp}/${state.player.maxHp}`;
+            document.getElementById('player-level-badge').innerText = `Lv. ${state.player.level}`;
+            document.getElementById('player-coins').innerText = state.player.coins;
+            document.getElementById('player-gems').innerText = state.player.gems;
+
+            const invContainer = document.getElementById('inventory-container');
+            invContainer.innerHTML = '';
+            document.getElementById('card-count').innerText = `${state.player.inventory.length}/4`;
+
+            state.player.inventory.forEach((card, idx) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'bg-white border-2 border-purple-200 rounded-xl p-2 flex flex-col justify-between cursor-pointer hover:border-purple-400 transition shadow-sm';
+                cardEl.onclick = () => useCard(idx);
+                cardEl.innerHTML = `
+                    <div class="flex items-center gap-1 font-bold text-xs text-purple-700">
+                        <span>${card.icon}</span><span class="truncate">${card.name}</span>
+                    </div>
+                    <div class="text-[10px] text-slate-500 leading-tight">${card.desc}</div>
+                `;
+                invContainer.appendChild(cardEl);
+            });
+        }
+
+        function addLog(msg) {
+            const logFeed = document.getElementById('log-feed');
+            const item = document.createElement('div');
+            item.innerHTML = msg;
+            logFeed.prepend(item);
+        }
+
+        function showGameOver(victory) {
+            const modal = document.getElementById('game-over-modal');
+            modal.classList.remove('hidden');
+            document.getElementById('end-emoji').innerText = victory ? '🏆' : '😿';
+            document.getElementById('end-title').innerText = victory ? 'VICTORY!' : 'DEFEATED!';
+            document.getElementById('end-desc').innerText = victory ? 'You conquered the realm!' : 'You ran out of health! Try again!';
+            document.getElementById('final-stars-count').innerText = state.player.coins;
+            document.getElementById('final-gems-count').innerText = state.player.gems;
+            if (victory) audio.playVictory(); else audio.playTrap();
+        }
+
+        window.onload = function() {
+            initSetupGrids();
+        };
+    </script>
 </body>
 </html>
