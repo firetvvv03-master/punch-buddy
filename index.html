@@ -93,16 +93,31 @@
             <h1 class="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 mb-1">
                 Cute Character Quest! 🐰✨
             </h1>
-            <p class="text-slate-600 text-xs sm:text-sm mb-3 font-semibold">Choose your category & select from 30 unique chibi hero skins!</p>
+            <p class="text-slate-600 text-xs sm:text-sm mb-3 font-semibold">Choose game mode & select unique skins for your adventure!</p>
 
-            <!-- Mode Selection Tabs -->
-            <div class="flex justify-center gap-2 mb-3">
-                <button onclick="setGameMode('com')" id="mode-com-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-pink-500 text-white border-2 border-white shadow">
-                    🤖 vs COM Bot
-                </button>
-                <button onclick="setGameMode('friend')" id="mode-friend-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-300 text-purple-900 border-2 border-white">
-                    👥 2-Player
-                </button>
+            <!-- Dropdown Game Mode Selection Bar (Standalone Dropdown) -->
+            <div class="flex flex-wrap justify-center gap-2 mb-3 items-center">
+                <div class="relative inline-block text-left w-full sm:w-auto">
+                    <select id="game-mode-dropdown" onchange="handleDropdownModeChange(this.value)" class="btn-cute px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-pink-500 to-purple-600 text-white border-2 border-white shadow cursor-pointer w-full">
+                        <option value="com">🤖 Game Mode: vs COM Bot</option>
+                        <option value="single">👑 Game Mode: Solo Boss Quest</option>
+                        <option value="p2p">🌐 Game Mode: P2P / Local Network</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- P2P Room ID Container (Hidden unless P2P mode is selected) -->
+            <div id="p2p-container" class="hidden mb-3 bg-indigo-50 p-3 rounded-2xl border-2 border-indigo-200 flex flex-col sm:flex-row items-center justify-center gap-2">
+                <span class="text-xs font-bold text-indigo-700">🌐 P2P Room ID:</span>
+                <input id="p2p-room-input" type="text" placeholder="e.g. BUNNY99" class="px-3 py-1.5 text-xs rounded-xl border border-indigo-300 uppercase font-bold text-center w-36 bg-white" maxlength="8">
+                <button onclick="hostOrJoinP2PRoom('host')" class="btn-cute bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl">Host Room</button>
+                <button onclick="hostOrJoinP2PRoom('join')" class="btn-cute bg-purple-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl">Join Room</button>
+            </div>
+
+            <!-- Selecting Target Tab (Player 1 vs Opponent) -->
+            <div id="target-selection-container" class="flex justify-center gap-2 mb-3">
+                <button onclick="setSelectingTarget('player')" id="target-player-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-pink-600 text-white border-2 border-white shadow">⭐ Select Player 1 Skin</button>
+                <button onclick="setSelectingTarget('opponent')" id="target-opp-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white">🦊 Select Opponent Skin</button>
             </div>
 
             <!-- Skin Category Tabs -->
@@ -110,15 +125,16 @@
                 <button onclick="setCategory('animal')" id="cat-animal-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-rose-500 text-white border-2 border-white shadow">🐾 Animals</button>
                 <button onclick="setCategory('fruit')" id="cat-fruit-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white">🍓 Fruits</button>
                 <button onclick="setCategory('transport')" id="cat-transport-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white">🚀 Vehicles</button>
+                <button onclick="setCategory('chibi')" id="cat-chibi-btn" class="btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white">👑 Chibis</button>
             </div>
 
-            <div class="text-left font-bold text-xs text-purple-700 uppercase tracking-wider mb-2">Select Hero Skin (10 per Category):</div>
-            <div id="setup-chars-grid" class="grid grid-cols-5 gap-2 mb-4 max-h-[150px] overflow-y-auto pr-1">
+            <div id="selection-instruction" class="text-left font-bold text-xs text-purple-700 uppercase tracking-wider mb-2">Select Player 1 Skin:</div>
+            <div id="setup-chars-grid" class="grid grid-cols-5 gap-2 mb-4 max-h-[140px] overflow-y-auto pr-1">
                 <!-- Populated via JS -->
             </div>
 
-            <div class="text-left font-bold text-xs text-purple-700 uppercase tracking-wider mb-2">Select Board Style (11 Unique Map Topologies):</div>
-            <div id="setup-boards-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5 max-h-[110px] overflow-y-auto pr-1">
+            <div class="text-left font-bold text-xs text-purple-700 uppercase tracking-wider mb-2">Select Board Style:</div>
+            <div id="setup-boards-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5 max-h-[120px] overflow-y-auto pr-1">
                 <!-- Populated via JS -->
             </div>
 
@@ -129,7 +145,7 @@
     </div>
 
     <!-- MAIN GAME LAYOUT -->
-    <div class="w-full max-w-5xl flex flex-col items-center">
+    <div class="w-full max-w-6xl flex flex-col items-center">
         <!-- Top Stats & Menu Navigation Bar -->
         <header class="w-full glass-panel rounded-2xl p-3 sm:p-4 mb-4 flex flex-wrap items-center justify-between gap-3 shadow-sm relative z-30">
             <div class="flex items-center gap-3">
@@ -139,12 +155,26 @@
                         <h2 id="player-name-text" class="font-bold text-pink-600 text-sm sm:text-base">Cyan Glow Bunny</h2>
                         <span id="player-level-badge" class="bg-amber-100 border border-amber-300 text-amber-700 text-[10px] font-black px-2 py-0.5 rounded-full">Lv. 1</span>
                     </div>
-                    <!-- Health Bar -->
+                    <!-- Player Health Bar -->
                     <div class="flex items-center gap-2 mt-0.5">
                         <div class="w-24 sm:w-32 h-3.5 bg-slate-200 rounded-full overflow-hidden border border-slate-300 relative shadow-inner">
                             <div id="player-hp-bar" class="h-full bg-gradient-to-r from-emerald-400 to-green-500 transition-all duration-500" style="width: 100%;"></div>
                         </div>
                         <span id="player-hp-text" class="text-[11px] font-bold text-slate-600">100/100</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opponent Health Widget on Header -->
+            <div id="opp-header-widget" class="flex items-center gap-3 bg-rose-50/80 px-3 py-1.5 rounded-2xl border border-rose-200">
+                <span id="opp-avatar-badge" class="text-2xl">🦊</span>
+                <div>
+                    <h2 id="opp-name-text" class="font-bold text-rose-600 text-xs">Rival Fox</h2>
+                    <div class="flex items-center gap-1.5 mt-0.5">
+                        <div class="w-20 sm:w-24 h-3 bg-slate-200 rounded-full overflow-hidden border border-slate-300 relative shadow-inner">
+                            <div id="opp-hp-bar" class="h-full bg-gradient-to-r from-rose-400 to-red-500 transition-all duration-500" style="width: 100%;"></div>
+                        </div>
+                        <span id="opp-hp-text" class="text-[10px] font-bold text-slate-600">100/100</span>
                     </div>
                 </div>
             </div>
@@ -168,6 +198,7 @@
                     ⚙️ Menu ▾
                 </button>
                 <div id="menu-dropdown" class="absolute right-0 mt-2 w-48 glass-panel rounded-2xl p-2 shadow-2xl flex flex-col gap-1.5 z-50 hidden border-2 border-purple-300">
+                    <button onclick="openSkinShopModal(); toggleMenuDropdown();" class="btn-cute text-left bg-pink-100 hover:bg-pink-200 text-pink-800 font-bold px-3 py-2 rounded-xl text-xs w-full">🎨 Change Skin</button>
                     <button onclick="openModal('shop-modal'); toggleMenuDropdown();" class="btn-cute text-left bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold px-3 py-2 rounded-xl text-xs w-full">🛍️ Star Shop</button>
                     <button onclick="openModal('quests-modal'); toggleMenuDropdown();" class="btn-cute text-left bg-pink-100 hover:bg-pink-200 text-pink-800 font-bold px-3 py-2 rounded-xl text-xs w-full">📜 Quests</button>
                     <button onclick="openModal('achieve-modal'); toggleMenuDropdown();" class="btn-cute text-left bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold px-3 py-2 rounded-xl text-xs w-full">🏆 Badges</button>
@@ -181,12 +212,12 @@
         <!-- Main Arena Grid -->
         <div class="w-full grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
             
-            <!-- Left Side: Canvas Board (Occupies 2 cols) -->
-            <div class="lg:col-span-2 glass-panel rounded-3xl p-2 sm:p-4 flex flex-col items-center justify-center relative min-h-[420px] sm:min-h-[480px]">
+            <!-- Left Side: Canvas Board -->
+            <div class="lg:col-span-2 glass-panel rounded-3xl p-3 sm:p-5 flex flex-col items-center justify-center relative min-h-[500px] sm:min-h-[560px]">
                 <div class="absolute top-3 left-4 text-xs font-bold text-purple-500 bg-purple-100 px-3 py-1 rounded-full border border-purple-200 flex items-center gap-2">
                     <span id="current-board-name">🐻 Bear-Face Realm</span>
                 </div>
-                <canvas id="boardCanvas" class="w-full h-full max-w-[500px] max-h-[500px] rounded-2xl"></canvas>
+                <canvas id="boardCanvas" class="w-full h-full max-w-[560px] max-h-[560px] rounded-2xl"></canvas>
             </div>
 
             <!-- Right Side: Control Dashboard & Log -->
@@ -210,19 +241,8 @@
                     <p id="status-hint" class="text-xs text-pink-500 font-semibold mt-2 animate-pulse">It's your turn to roll!</p>
                 </div>
 
-                <!-- Inventory / Power-Up Cards -->
-                <div class="glass-panel rounded-3xl p-4 flex-1 flex flex-col">
-                    <h3 class="font-extrabold text-purple-600 text-sm mb-2 flex items-center justify-between">
-                        <span>🎒 Power-Up Cards</span>
-                        <span id="card-count" class="text-xs bg-purple-200 text-purple-700 px-2 py-0.5 rounded-full font-bold">0/4</span>
-                    </h3>
-                    <div id="inventory-container" class="grid grid-cols-2 gap-2 flex-1 min-h-[90px]">
-                        <!-- Cards dynamically rendered -->
-                    </div>
-                </div>
-
                 <!-- Turn Activity Feed -->
-                <div class="glass-panel rounded-3xl p-3 max-h-[140px] flex flex-col">
+                <div class="glass-panel rounded-3xl p-3 max-h-[220px] flex flex-col flex-1">
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Adventure Log</h4>
                     <div id="log-feed" class="overflow-y-auto flex-1 space-y-1 text-xs pr-1 font-medium text-slate-600">
                         <div class="text-pink-500">✨ Welcome to Cute Character Quest! Roll the dice to begin!</div>
@@ -232,27 +252,52 @@
         </div>
     </div>
 
-    <!-- MODAL POPUPS: SHOP, DAILY QUESTS, ACHIEVEMENTS, SOUND, PAUSE -->
+    <!-- MODAL POPUPS -->
     
+    <!-- IN-GAME SKIN CHANGER MODAL -->
+    <div id="skin-shop-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/60 backdrop-blur-md hidden">
+        <div class="glass-panel rounded-3xl p-6 max-w-md w-full text-center border-4 border-pink-300 shadow-2xl">
+            <h2 class="text-2xl font-black text-pink-600 mb-1">🎨 Change Player Skin</h2>
+            <p class="text-xs text-slate-500 mb-3">Select a new hero skin for Player 1!</p>
+            <div class="flex justify-center gap-2 mb-3">
+                <button onclick="setInGameSkinCat('animal')" id="ings-cat-animal-btn" class="btn-cute px-2.5 py-1 rounded-xl font-bold text-xs bg-rose-500 text-white border-2 border-white shadow">🐾 Animals</button>
+                <button onclick="setInGameSkinCat('fruit')" id="ings-cat-fruit-btn" class="btn-cute px-2.5 py-1 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white">🍓 Fruits</button>
+                <button onclick="setInGameSkinCat('transport')" id="ings-cat-transport-btn" class="btn-cute px-2.5 py-1 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white">🚀 Vehicles</button>
+                <button onclick="setInGameSkinCat('chibi')" id="ings-cat-chibi-btn" class="btn-cute px-2.5 py-1 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white">👑 Chibis</button>
+            </div>
+            <div id="ings-chars-grid" class="grid grid-cols-4 gap-2 mb-4 max-h-[160px] overflow-y-auto pr-1">
+                <!-- Populated via JS -->
+            </div>
+            <button onclick="closeModal('skin-shop-modal')" class="btn-cute w-full bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl">Done</button>
+        </div>
+    </div>
+
     <!-- SHOP MODAL -->
     <div id="shop-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/60 backdrop-blur-md hidden">
         <div class="glass-panel rounded-3xl p-6 max-w-md w-full text-center border-4 border-amber-300 shadow-2xl">
             <h2 class="text-2xl font-black text-amber-600 mb-1">🛍️ Star Shop</h2>
-            <p class="text-xs text-slate-500 mb-4">Spend your hard-earned stars & gems on boosters!</p>
+            <p class="text-xs text-slate-500 mb-4">Spend your stars & gems on boosters or unlock special Chibi skins!</p>
             <div class="space-y-3 mb-6 text-left">
-                <div class="flex items-center justify-between bg-amber-50 p-3 rounded-2xl border border-amber-200">
-                    <div>
-                        <div class="font-bold text-xs text-slate-700">⚡ Sugar Rush Card</div>
-                        <div class="text-[10px] text-slate-500">Instant +3 forward movement</div>
-                    </div>
-                    <button onclick="buyShopItem('card', 30)" class="btn-cute bg-amber-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl">30 ⭐</button>
-                </div>
                 <div class="flex items-center justify-between bg-cyan-50 p-3 rounded-2xl border border-cyan-200">
                     <div>
                         <div class="font-bold text-xs text-slate-700">🧁 Cupcake Heal</div>
                         <div class="text-[10px] text-slate-500">Restore +35 HP instantly</div>
                     </div>
                     <button onclick="buyShopItem('heal', 2)" class="btn-cute bg-cyan-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl">2 💎</button>
+                </div>
+                <div class="flex items-center justify-between bg-pink-50 p-3 rounded-2xl border border-pink-200">
+                    <div>
+                        <div class="font-bold text-xs text-slate-700">💖 Chibi Princess Skin</div>
+                        <div class="text-[10px] text-slate-500">Unlock legendary royal chibi hero</div>
+                    </div>
+                    <button onclick="buyShopItem('skin_princess', 10)" class="btn-cute bg-pink-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl">10 💎</button>
+                </div>
+                <div class="flex items-center justify-between bg-purple-50 p-3 rounded-2xl border border-purple-200">
+                    <div>
+                        <div class="font-bold text-xs text-slate-700">⭐ Chibi Ninja Skin</div>
+                        <div class="text-[10px] text-slate-500">Unlock stealth ninja hero</div>
+                    </div>
+                    <button onclick="buyShopItem('skin_ninja', 10)" class="btn-cute bg-purple-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl">10 💎</button>
                 </div>
             </div>
             <button onclick="closeModal('shop-modal')" class="btn-cute w-full bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl">Close</button>
@@ -297,13 +342,6 @@
                         <div class="text-[10px] text-slate-500">Begin your adventure on any map. (Unlocked!)</div>
                     </div>
                 </div>
-                <div class="bg-purple-50 p-3 rounded-2xl border border-purple-200 flex items-center gap-3 opacity-60">
-                    <span class="text-2xl">👑</span>
-                    <div>
-                        <div class="font-bold text-purple-900">Boss Slayer</div>
-                        <div class="text-[10px] text-slate-500">Defeat the Gummy Bear King.</div>
-                    </div>
-                </div>
             </div>
             <button onclick="closeModal('achieve-modal')" class="btn-cute w-full bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl">Close</button>
         </div>
@@ -340,7 +378,7 @@
         <div class="glass-panel rounded-3xl p-6 max-w-sm w-full text-center border-4 border-amber-300 shadow-2xl">
             <div class="text-6xl mb-2 animate-bounce">✨🎉</div>
             <h2 class="text-3xl font-black text-amber-500 mb-1">LEVEL UP!</h2>
-            <p id="levelup-desc" class="text-xs text-slate-600 mb-4">You reached Level 2! Max HP & Power increased!</p>
+            <p id="levelup-desc" class="text-xs text-slate-600 mb-4">You reached Level 2! Restored +30 HP!</p>
             <button onclick="closeLevelUpModal()" class="btn-cute w-full bg-gradient-to-r from-amber-400 to-rose-500 text-white font-black text-lg py-3 rounded-2xl border-2 border-white">
                 AWESOME! 🚀
             </button>
@@ -353,24 +391,16 @@
             <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-rose-500 to-amber-500 text-white px-6 py-1 rounded-full font-black text-xs border-2 border-white shadow-md uppercase tracking-wider">
                 ⚡ Boss Encounter!
             </div>
-
-            <!-- Boss Visual -->
             <div id="boss-sprite" class="text-7xl my-3 animate-bounce">👑</div>
             <h2 id="boss-title" class="text-2xl font-black text-rose-600">Gummy Bear King</h2>
             <p id="boss-subtitle" class="text-xs text-slate-500 mb-3">Guarding the Center Treasure!</p>
-
-            <!-- Boss Health -->
             <div class="w-full bg-slate-200 h-5 rounded-full overflow-hidden border border-slate-300 mb-4 relative shadow-inner">
                 <div id="boss-hp-bar" class="h-full bg-gradient-to-r from-rose-500 to-red-600 transition-all duration-300" style="width: 100%;"></div>
                 <span id="boss-hp-text" class="absolute inset-0 flex items-center justify-center text-xs font-black text-white drop-shadow">80/80 HP</span>
             </div>
-
-            <!-- Combat Action Log Box -->
             <div class="bg-pink-50/90 border-2 border-pink-200 rounded-2xl p-3 mb-4 text-xs text-slate-600">
                 <span id="boss-combat-log" class="font-bold text-purple-700">The Boss yawns cute & threateningly! Choose your move!</span>
             </div>
-
-            <!-- Combat Controls -->
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="executeBossAttack('attack')" class="btn-cute bg-gradient-to-r from-rose-500 to-pink-500 text-white font-extrabold py-3 rounded-xl border border-white text-sm">
                     ⚔️ Attack
@@ -388,12 +418,10 @@
             <div id="end-emoji" class="text-6xl mb-2">🏆</div>
             <h2 id="end-title" class="text-3xl font-black text-amber-500 mb-1">VICTORY!</h2>
             <p id="end-desc" class="text-xs text-slate-600 mb-4">You conquered the realm!</p>
-
             <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3 mb-6 text-sm font-bold text-amber-800 flex justify-around">
                 <div>Stars: <span id="final-stars-count" class="text-pink-600">0</span> ⭐</div>
                 <div>Gems: <span id="final-gems-count" class="text-cyan-600">0</span> 💎</div>
             </div>
-
             <button onclick="location.reload()" class="btn-cute w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-black text-lg py-3 rounded-2xl border-2 border-white">
                 PLAY AGAIN! 🔄
             </button>
@@ -461,138 +489,269 @@
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
+        let inGameSkinCat = 'animal';
+        function openSkinShopModal() {
+            openModal('skin-shop-modal');
+            initInGameSkinGrid();
+        }
+
+        function setInGameSkinCat(cat) {
+            inGameSkinCat = cat;
+            ['animal', 'fruit', 'transport', 'chibi'].forEach(c => {
+                const btn = document.getElementById(`ings-cat-${c}-btn`);
+                if (btn) {
+                    if (c === cat) {
+                        btn.className = 'btn-cute px-2.5 py-1 rounded-xl font-bold text-xs bg-rose-500 text-white border-2 border-white shadow';
+                    } else {
+                        btn.className = 'btn-cute px-2.5 py-1 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white';
+                    }
+                }
+            });
+            initInGameSkinGrid();
+            audio.playTone(600, 'sine', 0.08);
+        }
+
+        function initInGameSkinGrid() {
+            const grid = document.getElementById('ings-chars-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            Object.keys(CHARACTERS).forEach(key => {
+                const char = CHARACTERS[key];
+                if (char.category !== inGameSkinCat) return;
+                const isSelected = key === state.player.charKey;
+                const isUsedByOpp = key === state.opponent.charKey;
+
+                const el = document.createElement('div');
+                if (isUsedByOpp && state.gameMode !== 'single') {
+                    el.className = 'rounded-2xl p-2 text-center border-4 border-slate-300 bg-slate-100 opacity-40 cursor-not-allowed';
+                    el.innerHTML = `
+                        <div class="w-7 h-7 mx-auto rounded-full mb-1 border-2 border-slate-300 flex items-center justify-center font-bold text-xs text-slate-500" style="background: ${char.bodyColor}">🚫</div>
+                        <div class="font-bold text-slate-400 text-[9px] truncate">In Use</div>
+                    `;
+                } else {
+                    el.className = `cursor-pointer rounded-2xl p-2 transition transform hover:-translate-y-1 text-center border-4 ${isSelected ? 'border-pink-500 bg-pink-50 ring-2 ring-pink-300' : 'border-purple-200 bg-white'}`;
+                    el.onclick = () => {
+                        state.player.charKey = key;
+                        state.player.name = char.name;
+                        document.getElementById('player-name-text').innerText = char.name;
+                        document.getElementById('player-avatar-badge').innerText = char.icon;
+                        if (char.maxHp > state.player.maxHp) state.player.maxHp = char.maxHp;
+                        initInGameSkinGrid();
+                        drawBoard();
+                        updateUI();
+                        addLog(`🎨 Switched skin to <b>${char.name}</b>!`);
+                        audio.playVictory();
+                    };
+                    el.innerHTML = `
+                        <div class="w-7 h-7 mx-auto rounded-full shadow-md mb-1 border-2 border-white flex items-center justify-center font-bold text-xs text-white" style="background: ${char.bodyColor}">${char.icon}</div>
+                        <div class="font-bold text-slate-700 text-[9px] truncate">${char.name}</div>
+                    `;
+                }
+                grid.appendChild(el);
+            });
+        }
+
         function buyShopItem(type, cost) {
-            if (type === 'card' && state.player.coins >= cost) {
-                state.player.coins -= cost;
-                state.player.inventory.push(CARD_TYPES[0]);
-                addLog(`🛍️ Purchased Sugar Rush Card!`);
-                audio.playCoin(); updateUI();
-            } else if (type === 'heal' && state.player.gems >= cost) {
+            if (type === 'heal' && state.player.gems >= cost) {
                 state.player.gems -= cost;
                 state.player.hp = Math.min(state.player.maxHp, state.player.hp + 35);
                 addLog(`🛍️ Purchased Cupcake Heal! (+35 HP)`);
                 audio.playCoin(); updateUI();
+            } else if (type === 'skin_princess' && state.player.gems >= cost) {
+                state.player.gems -= cost;
+                CHARACTERS['chibi_princess'] = { name: 'Chibi Princess', icon: '👑', category: 'chibi', species: 'princess', bodyColor: '#ff69b4', outfitColor: '#ffd700', faceStyle: 'princess', maxHp: 130, bonusCoin: 0.3 };
+                playerSelectedChar = 'chibi_princess';
+                initSetupGrids();
+                addLog(`👑 Unlocked & equipped Chibi Princess Skin!`);
+                audio.playVictory(); updateUI();
+            } else if (type === 'skin_ninja' && state.player.gems >= cost) {
+                state.player.gems -= cost;
+                CHARACTERS['chibi_ninja'] = { name: 'Chibi Ninja', icon: '🥷', category: 'chibi', species: 'ninja', bodyColor: '#334155', outfitColor: '#ef4444', faceStyle: 'ninja', maxHp: 120 };
+                playerSelectedChar = 'chibi_ninja';
+                initSetupGrids();
+                addLog(`⭐ Unlocked & equipped Chibi Ninja Skin!`);
+                audio.playVictory(); updateUI();
             } else {
                 addLog(`❌ Not enough currency!`);
                 audio.playTrap();
             }
         }
 
-        /* --- 30 DISTINCT SKINS WITH UNIQUE VISUAL CATEGORIES --- */
+        /* --- CHARACTER SKINS WITH UNIQUE FACE EXPRESSIONS & FEET --- */
         const CHARACTERS = {
-            cyan_bunny: { name: 'Cyan Glow Bunny', category: 'animal', species: 'bunny', bodyColor: '#00e5ff', outfitColor: '#ff4081', maxHp: 100, bonusCoin: 0.2 },
-            pink_bunny: { name: 'Neon Pink Bunny', category: 'animal', species: 'bunny', bodyColor: '#ff2a85', outfitColor: '#00e5ff', maxHp: 95, bonusCoin: 0.15 },
-            lime_kitty: { name: 'Lime Kitten', category: 'animal', species: 'cat', bodyColor: '#76ff03', outfitColor: '#9c27b0', maxHp: 90, bonusCard: true },
-            violet_fox: { name: 'Violet Fox', category: 'animal', species: 'fox', bodyColor: '#aa00ff', outfitColor: '#ffeb3b', maxHp: 95, bonusCoin: 0.15 },
-            sun_bear: { name: 'Sunny Bear', category: 'animal', species: 'bear', bodyColor: '#ffd600', outfitColor: '#e91e63', maxHp: 125 },
-            coral_panda: { name: 'Coral Panda', category: 'animal', species: 'panda', bodyColor: '#ff6e40', outfitColor: '#00bcd4', maxHp: 120 },
-            mint_penguin: { name: 'Mint Penguin', category: 'animal', species: 'penguin', bodyColor: '#1de9b6', outfitColor: '#ff9800', maxHp: 100, bonusCoin: 0.1 },
-            berry_koala: { name: 'Berry Koala', category: 'animal', species: 'koala', bodyColor: '#e91e63', outfitColor: '#8bc34a', maxHp: 110 },
-            electric_unicorn: { name: 'Electric Unicorn', category: 'animal', species: 'unicorn', bodyColor: '#00b0ff', outfitColor: '#ffeb3b', maxHp: 100, bonusCoin: 0.25 },
-            flare_dragon: { name: 'Flare Dragon', category: 'animal', species: 'dragon', bodyColor: '#ff3d00', outfitColor: '#4caf50', maxHp: 135, bonusCard: true },
-            strawberry_pie: { name: 'Strawberry Chibi', category: 'fruit', species: 'strawberry', bodyColor: '#ff1744', outfitColor: '#4caf50', maxHp: 90, bonusCoin: 0.2 },
-            juicy_melon: { name: 'Juicy Watermelon', category: 'fruit', species: 'watermelon', bodyColor: '#00e676', outfitColor: '#ff1744', maxHp: 110 },
-            sweet_peach: { name: 'Sweet Peach', category: 'fruit', species: 'peach', bodyColor: '#ff9e80', outfitColor: '#8bc34a', maxHp: 95, bonusCard: true },
-            sunny_lemon: { name: 'Sunny Lemon', category: 'fruit', species: 'lemon', bodyColor: '#ffea00', outfitColor: '#00e5ff', maxHp: 100 },
-            purple_grape: { name: 'Purple Grape', category: 'fruit', species: 'grape', bodyColor: '#b388ff', outfitColor: '#4caf50', maxHp: 105 },
-            chunky_orange: { name: 'Chunky Orange', category: 'fruit', species: 'orange', bodyColor: '#ff9100', outfitColor: '#00bcd4', maxHp: 115 },
-            blue_blueberry: { name: 'Blueberry Dot', category: 'fruit', species: 'blueberry', bodyColor: '#2979ff', outfitColor: '#ffeb3b', maxHp: 85, bonusCoin: 0.25 },
-            sweet_cupcake: { name: 'Cupcake Cutie', category: 'fruit', species: 'cupcake', bodyColor: '#ff80ab', outfitColor: '#7c4dff', maxHp: 120 },
-            boba_tea: { name: 'Boba Tea Bot', category: 'fruit', species: 'boba', bodyColor: '#8d6e63', outfitColor: '#ff4081', maxHp: 100, bonusCard: true },
-            donut_star: { name: 'Glazed Donut', category: 'fruit', species: 'donut', bodyColor: '#ff4081', outfitColor: '#ffeb3b', maxHp: 95 },
-            turbo_kart: { name: 'Turbo Kart', category: 'transport', species: 'kart', bodyColor: '#ff3d00', outfitColor: '#1e293b', maxHp: 110, bonusCoin: 0.2 },
-            sky_rocket: { name: 'Sky Rocket', category: 'transport', species: 'rocket', bodyColor: '#2979ff', outfitColor: '#ffea00', maxHp: 100, bonusCard: true },
-            cloud_balloon: { name: 'Cloud Balloon', category: 'transport', species: 'balloon', bodyColor: '#00e5ff', outfitColor: '#ff80ab', maxHp: 90 },
-            magic_train: { name: 'Choo Choo Train', category: 'transport', species: 'train', bodyColor: '#e91e63', outfitColor: '#ffd600', maxHp: 130 },
-            mini_copter: { name: 'Mini Copter', category: 'transport', species: 'copter', bodyColor: '#76ff03', outfitColor: '#3f51b5', maxHp: 95 },
-            speed_boat: { name: 'Speed Boat', category: 'transport', species: 'boat', bodyColor: '#00bcd4', outfitColor: '#ff5722', maxHp: 105 },
-            space_ufo: { name: 'Space UFO', category: 'transport', species: 'ufo', bodyColor: '#d500f9', outfitColor: '#00e676', maxHp: 120, bonusCard: true },
-            eco_bike: { name: 'Eco Cycle', category: 'transport', species: 'bike', bodyColor: '#ffeb3b', outfitColor: '#00e5ff', maxHp: 85, bonusCoin: 0.25 },
-            fire_engine: { name: 'Tiny Firetruck', category: 'transport', species: 'firetruck', bodyColor: '#f44336', outfitColor: '#ffeb3b', maxHp: 135 },
-            star_cruiser: { name: 'Star Cruiser', category: 'transport', species: 'cruiser', bodyColor: '#673ab7', outfitColor: '#00e5ff', maxHp: 115 }
+            cyan_bunny: { name: 'Cyan Glow Bunny', icon: '🐰', category: 'animal', species: 'bunny', bodyColor: '#00e5ff', outfitColor: '#ff4081', faceStyle: 'wink_happy', maxHp: 100, bonusCoin: 0.2 },
+            pink_bunny: { name: 'Neon Pink Bunny', icon: '🐰', category: 'animal', species: 'bunny', bodyColor: '#ff2a85', outfitColor: '#00e5ff', faceStyle: 'star_eyes', maxHp: 95, bonusCoin: 0.15 },
+            lime_kitty: { name: 'Lime Kitten', icon: '🐱', category: 'animal', species: 'cat', bodyColor: '#76ff03', outfitColor: '#9c27b0', faceStyle: 'cat_grin', maxHp: 90 },
+            violet_fox: { name: 'Violet Fox', icon: '🦊', category: 'animal', species: 'fox', bodyColor: '#aa00ff', outfitColor: '#ffeb3b', faceStyle: 'smirk', maxHp: 95, bonusCoin: 0.15 },
+            sun_bear: { name: 'Sunny Bear', icon: '🐻', category: 'animal', species: 'bear', bodyColor: '#ffd600', outfitColor: '#e91e63', faceStyle: 'bear_smile', maxHp: 125 },
+            coral_panda: { name: 'Coral Panda', icon: '🐼', category: 'animal', species: 'panda', bodyColor: '#ff6e40', outfitColor: '#00bcd4', faceStyle: 'sleepy_cute', maxHp: 120 },
+            mint_penguin: { name: 'Mint Penguin', icon: '🐧', category: 'animal', species: 'penguin', bodyColor: '#1de9b6', outfitColor: '#ff9800', faceStyle: 'curious', maxHp: 100, bonusCoin: 0.1 },
+            berry_koala: { name: 'Berry Koala', icon: '🐨', category: 'animal', species: 'koala', bodyColor: '#e91e63', outfitColor: '#8bc34a', faceStyle: 'blush_happy', maxHp: 110 },
+            electric_unicorn: { name: 'Electric Unicorn', icon: '🦄', category: 'animal', species: 'unicorn', bodyColor: '#00b0ff', outfitColor: '#ffeb3b', faceStyle: 'sparkle_eyes', maxHp: 100, bonusCoin: 0.25 },
+            flare_dragon: { name: 'Flare Dragon', icon: '🐲', category: 'animal', species: 'dragon', bodyColor: '#ff3d00', outfitColor: '#4caf50', faceStyle: 'fierce', maxHp: 135 },
+            
+            strawberry_pie: { name: 'Strawberry Chibi', icon: '🍓', category: 'fruit', species: 'strawberry', bodyColor: '#ff1744', outfitColor: '#4caf50', faceStyle: 'sweet', maxHp: 90, bonusCoin: 0.2 },
+            juicy_melon: { name: 'Juicy Watermelon', icon: '🍉', category: 'fruit', species: 'watermelon', bodyColor: '#00e676', outfitColor: '#ff1744', faceStyle: 'melon_grin', maxHp: 110 },
+            sweet_peach: { name: 'Sweet Peach', icon: '🍑', category: 'fruit', species: 'peach', bodyColor: '#ff9e80', outfitColor: '#8bc34a', faceStyle: 'blush_happy', maxHp: 95 },
+            sunny_lemon: { name: 'Sunny Lemon', icon: '🍋', category: 'fruit', species: 'lemon', bodyColor: '#ffea00', outfitColor: '#00e5ff', faceStyle: 'sour_wink', maxHp: 100 },
+            purple_grape: { name: 'Purple Grape', icon: '🍇', category: 'fruit', species: 'grape', bodyColor: '#b388ff', outfitColor: '#4caf50', faceStyle: 'curious', maxHp: 105 },
+            chunky_orange: { name: 'Chunky Orange', icon: '🍊', category: 'fruit', species: 'orange', bodyColor: '#ff9100', outfitColor: '#00bcd4', faceStyle: 'bear_smile', maxHp: 115 },
+            blue_blueberry: { name: 'Blueberry Dot', icon: '🫐', category: 'fruit', species: 'blueberry', bodyColor: '#2979ff', outfitColor: '#ffeb3b', faceStyle: 'sleepy_cute', maxHp: 85, bonusCoin: 0.25 },
+            sweet_cupcake: { name: 'Cupcake Cutie', icon: '🧁', category: 'fruit', species: 'cupcake', bodyColor: '#ff80ab', outfitColor: '#7c4dff', faceStyle: 'sparkle_eyes', maxHp: 120 },
+            boba_tea: { name: 'Boba Tea Bot', icon: '🧋', category: 'fruit', species: 'boba', bodyColor: '#8d6e63', outfitColor: '#ff4081', faceStyle: 'bot_face', maxHp: 100 },
+            donut_star: { name: 'Glazed Donut', icon: '🍩', category: 'fruit', species: 'donut', bodyColor: '#ff4081', outfitColor: '#ffeb3b', faceStyle: 'sweet', maxHp: 95 },
+            
+            turbo_kart: { name: 'Turbo Kart', icon: '🏎️', category: 'transport', species: 'kart', bodyColor: '#ff3d00', outfitColor: '#1e293b', faceStyle: 'visor_speed', maxHp: 110, bonusCoin: 0.2 },
+            sky_rocket: { name: 'Sky Rocket', icon: '🚀', category: 'transport', species: 'rocket', bodyColor: '#2979ff', outfitColor: '#ffea00', faceStyle: 'visor_speed', maxHp: 100 },
+            cloud_balloon: { name: 'Cloud Balloon', icon: '🎈', category: 'transport', species: 'balloon', bodyColor: '#00e5ff', outfitColor: '#ff80ab', faceStyle: 'sweet', maxHp: 90 },
+            magic_train: { name: 'Choo Choo Train', icon: '🚂', category: 'transport', species: 'train', bodyColor: '#e91e63', outfitColor: '#ffd600', faceStyle: 'bot_face', maxHp: 130 },
+            mini_copter: { name: 'Mini Copter', icon: '🚁', category: 'transport', species: 'copter', bodyColor: '#76ff03', outfitColor: '#3f51b5', faceStyle: 'curious', maxHp: 95 },
+            speed_boat: { name: 'Speed Boat', icon: '🚤', category: 'transport', species: 'boat', bodyColor: '#00bcd4', outfitColor: '#ff5722', faceStyle: 'visor_speed', maxHp: 105 },
+            space_ufo: { name: 'Space UFO', icon: '🛸', category: 'transport', species: 'ufo', bodyColor: '#d500f9', outfitColor: '#00e676', faceStyle: 'alien_eyes', maxHp: 120 },
+            eco_bike: { name: 'Eco Cycle', icon: '🚲', category: 'transport', species: 'bike', bodyColor: '#ffeb3b', outfitColor: '#00e5ff', faceStyle: 'bear_smile', maxHp: 85, bonusCoin: 0.25 },
+            fire_engine: { name: 'Tiny Firetruck', icon: '🚒', category: 'transport', species: 'firetruck', bodyColor: '#f44336', outfitColor: '#ffeb3b', faceStyle: 'visor_speed', maxHp: 135 },
+            star_cruiser: { name: 'Star Cruiser', icon: '🛸', category: 'transport', species: 'cruiser', bodyColor: '#673ab7', outfitColor: '#00e5ff', faceStyle: 'sparkle_eyes', maxHp: 115 },
+
+            chibi_princess: { name: 'Chibi Princess', icon: '👑', category: 'chibi', species: 'princess', bodyColor: '#ff69b4', outfitColor: '#ffd700', faceStyle: 'princess', maxHp: 130, bonusCoin: 0.3 },
+            chibi_ninja: { name: 'Chibi Ninja', icon: '🥷', category: 'chibi', species: 'ninja', bodyColor: '#334155', outfitColor: '#ef4444', faceStyle: 'ninja', maxHp: 120 },
+            chibi_wizard: { name: 'Chibi Wizard', icon: '🧙‍♂️', category: 'chibi', species: 'wizard', bodyColor: '#8b5cf6', outfitColor: '#facc15', faceStyle: 'wizard', maxHp: 115, bonusCoin: 0.2 },
+            chibi_angel: { name: 'Chibi Angel', icon: '👼', category: 'chibi', species: 'angel', bodyColor: '#38bdf8', outfitColor: '#ffffff', faceStyle: 'sparkle_eyes', maxHp: 125 }
         };
 
-        const CARD_TYPES = [
-            { id: 'sugar_rush', name: 'Sugar Rush', icon: '⚡', desc: '+3 Jump Forward!', type: 'move', val: 3 },
-            { id: 'vortex', name: 'Singularity Vortex', icon: '🌀', desc: 'Random Teleport (2-5 tiles)', type: 'teleport', val: 0 },
-            { id: 'timewarp', name: 'Time Warp', icon: '⏳', desc: '-2 Tiles Backward', type: 'move', val: -2 },
-            { id: 'shield', name: 'Bubble Shield', icon: '🫧', desc: 'Blocks 1 Trap!', type: 'shield', val: 1 },
-            { id: 'wand', name: 'Star Wand', icon: '🪄', desc: '+35 Boss Damage', type: 'attack', val: 35 },
-            { id: 'heal', name: 'Cupcake Heal', icon: '🧁', desc: 'Restore +35 HP', type: 'heal', val: 35 }
+        const BOSS_ROSTER = [
+            { name: 'Gummy Bear King', bodyColor: '#fb7185', faceStyle: 'fierce', maxHp: 80 },
+            { name: 'Puff Bunny Boss', bodyColor: '#a855f7', faceStyle: 'smirk', maxHp: 110 },
+            { name: 'Cyber Kitty Boss', bodyColor: '#38bdf8', faceStyle: 'bot_face', maxHp: 140 },
+            { name: 'Dragon Lord Chibi', bodyColor: '#f97316', faceStyle: 'fierce', maxHp: 180 },
+            { name: 'Star Empress', bodyColor: '#ec4899', faceStyle: 'princess', maxHp: 220 }
         ];
 
-        /* --- 11 UNIQUE BOARD LAYOUT TOPOLOGIES (20 Nodes Each) --- */
-        const BOARD_LAYOUTS = [
-            {
-                id: 'bear_face',
-                name: '🐻 Bear-Face Realm',
-                nodes: [
-                    { type: 'start', label: 'START', icon: '🏰', color: '#fbcfe8', border: '#f472b6', rx: 0.22, ry: 0.18 },
-                    { type: 'coin', label: 'Stars', icon: '⭐', color: '#fef08a', border: '#facc15', rx: 0.14, ry: 0.10 },
-                    { type: 'powerup', label: 'Card', icon: '🎁', color: '#e9d5ff', border: '#c084fc', rx: 0.24, ry: 0.05 },
-                    { type: 'gem', label: 'Gems', icon: '💎', color: '#cffaff', border: '#22d3ee', rx: 0.35, ry: 0.14 },
-                    { type: 'coin', label: 'Stars', icon: '⭐', color: '#fef08a', border: '#facc15', rx: 0.65, ry: 0.14 },
-                    { type: 'powerup', label: 'Card', icon: '🎁', color: '#e9d5ff', border: '#c084fc', rx: 0.76, ry: 0.05 },
-                    { type: 'portal', label: 'Portal', icon: '🕳️', color: '#ddd6fe', border: '#8b5cf6', rx: 0.86, ry: 0.10 },
-                    { type: 'gem', label: 'Gems', icon: '💎', color: '#cffaff', border: '#22d3ee', rx: 0.78, ry: 0.18 },
-                    { type: 'enemy', label: 'Boba', icon: '🧋', color: '#bbf7d0', border: '#4ade80', rx: 0.88, ry: 0.38 },
-                    { type: 'trap', label: 'Shock', icon: '⚡', color: '#fed7aa', border: '#fb923c', rx: 0.85, ry: 0.58 },
-                    { type: 'coin', label: 'Stars', icon: '⭐', color: '#fef08a', border: '#facc15', rx: 0.78, ry: 0.76 },
-                    { type: 'powerup', label: 'Card', icon: '🎁', color: '#e9d5ff', border: '#c084fc', rx: 0.64, ry: 0.88 },
-                    { type: 'boss', label: 'BOSS', icon: '👑', color: '#fecdd3', border: '#f43f5e', rx: 0.50, ry: 0.92 },
-                    { type: 'coin', label: 'Stars', icon: '⭐', color: '#fef08a', border: '#facc15', rx: 0.36, ry: 0.88 },
-                    { type: 'enemy', label: 'Goblin', icon: '🍬', color: '#bbf7d0', border: '#4ade80', rx: 0.22, ry: 0.76 },
-                    { type: 'portal', label: 'Portal', icon: '🕳️', color: '#ddd6fe', border: '#8b5cf6', rx: 0.15, ry: 0.58 },
-                    { type: 'gem', label: 'Gems', icon: '💎', color: '#cffaff', border: '#22d3ee', rx: 0.12, ry: 0.38 },
-                    { type: 'enemy', label: 'Dust', icon: '🐰', color: '#bbf7d0', border: '#4ade80', rx: 0.32, ry: 0.44 },
-                    { type: 'boss', label: 'NOSE', icon: '👃', color: '#fecdd3', border: '#f43f5e', rx: 0.50, ry: 0.52 },
-                    { type: 'powerup', label: 'Card', icon: '🎁', color: '#e9d5ff', border: '#c084fc', rx: 0.68, ry: 0.44 }
-                ]
+        /* --- DENSE, CLOSELY PACKED BOARD LAYOUT GENERATOR WITH BALANCED TILE TYPES --- */
+        function generateNodesForTheme(themeId) {
+            let nodes = [];
+            let nodeCount = 36;
+            if (themeId === 'candy_loop') nodeCount = 28;
+
+            for (let i = 0; i < nodeCount; i++) {
+                let t = i / nodeCount;
+                let rx = 0.5, ry = 0.5;
+
+                if (themeId === 'bear_face') {
+                    let angle = t * Math.PI * 2;
+                    rx = 0.5 + 0.38 * Math.cos(angle);
+                    ry = 0.5 + 0.38 * Math.sin(angle);
+                } else if (themeId === 'candy_loop') {
+                    let angle = t * Math.PI * 2;
+                    rx = 0.5 + 0.38 * Math.sin(angle);
+                    ry = 0.5 + 0.28 * Math.sin(angle * 2);
+                } else if (themeId === 'frost_serpent') {
+                    rx = 0.14 + t * 0.72;
+                    ry = 0.5 + 0.33 * Math.sin(t * Math.PI * 2.5);
+                } else if (themeId === 'heart_loop') {
+                    let angle = t * Math.PI * 2;
+                    let hx = 16 * Math.pow(Math.sin(angle), 3);
+                    let hy = -(13 * Math.cos(angle) - 5 * Math.cos(2*angle) - 2 * Math.cos(3*angle) - Math.cos(4*angle));
+                    rx = 0.5 + hx * 0.022;
+                    ry = 0.48 + hy * 0.022;
+                } else if (themeId === 'lucky_clover') {
+                    let angle = t * Math.PI * 2;
+                    let r = 0.38 * (0.65 + 0.35 * Math.sin(angle * 4));
+                    rx = 0.5 + r * Math.cos(angle);
+                    ry = 0.5 + r * Math.sin(angle);
+                } else if (themeId === 'crown_path') {
+                    let xVal = (t * 2) % 1;
+                    if (t < 0.5) {
+                        rx = 0.12 + xVal * 0.76;
+                        ry = 0.30 + 0.25 * Math.abs(Math.sin(xVal * Math.PI * 3));
+                    } else {
+                        rx = 0.88 - xVal * 0.76;
+                        ry = 0.82;
+                    }
+                } else if (themeId === 'ocean_swirl') {
+                    let angle = t * Math.PI * 2;
+                    let r = 0.36 + 0.08 * Math.cos(angle * 3);
+                    rx = 0.5 + r * Math.cos(angle);
+                    ry = 0.5 + r * Math.sin(angle);
+                } else if (themeId === 'star_blossom') {
+                    let angle = t * Math.PI * 2 - Math.PI / 2;
+                    let r = 0.38 * (0.7 + 0.3 * Math.cos(angle * 5));
+                    rx = 0.5 + r * Math.cos(angle);
+                    ry = 0.5 + r * Math.sin(angle);
+                } else if (themeId === 'gingerbread_spiral') {
+                    let angle = t * Math.PI * 4.5;
+                    let r = 0.40 * (1 - t * 0.65);
+                    rx = 0.5 + r * Math.cos(angle);
+                    ry = 0.5 + r * Math.sin(angle);
+                } else if (themeId === 'peppermint_zigzag') {
+                    let row = Math.floor(t * 7);
+                    let rowT = (t * 7) % 1;
+                    ry = 0.12 + row * 0.128;
+                    rx = (row % 2 === 0) ? (0.15 + rowT * 0.7) : (0.85 - rowT * 0.7);
+                } else if (themeId === 'hearth_cross') {
+                    if (i < 9) { rx = 0.5; ry = 0.12 + i * 0.095; }
+                    else if (i < 18) { rx = 0.12 + (i - 9) * 0.095; ry = 0.5; }
+                    else if (i < 27) { rx = 0.5; ry = 0.88 - (i - 18) * 0.095; }
+                    else { rx = 0.88 - (i - 27) * 0.095; ry = 0.5; }
+                } else if (themeId === 'aurora_wave') {
+                    rx = 0.12 + t * 0.76;
+                    ry = 0.5 + 0.32 * Math.sin(t * Math.PI * 3);
+                } else if (themeId === 'workshop_circuit') {
+                    let per = t * 4;
+                    let side = Math.floor(per);
+                    let rem = per % 1;
+                    if (side === 0) { rx = 0.12 + rem * 0.76; ry = 0.12; }
+                    else if (side === 1) { rx = 0.88; ry = 0.12 + rem * 0.76; }
+                    else if (side === 2) { rx = 0.88 - rem * 0.76; ry = 0.88; }
+                    else { rx = 0.12; ry = 0.88 - rem * 0.76; }
+                } else {
+                    let angle = t * Math.PI * 2;
+                    rx = 0.5 + 0.38 * Math.cos(angle);
+                    ry = 0.5 + 0.38 * Math.sin(angle);
+                }
+
+                let type = 'heal';
+                let icon = '💖';
+                let color = '#fbcfe8';
+                let border = '#ec4899';
+
+                if (i === 0) {
+                    type = 'start'; icon = '🏰'; color = '#fbcfe8'; border = '#f472b6';
+                } else if (state.gameMode === 'single' && (i === Math.floor(nodeCount / 3) || i === Math.floor(nodeCount * 2 / 3))) {
+                    type = 'attack_power'; icon = '⚔️'; color = '#fee2e2'; border = '#ef4444';
+                } else if (state.gameMode === 'single' && i === nodeCount - 1) {
+                    type = 'boss'; icon = '👑'; color = '#fecdd3'; border = '#f43f5e';
+                } else {
+                    const mod = i % 10;
+                    if (mod === 1) { type = 'coin'; icon = '⭐'; color = '#fef08a'; border = '#facc15'; }
+                    else if (mod === 2) { type = 'sugar_rush'; icon = '⚡'; color = '#fef3c7'; border = '#f59e0b'; }
+                    else if (mod === 3) { type = 'attack_square'; icon = '⚔️'; color = '#fee2e2'; border = '#ef4444'; }
+                    else if (mod === 4) { type = 'portal'; icon = '🕳️'; color = '#ddd6fe'; border = '#8b5cf6'; }
+                    else if (mod === 5) { type = 'gem'; icon = '💎'; color = '#cffaff'; border = '#22d3ee'; }
+                    else if (mod === 6) { type = 'mystery'; icon = '❓'; color = '#fed7aa'; border = '#f97316'; }
+                    else if (mod === 7) { type = 'freeze'; icon = '❄️'; color = '#bae6fd'; border = '#0284c7'; }
+                    else if (mod === 8) { type = 'timewarp'; icon = '⏳'; color = '#f3e8ff'; border = '#a855f7'; }
+                }
+
+                nodes.push({ type, label: type.toUpperCase(), icon, color, border, rx, ry });
             }
-        ];
+            return nodes;
+        }
 
-        const layoutThemes = [
+        const BOARD_LAYOUTS = [
+            { id: 'bear_face', name: '🐻 Bear-Face Realm' },
+            { id: 'heart_loop', name: '💖 Sweetheart Loop' },
+            { id: 'lucky_clover', name: '🍀 Lucky Clover' },
+            { id: 'crown_path', name: '👑 Crown Kingdom' },
+            { id: 'ocean_swirl', name: '🌊 Ocean Swirl' },
+            { id: 'star_blossom', name: '🌟 Star Blossom' },
             { id: 'candy_loop', name: '🍬 Candy Cane Loop' },
             { id: 'frost_serpent', name: '❄️ Frost Serpent' },
             { id: 'gingerbread_spiral', name: '🍪 Gingerbread Spiral' },
             { id: 'peppermint_zigzag', name: '🍭 Peppermint Zigzag' },
             { id: 'hearth_cross', name: '🔥 Hearth Cross' },
             { id: 'aurora_wave', name: '🌌 Aurora Wave' },
-            { id: 'star_realm', name: '⭐ Sugar Plum Star' },
-            { id: 'workshop_circuit', name: '⚙️ Workshop Circuit' },
-            { id: 'glacier_lab', name: '🧊 Glacier Labyrinth' },
-            { id: 'golden_ring', name: '💍 Golden Ring' }
+            { id: 'workshop_circuit', name: '⚙️ Workshop Circuit' }
         ];
-
-        layoutThemes.forEach((theme, idx) => {
-            let generatedNodes = [];
-            for (let i = 0; i < 20; i++) {
-                let angle = (i / 20) * Math.PI * 2;
-                let radiusX = 0.38 + 0.08 * Math.sin(i * 2);
-                let radiusY = 0.38 + 0.08 * Math.cos(i * 3);
-                if (idx % 2 === 1) {
-                    radiusX = 0.15 + (i % 5) * 0.17;
-                    radiusY = 0.15 + Math.floor(i / 5) * 0.22;
-                }
-                let type = 'coin';
-                let icon = '⭐';
-                let color = '#fef08a';
-                let border = '#facc15';
-                if (i === 0) { type = 'start'; icon = '🏰'; color = '#fbcfe8'; border = '#f472b6'; }
-                else if (i === 12 || i === 18) { type = 'boss'; icon = '👑'; color = '#fecdd3'; border = '#f43f5e'; }
-                else if (i % 3 === 0) { type = 'powerup'; icon = '🎁'; color = '#e9d5ff'; border = '#c084fc'; }
-                else if (i % 4 === 0) { type = 'portal'; icon = '🕳️'; color = '#ddd6fe'; border = '#8b5cf6'; }
-                else if (i % 5 === 0) { type = 'gem'; icon = '💎'; color = '#cffaff'; border = '#22d3ee'; }
-                else if (i % 7 === 0) { type = 'trap'; icon = '⚡'; color = '#fed7aa'; border = '#fb923c'; }
-
-                generatedNodes.push({
-                    type: type, label: type.toUpperCase(), icon: icon, color: color, border: border,
-                    rx: Math.max(0.1, Math.min(0.9, 0.5 + radiusX * Math.cos(angle))),
-                    ry: Math.max(0.1, Math.min(0.9, 0.5 + radiusY * Math.sin(angle)))
-                });
-            }
-            BOARD_LAYOUTS.push({ id: theme.id, name: theme.name, nodes: generatedNodes });
-        });
 
         /* --- GAME STATE --- */
         let state = {
@@ -603,74 +762,150 @@
             player: {
                 charKey: 'cyan_bunny',
                 name: 'Cyan Glow Bunny',
-                hp: 100, maxHp: 100, level: 1, xp: 0, xpToNext: 40,
-                coins: 0, gems: 5, tileIndex: 0, inventory: [], shieldActive: false, jumpProgress: 0
+                hp: 100, maxHp: 100, level: 1,
+                coins: 0, gems: 5, tileIndex: 0, shieldActive: false, jumpProgress: 0
             },
             opponent: {
                 name: 'Rival Fox', charKey: 'violet_fox', hp: 100, maxHp: 100, level: 1, tileIndex: 0, jumpProgress: 0
             },
             turn: 'player',
             isRolling: false,
-            boss: { name: 'Gummy Bear King', sprite: '👑', hp: 80, maxHp: 80 }
+            boss: { 
+                name: 'Gummy Bear King', bodyColor: '#fb7185', faceStyle: 'fierce', hp: 80, maxHp: 80, 
+                tileIndex: 10, moveCounter: 0, attackAnimTimer: 0, levelIdx: 0 
+            },
+            p2pRoomId: ''
         };
 
         let canvas, ctx;
-        let selectedChar = 'cyan_bunny';
+        let playerSelectedChar = 'cyan_bunny';
+        let oppSelectedChar = 'violet_fox';
+        let selectingTarget = 'player';
         let selectedBoardIdx = 0;
         let animStep = 0;
 
         function setGameMode(mode) {
             state.gameMode = mode;
-            const comBtn = document.getElementById('mode-com-btn');
-            const friendBtn = document.getElementById('mode-friend-btn');
+            const dropdown = document.getElementById('game-mode-dropdown');
+            const targetContainer = document.getElementById('target-selection-container');
+            const oppHeaderWidget = document.getElementById('opp-header-widget');
+            const p2pContainer = document.getElementById('p2p-container');
+
+            if (dropdown) dropdown.value = mode;
+            p2pContainer.classList.add('hidden');
+
             if (mode === 'com') {
-                comBtn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-pink-500 text-white border-2 border-white shadow';
-                friendBtn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-300 text-purple-900 border-2 border-white';
+                targetContainer.style.display = 'flex';
+                oppHeaderWidget.style.display = 'flex';
+                document.getElementById('target-opp-btn').innerText = '🦊 Select COM Bot Skin';
                 state.opponent.name = 'Rival COM Bot';
-                state.opponent.charKey = 'violet_fox';
-            } else {
-                friendBtn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-600 text-white border-2 border-white shadow';
-                comBtn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-pink-300 text-pink-900 border-2 border-white';
-                state.opponent.name = 'Player 2';
-                state.opponent.charKey = 'strawberry_pie';
+            } else if (mode === 'single') {
+                targetContainer.style.display = 'none';
+                oppHeaderWidget.style.display = 'none';
+            } else if (mode === 'p2p') {
+                targetContainer.style.display = 'flex';
+                oppHeaderWidget.style.display = 'flex';
+                p2pContainer.classList.remove('hidden');
+                document.getElementById('target-opp-btn').innerText = '👥 Select P2P Opponent Skin';
+                state.opponent.name = 'Network Peer';
             }
+            initSetupGrids();
             audio.playTone(700, 'sine', 0.1);
+        }
+
+        function handleDropdownModeChange(val) {
+            setGameMode(val);
+        }
+
+        function hostOrJoinP2PRoom(actionType) {
+            const inputVal = document.getElementById('p2p-room-input').value.trim().toUpperCase();
+            if (actionType === 'host') {
+                const generatedId = Math.random().toString(36).substring(2, 8).toUpperCase();
+                document.getElementById('p2p-room-input').value = generatedId;
+                state.p2pRoomId = generatedId;
+                addLog(`🌐 Hosting P2P Network Room: <b>${generatedId}</b>. Waiting for peer...`);
+            } else {
+                if (!inputVal) {
+                    alert('⚠️ Please enter a room ID code to join!');
+                    return;
+                }
+                state.p2pRoomId = inputVal;
+                addLog(`🌐 Joined P2P Network Room: <b>${state.p2pRoomId}</b> successfully!`);
+            }
+            audio.playVictory();
+        }
+
+        function setSelectingTarget(target) {
+            selectingTarget = target;
+            const pBtn = document.getElementById('target-player-btn');
+            const oBtn = document.getElementById('target-opp-btn');
+            const inst = document.getElementById('selection-instruction');
+
+            if (target === 'player') {
+                pBtn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-pink-600 text-white border-2 border-white shadow';
+                oBtn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white';
+                inst.innerText = 'Select Player 1 Skin:';
+            } else {
+                oBtn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-600 text-white border-2 border-white shadow';
+                pBtn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-pink-200 text-pink-800 border-2 border-white';
+                inst.innerText = state.gameMode === 'com' ? 'Select COM Bot Skin:' : 'Select P2P Opponent Skin:';
+            }
+            initSetupGrids();
+            audio.playTone(650, 'sine', 0.08);
         }
 
         function setCategory(cat) {
             state.currentCategory = cat;
-            ['animal', 'fruit', 'transport'].forEach(c => {
+            ['animal', 'fruit', 'transport', 'chibi'].forEach(c => {
                 const btn = document.getElementById(`cat-${c}-btn`);
-                if (c === cat) {
-                    btn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-rose-500 text-white border-2 border-white shadow';
-                } else {
-                    btn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white';
+                if (btn) {
+                    if (c === cat) {
+                        btn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-rose-500 text-white border-2 border-white shadow';
+                    } else {
+                        btn.className = 'btn-cute px-3 py-1.5 rounded-xl font-bold text-xs bg-purple-200 text-purple-800 border-2 border-white';
+                    }
                 }
             });
-            const firstKey = Object.keys(CHARACTERS).find(k => CHARACTERS[k].category === cat);
-            if (firstKey) selectedChar = firstKey;
             initSetupGrids();
             audio.playTone(600, 'sine', 0.08);
         }
 
         function initSetupGrids() {
             const charGrid = document.getElementById('setup-chars-grid');
+            if (!charGrid) return;
             charGrid.innerHTML = '';
             Object.keys(CHARACTERS).forEach(key => {
                 const char = CHARACTERS[key];
                 if (char.category !== state.currentCategory) return;
-                const isSelected = key === selectedChar;
+                
+                const isSelected = (selectingTarget === 'player' && key === playerSelectedChar) || (selectingTarget === 'opponent' && key === oppSelectedChar);
+                const isUsedByOther = state.gameMode !== 'single' && ((selectingTarget === 'player' && key === oppSelectedChar) || (selectingTarget === 'opponent' && key === playerSelectedChar));
+
                 const el = document.createElement('div');
-                el.className = `cursor-pointer rounded-2xl p-2 transition transform hover:-translate-y-1 text-center border-4 ${isSelected ? 'border-pink-500 bg-pink-50 ring-2 ring-pink-300' : 'border-purple-200 bg-white'}`;
-                el.onclick = () => { selectedChar = key; initSetupGrids(); audio.playTone(600, 'sine', 0.08); };
-                el.innerHTML = `
-                    <div class="w-8 h-8 mx-auto rounded-full shadow-md mb-1 border-2 border-white flex items-center justify-center font-bold text-[10px] text-white" style="background: ${char.bodyColor}">✨</div>
-                    <div class="font-bold text-slate-700 text-[10px] truncate">${char.name}</div>
-                `;
+                if (isUsedByOther) {
+                    el.className = 'rounded-2xl p-2 text-center border-4 border-slate-300 bg-slate-100 opacity-40 cursor-not-allowed';
+                    el.innerHTML = `
+                        <div class="w-8 h-8 mx-auto rounded-full mb-1 border-2 border-slate-300 flex items-center justify-center font-bold text-xs text-slate-500" style="background: ${char.bodyColor}">🚫</div>
+                        <div class="font-bold text-slate-400 text-[10px] truncate">In Use</div>
+                    `;
+                } else {
+                    el.className = `cursor-pointer rounded-2xl p-2 transition transform hover:-translate-y-1 text-center border-4 ${isSelected ? 'border-pink-500 bg-pink-50 ring-2 ring-pink-300' : 'border-purple-200 bg-white'}`;
+                    el.onclick = () => {
+                        if (state.gameMode === 'single' || selectingTarget === 'player') playerSelectedChar = key;
+                        else oppSelectedChar = key;
+                        initSetupGrids();
+                        audio.playTone(600, 'sine', 0.08);
+                    };
+                    el.innerHTML = `
+                        <div class="w-8 h-8 mx-auto rounded-full shadow-md mb-1 border-2 border-white flex items-center justify-center font-bold text-xs text-white" style="background: ${char.bodyColor}">${char.icon}</div>
+                        <div class="font-bold text-slate-700 text-[10px] truncate">${char.name}</div>
+                    `;
+                }
                 charGrid.appendChild(el);
             });
 
             const boardGrid = document.getElementById('setup-boards-grid');
+            if (!boardGrid) return;
             boardGrid.innerHTML = '';
             BOARD_LAYOUTS.forEach((board, idx) => {
                 const isSelected = idx === selectedBoardIdx;
@@ -685,31 +920,63 @@
         }
 
         function startGame() {
-            const char = CHARACTERS[selectedChar];
-            state.player.charKey = selectedChar;
-            state.player.name = char.name;
-            state.player.maxHp = char.maxHp;
-            state.player.hp = char.maxHp;
+            if (state.gameMode !== 'single' && playerSelectedChar === oppSelectedChar) {
+                alert('⚠️ Player 1 and Opponent cannot select the exact same skin! Please pick different skins.');
+                return;
+            }
+
+            const pChar = CHARACTERS[playerSelectedChar];
+            const oChar = CHARACTERS[oppSelectedChar];
+
+            state.player.charKey = playerSelectedChar;
+            state.player.name = pChar.name;
+            state.player.maxHp = pChar.maxHp;
+            state.player.hp = pChar.maxHp;
             state.player.level = 1;
-            state.player.xp = 0;
             state.player.coins = 0;
             state.player.gems = 5;
             state.player.tileIndex = 0;
-            state.player.inventory = [];
             state.player.shieldActive = false;
-            state.opponent.tileIndex = 0;
+
+            if (state.gameMode === 'single') {
+                spawnNewBoss(0);
+            } else {
+                state.opponent.charKey = oppSelectedChar;
+                state.opponent.name = oChar.name;
+                state.opponent.maxHp = oChar.maxHp;
+                state.opponent.hp = oChar.maxHp;
+                state.opponent.tileIndex = 0;
+            }
+
             state.boardLayoutIdx = selectedBoardIdx;
 
-            if (char.bonusCard) state.player.inventory.push(CARD_TYPES[0]);
-
-            document.getElementById('player-name-text').innerText = char.name;
+            document.getElementById('player-name-text').innerText = pChar.name;
+            document.getElementById('player-avatar-badge').innerText = pChar.icon;
+            if (state.gameMode !== 'single') {
+                document.getElementById('opp-name-text').innerText = oChar.name;
+                document.getElementById('opp-avatar-badge').innerText = oChar.icon;
+            }
             document.getElementById('current-board-name').innerText = BOARD_LAYOUTS[selectedBoardIdx].name;
             document.getElementById('char-select-screen').classList.add('hidden');
 
             updateUI();
             initCanvas();
-            addLog(`✨ ${char.name} started adventure on ${BOARD_LAYOUTS[selectedBoardIdx].name}!`);
+            addLog(`✨ Adventure started on ${BOARD_LAYOUTS[selectedBoardIdx].name}!`);
             audio.playVictory();
+        }
+
+        function spawnNewBoss(levelIdx) {
+            state.boss.levelIdx = levelIdx;
+            const template = BOSS_ROSTER[Math.min(levelIdx, BOSS_ROSTER.length - 1)];
+            const multiplier = 1 + levelIdx * 0.35;
+            state.boss.name = template.name;
+            state.boss.bodyColor = template.bodyColor;
+            state.boss.faceStyle = template.faceStyle;
+            state.boss.maxHp = Math.round(template.maxHp * multiplier);
+            state.boss.hp = state.boss.maxHp;
+            state.boss.tileIndex = Math.floor(getActiveNodes().length / 2);
+            state.boss.moveCounter = 0;
+            state.boss.attackAnimTimer = 0;
         }
 
         function initCanvas() {
@@ -722,14 +989,14 @@
         function resizeCanvas() {
             if (!canvas) return;
             const rect = canvas.parentElement.getBoundingClientRect();
-            const size = Math.min(rect.width - 20, 480);
+            const size = Math.min(rect.width - 20, 560);
             canvas.width = size;
             canvas.height = size;
             drawBoard();
         }
 
         function getActiveNodes() {
-            return BOARD_LAYOUTS[state.boardLayoutIdx].nodes;
+            return generateNodesForTheme(BOARD_LAYOUTS[state.boardLayoutIdx].id);
         }
 
         function getTileCoordinates(index) {
@@ -755,122 +1022,220 @@
             ctx.lineWidth = 14; ctx.strokeStyle = '#ffffff'; ctx.stroke();
             ctx.lineWidth = 6; ctx.strokeStyle = '#ec4899'; ctx.stroke();
 
+            const boxSize = size * 0.088;
             nodes.forEach((tile, i) => {
                 const { x, y } = getTileCoordinates(i);
-                const boxSize = size * 0.085;
                 ctx.save();
                 ctx.translate(x, y);
                 ctx.fillStyle = tile.color;
                 ctx.strokeStyle = tile.border;
-                ctx.lineWidth = 3.5;
+                ctx.lineWidth = 3;
                 ctx.beginPath();
                 ctx.roundRect(-boxSize/2, -boxSize/2, boxSize, boxSize, 10);
                 ctx.fill(); ctx.stroke();
 
-                ctx.font = `${boxSize * 0.55}px Fredoka`;
+                ctx.font = `${boxSize * 0.58}px Fredoka`;
                 ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                 ctx.fillText(tile.icon, 0, 0);
                 ctx.restore();
             });
 
-            drawCategoryDistinctSkin(state.player.tileIndex, CHARACTERS[state.player.charKey], -16, state.player.jumpProgress);
-            drawCategoryDistinctSkin(state.opponent.tileIndex, CHARACTERS[state.opponent.charKey], 16, state.opponent.jumpProgress);
+            if (state.gameMode === 'single') {
+                let bossOffsetX = 0;
+                let bossOffsetY = 0;
+                if (state.boss.attackAnimTimer > 0) {
+                    bossOffsetX = (Math.random() - 0.5) * 16;
+                    bossOffsetY = -22;
+                }
+                drawLargeSkin(state.boss.tileIndex, {
+                    category: 'animal', species: 'bunny', bodyColor: state.boss.bodyColor,
+                    outfitColor: '#1e293b', faceStyle: state.boss.faceStyle, maxHp: state.boss.maxHp
+                }, `${state.boss.name} (${state.boss.hp}/${state.boss.maxHp})`, bossOffsetX, 0, bossOffsetY);
+
+                drawLargeSkin(state.player.tileIndex, CHARACTERS[state.player.charKey], state.player.name, 0, state.player.jumpProgress);
+            } else {
+                drawLargeSkin(state.player.tileIndex, CHARACTERS[state.player.charKey], state.player.name, -18, state.player.jumpProgress);
+                drawLargeSkin(state.opponent.tileIndex, CHARACTERS[state.opponent.charKey], state.opponent.name, 18, state.opponent.jumpProgress);
+            }
         }
 
-        /* --- CATEGORY-DISTINCT CHARACTER SILHOUETTE RENDERER --- */
-        function drawCategoryDistinctSkin(tileIdx, charConfig, offsetX = 0, jumpHeight = 0) {
+        function drawFaceExpression(faceStyle, scale) {
+            ctx.save();
+            if (faceStyle === 'wink_happy') {
+                ctx.lineWidth = 2 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.moveTo(-6 * scale, -8 * scale); ctx.lineTo(-3 * scale, -11 * scale); ctx.lineTo(0, -8 * scale); ctx.stroke();
+                ctx.beginPath(); ctx.arc(5 * scale, -9.5 * scale, 1.8 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(0, -3.5 * scale, 2.2 * scale, 0.1, Math.PI - 0.1); ctx.stroke();
+            } else if (faceStyle === 'star_eyes') {
+                ctx.font = `${10 * scale}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText('⭐', -5.5 * scale, -8 * scale);
+                ctx.fillText('⭐', 5.5 * scale, -8 * scale);
+                ctx.beginPath(); ctx.arc(0, -3 * scale, 2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+            } else if (faceStyle === 'cat_grin') {
+                ctx.lineWidth = 2 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.moveTo(-7 * scale, -10 * scale); ctx.lineTo(-4 * scale, -7 * scale); ctx.lineTo(-7 * scale, -4 * scale); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(4 * scale, -10 * scale); ctx.lineTo(7 * scale, -7 * scale); ctx.lineTo(4 * scale, -4 * scale); ctx.stroke();
+                ctx.beginPath(); ctx.arc(0, -3 * scale, 2.5 * scale, 0, Math.PI); ctx.stroke();
+            } else if (faceStyle === 'smirk') {
+                ctx.beginPath(); ctx.arc(-5 * scale, -9 * scale, 2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(5 * scale, -9 * scale, 2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.lineWidth = 2 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.moveTo(-3 * scale, -3 * scale); ctx.lineTo(4 * scale, -2 * scale); ctx.stroke();
+            } else if (faceStyle === 'bear_smile') {
+                ctx.beginPath(); ctx.arc(-5 * scale, -9 * scale, 2.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(5 * scale, -9 * scale, 2.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(0, -5 * scale, 2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#334155'; ctx.fill();
+                ctx.lineWidth = 1.8 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.arc(0, -4 * scale, 3 * scale, 0, Math.PI); ctx.stroke();
+            } else if (faceStyle === 'sleepy_cute') {
+                ctx.lineWidth = 2 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.moveTo(-7 * scale, -8 * scale); ctx.lineTo(-3 * scale, -8 * scale); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(3 * scale, -8 * scale); ctx.lineTo(7 * scale, -8 * scale); ctx.stroke();
+                ctx.beginPath(); ctx.arc(0, -3 * scale, 1.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+            } else if (faceStyle === 'curious') {
+                ctx.beginPath(); ctx.arc(-5 * scale, -9 * scale, 3 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(5 * scale, -9 * scale, 3 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(0, -3 * scale, 2.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#f43f5e'; ctx.fill();
+            } else if (faceStyle === 'blush_happy') {
+                ctx.beginPath(); ctx.arc(-5 * scale, -8 * scale, 2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(5 * scale, -8 * scale, 2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.ellipse(-8 * scale, -5 * scale, 3.5 * scale, 2 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(244, 63, 94, 0.35)'; ctx.fill();
+                ctx.beginPath(); ctx.ellipse(8 * scale, -5 * scale, 3.5 * scale, 2 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(244, 63, 94, 0.35)'; ctx.fill();
+                ctx.lineWidth = 1.8 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.arc(0, -3 * scale, 2.5 * scale, 0, Math.PI); ctx.stroke();
+            } else if (faceStyle === 'sparkle_eyes') {
+                ctx.font = `${11 * scale}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText('✨', -5.5 * scale, -8 * scale);
+                ctx.fillText('✨', 5.5 * scale, -8 * scale);
+                ctx.lineWidth = 1.8 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.arc(0, -2.5 * scale, 2.5 * scale, 0, Math.PI); ctx.stroke();
+            } else if (faceStyle === 'fierce') {
+                ctx.lineWidth = 2.2 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.moveTo(-8 * scale, -11 * scale); ctx.lineTo(-3 * scale, -8 * scale); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(8 * scale, -11 * scale); ctx.lineTo(3 * scale, -8 * scale); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(-4 * scale, -3 * scale); ctx.lineTo(4 * scale, -3 * scale); ctx.stroke();
+            } else if (faceStyle === 'sweet') {
+                ctx.beginPath(); ctx.arc(-4 * scale, -8 * scale, 2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+                ctx.beginPath(); ctx.arc(4 * scale, -8 * scale, 2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+                ctx.beginPath(); ctx.arc(0, -3 * scale, 2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+            } else if (faceStyle === 'melon_grin') {
+                ctx.beginPath(); ctx.arc(-5 * scale, -9 * scale, 2.2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(5 * scale, -9 * scale, 2.2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.lineWidth = 2 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.arc(0, -3 * scale, 3.5 * scale, 0, Math.PI); ctx.stroke();
+            } else if (faceStyle === 'sour_wink') {
+                ctx.lineWidth = 2 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.moveTo(-6 * scale, -10 * scale); ctx.lineTo(-3 * scale, -7 * scale); ctx.lineTo(-6 * scale, -4 * scale); ctx.stroke();
+                ctx.beginPath(); ctx.arc(5 * scale, -8.5 * scale, 2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(0, -3 * scale, 2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+            } else if (faceStyle === 'bot_face') {
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillRect(-7 * scale, -11 * scale, 4 * scale, 4 * scale);
+                ctx.fillRect(3 * scale, -11 * scale, 4 * scale, 4 * scale);
+                ctx.fillRect(-4 * scale, -3 * scale, 8 * scale, 2 * scale);
+            } else if (faceStyle === 'visor_speed') {
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath(); ctx.roundRect(-9 * scale, -11 * scale, 18 * scale, 6 * scale, 3); ctx.fill();
+            } else if (faceStyle === 'alien_eyes') {
+                ctx.beginPath(); ctx.ellipse(-5 * scale, -9 * scale, 3 * scale, 4.5 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = '#22c55e'; ctx.fill();
+                ctx.beginPath(); ctx.ellipse(5 * scale, -9 * scale, 3 * scale, 4.5 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = '#22c55e'; ctx.fill();
+            } else if (faceStyle === 'princess') {
+                ctx.font = `${11 * scale}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText('👑', 0, -22 * scale);
+                ctx.beginPath(); ctx.arc(-5 * scale, -8 * scale, 2.2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(5 * scale, -8 * scale, 2.2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.lineWidth = 1.8 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.arc(0, -3 * scale, 2.5 * scale, 0, Math.PI); ctx.stroke();
+            } else if (faceStyle === 'ninja') {
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-11 * scale, -12 * scale, 22 * scale, 6 * scale);
+                ctx.beginPath(); ctx.arc(-4 * scale, -9 * scale, 1.8 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ef4444'; ctx.fill();
+                ctx.beginPath(); ctx.arc(4 * scale, -9 * scale, 1.8 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ef4444'; ctx.fill();
+            } else if (faceStyle === 'wizard') {
+                ctx.font = `${11 * scale}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText('🎩', 0, -24 * scale);
+                ctx.beginPath(); ctx.arc(-5 * scale, -8 * scale, 2.2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(5 * scale, -8 * scale, 2.2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.lineWidth = 1.8 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.arc(0, -3 * scale, 2.5 * scale, 0, Math.PI); ctx.stroke();
+            } else {
+                ctx.beginPath(); ctx.arc(-5 * scale, -9 * scale, 2.2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.beginPath(); ctx.arc(5 * scale, -9 * scale, 2.2 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.lineWidth = 1.8 * scale; ctx.strokeStyle = '#1e293b';
+                ctx.beginPath(); ctx.arc(0, -3 * scale, 2.5 * scale, 0, Math.PI); ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        function drawLargeSkin(tileIdx, charConfig, charName, offsetX = 0, jumpHeight = 0, customOffsetY = 0) {
             const { x, y } = getTileCoordinates(tileIdx);
             const size = canvas.width;
-            const actualY = y - jumpHeight - 12;
-            const scale = size * 0.0022;
+            const actualY = y - jumpHeight - 8 + customOffsetY;
+            const scale = size * 0.00285;
 
             ctx.save();
             ctx.translate(x + offsetX, actualY);
 
-            ctx.beginPath();
-            ctx.ellipse(0, jumpHeight + 16, 16 * scale, 6 * scale, 0, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(0,0,0,0.18)';
-            ctx.fill();
-
             ctx.shadowColor = charConfig.bodyColor;
-            ctx.shadowBlur = 14 * scale;
+            ctx.shadowBlur = 10 * scale;
 
             const cat = charConfig.category;
-            const sp = charConfig.species;
+            const sp = charConfig.species || 'bunny';
 
-            if (cat === 'animal') {
-                if (sp === 'bunny' || sp === 'unicorn') {
-                    ctx.beginPath(); ctx.ellipse(-8 * scale, -28 * scale, 5.5 * scale, 15 * scale, -0.15, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                    ctx.beginPath(); ctx.ellipse(8 * scale, -28 * scale, 5.5 * scale, 15 * scale, 0.15, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                    if (sp === 'unicorn') {
-                        ctx.beginPath(); ctx.moveTo(0, -22 * scale); ctx.lineTo(-3 * scale, -34 * scale); ctx.lineTo(3 * scale, -34 * scale); ctx.fillStyle = '#ffd700'; ctx.fill();
-                    }
-                } else if (sp === 'cat' || sp === 'fox' || sp === 'tiger') {
-                    ctx.beginPath(); ctx.moveTo(-14 * scale, -12 * scale); ctx.lineTo(-9 * scale, -26 * scale); ctx.lineTo(-2 * scale, -14 * scale); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                    ctx.beginPath(); ctx.moveTo(2 * scale, -14 * scale); ctx.lineTo(9 * scale, -26 * scale); ctx.lineTo(14 * scale, -12 * scale); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                } else if (sp === 'bear' || sp === 'panda' || sp === 'koala') {
-                    ctx.beginPath(); ctx.arc(-12 * scale, -18 * scale, 6 * scale, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                    ctx.beginPath(); ctx.arc(12 * scale, -18 * scale, 6 * scale, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                } else if (sp === 'dragon') {
-                    ctx.beginPath(); ctx.moveTo(-10 * scale, -18 * scale); ctx.lineTo(-16 * scale, -28 * scale); ctx.lineTo(-4 * scale, -22 * scale); ctx.fillStyle = '#ff9800'; ctx.fill();
-                    ctx.beginPath(); ctx.moveTo(10 * scale, -18 * scale); ctx.lineTo(16 * scale, -28 * scale); ctx.lineTo(4 * scale, -22 * scale); ctx.fillStyle = '#ff9800'; ctx.fill();
-                } else {
-                    ctx.beginPath(); ctx.arc(0, -22 * scale, 4 * scale, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                }
-
-                ctx.fillStyle = charConfig.outfitColor;
-                ctx.beginPath(); ctx.roundRect(-size * 0.022, size * 0.005, size * 0.044, size * 0.04, 6); ctx.fill();
-
-                ctx.beginPath(); ctx.ellipse(0, -6 * scale, 17 * scale, 18 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                ctx.shadowBlur = 0;
-                ctx.beginPath(); ctx.ellipse(0, -5 * scale, 12 * scale, 11 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
-
-            } else if (cat === 'fruit') {
-                ctx.beginPath(); ctx.moveTo(0, -20 * scale); ctx.lineTo(-5 * scale, -30 * scale); ctx.lineTo(2 * scale, -28 * scale); ctx.fillStyle = '#4caf50'; ctx.fill();
-                ctx.beginPath(); ctx.arc(5 * scale, -28 * scale, 3.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#8bc34a'; ctx.fill();
-                ctx.shadowBlur = 0;
-                ctx.beginPath();
-                if (sp === 'donut') {
-                    ctx.arc(0, -6 * scale, 19 * scale, 0, Math.PI * 2);
-                    ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                    ctx.beginPath(); ctx.arc(0, -6 * scale, 7 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
-                } else if (sp === 'cupcake') {
-                    ctx.beginPath(); ctx.moveTo(-12 * scale, 8 * scale); ctx.lineTo(12 * scale, 8 * scale); ctx.lineTo(8 * scale, 16 * scale); ctx.lineTo(-8 * scale, 16 * scale); ctx.closePath(); ctx.fillStyle = '#7c4dff'; ctx.fill();
-                    ctx.beginPath(); ctx.arc(0, -4 * scale, 18 * scale, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                } else {
-                    ctx.arc(0, -6 * scale, 18 * scale, 0, Math.PI * 2);
-                    ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                }
-                ctx.beginPath(); ctx.ellipse(0, -5 * scale, 11 * scale, 10 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
-
-            } else if (cat === 'transport') {
-                if (sp === 'rocket') {
-                    ctx.beginPath(); ctx.moveTo(-10 * scale, 2 * scale); ctx.lineTo(-20 * scale, 10 * scale); ctx.lineTo(-6 * scale, 6 * scale); ctx.fillStyle = '#ff9800'; ctx.fill();
-                    ctx.beginPath(); ctx.moveTo(10 * scale, 2 * scale); ctx.lineTo(20 * scale, 10 * scale); ctx.lineTo(6 * scale, 6 * scale); ctx.fillStyle = '#ff9800'; ctx.fill();
-                } else if (sp === 'copter') {
-                    ctx.beginPath(); ctx.rect(-18 * scale, -24 * scale, 36 * scale, 3 * scale); ctx.fillStyle = '#1e293b'; ctx.fill();
-                }
-                ctx.shadowBlur = 0;
-                ctx.beginPath(); ctx.roundRect(-20 * scale, -16 * scale, 40 * scale, 22 * scale, 12); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                ctx.beginPath(); ctx.arc(0, -8 * scale, 10 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
-            }
-
-            ctx.beginPath(); ctx.arc(-5 * scale, -6 * scale, 2.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
-            ctx.beginPath(); ctx.arc(-5.8 * scale, -7 * scale, 0.9 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
-            ctx.beginPath(); ctx.arc(5 * scale, -6 * scale, 2.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
-            ctx.beginPath(); ctx.arc(4.2 * scale, -7 * scale, 0.9 * scale, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
-
-            ctx.beginPath(); ctx.arc(0, -3.5 * scale, 0.8 * scale, 0, Math.PI * 2); ctx.fillStyle = '#475569'; ctx.fill();
-            ctx.beginPath(); ctx.arc(0, -2.5 * scale, 2 * scale, 0.2, Math.PI - 0.2); ctx.lineWidth = 1.2 * scale; ctx.strokeStyle = '#334155'; ctx.stroke();
-
-            const legOffset = Math.sin(animStep + (jumpHeight > 0 ? jumpHeight : 0)) * 3 * scale;
+            ctx.fillStyle = charConfig.outfitColor || '#334155';
+            const footBob = Math.sin(Date.now() / 80) * 2 * (jumpHeight > 0 ? 1.5 : 0.5);
+            
             if (cat === 'transport') {
-                ctx.beginPath(); ctx.arc(-11 * scale, 8 * scale, 4.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
-                ctx.beginPath(); ctx.arc(11 * scale, 8 * scale, 4.5 * scale, 0, Math.PI * 2); ctx.fillStyle = '#1e293b'; ctx.fill();
+                ctx.fillStyle = '#334155';
+                ctx.beginPath(); ctx.arc(-11 * scale, 14 * scale, 4.5 * scale, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(11 * scale, 14 * scale, 4.5 * scale, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#94a3b8';
+                ctx.beginPath(); ctx.arc(-11 * scale, 14 * scale, 2 * scale, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(11 * scale, 14 * scale, 2 * scale, 0, Math.PI * 2); ctx.fill();
+            } else if (cat === 'fruit') {
+                ctx.beginPath(); ctx.ellipse(-7 * scale, 15 * scale + footBob, 4 * scale, 3 * scale, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(7 * scale, 15 * scale - footBob, 4 * scale, 3 * scale, 0, 0, Math.PI * 2); ctx.fill();
+            } else if (cat === 'chibi') {
+                ctx.beginPath(); ctx.ellipse(-8 * scale, 17 * scale + footBob, 5.5 * scale, 4 * scale, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(8 * scale, 17 * scale - footBob, 5.5 * scale, 4 * scale, 0, 0, Math.PI * 2); ctx.fill();
             } else {
-                ctx.beginPath(); ctx.ellipse(-6 * scale, 13 * scale + legOffset, 3.8 * scale, 2.2 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
-                ctx.beginPath(); ctx.ellipse(6 * scale, 13 * scale - legOffset, 3.8 * scale, 2.2 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                ctx.beginPath(); ctx.ellipse(-8 * scale, 18 * scale + footBob, 5 * scale, 3.5 * scale, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(8 * scale, 18 * scale - footBob, 5 * scale, 3.5 * scale, 0, 0, Math.PI * 2); ctx.fill();
             }
+
+            if (cat === 'animal' || cat === 'chibi') {
+                if (sp === 'bunny' || sp === 'unicorn' || sp === 'princess' || sp === 'angel') {
+                    ctx.beginPath(); ctx.ellipse(-9 * scale, -28 * scale, 6.5 * scale, 17 * scale, -0.15, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                    ctx.beginPath(); ctx.ellipse(9 * scale, -28 * scale, 6.5 * scale, 17 * scale, 0.15, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                } else {
+                    ctx.beginPath(); ctx.arc(-14 * scale, -18 * scale, 7.5 * scale, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                    ctx.beginPath(); ctx.arc(14 * scale, -18 * scale, 7.5 * scale, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                }
+
+                ctx.beginPath(); ctx.ellipse(0, -4 * scale, 21 * scale, 22 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.beginPath(); ctx.ellipse(0, -3 * scale, 15 * scale, 14 * scale, 0, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+            } else {
+                ctx.beginPath(); ctx.arc(0, -8 * scale, 18 * scale, 0, Math.PI * 2); ctx.fillStyle = charConfig.bodyColor; ctx.fill();
+            }
+
+            drawFaceExpression(charConfig.faceStyle, scale);
+
+            ctx.font = 'bold 11px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            const textWidth = ctx.measureText(charName).width;
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+            ctx.strokeStyle = charConfig.bodyColor;
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(-textWidth / 2 - 5, -48 * (size / 480) - jumpHeight + customOffsetY, textWidth + 10, 16, 6);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#334155';
+            ctx.fillText(charName, 0, -36 * (size / 480) - jumpHeight + customOffsetY);
 
             ctx.restore();
         }
@@ -899,11 +1264,41 @@
                 dice3d.style.transform = rotations[rollVal];
                 addLog(`🎲 ${state.player.name} rolled a <b>${rollVal}</b>!`);
 
+                if (state.gameMode === 'single') {
+                    state.boss.moveCounter++;
+                    const nodes = getActiveNodes();
+                    state.boss.tileIndex = (state.boss.tileIndex + 1) % nodes.length;
+
+                    if (state.boss.moveCounter >= 2) {
+                        state.boss.moveCounter = 0;
+                        const bossDmg = Math.floor(Math.random() * 6) + 10;
+                        
+                        state.boss.attackAnimTimer = 15;
+                        const animInterval = setInterval(() => {
+                            state.boss.attackAnimTimer--;
+                            drawBoard();
+                            if (state.boss.attackAnimTimer <= 0) clearInterval(animInterval);
+                        }, 50);
+
+                        state.player.hp = Math.max(0, state.player.hp - bossDmg);
+                        addLog(`😼💢 <b>${state.boss.name}</b> moved up and dealt -<b>${bossDmg} HP</b> damage to you from the side!`);
+                        audio.playTrap();
+                        updateUI();
+
+                        if (state.player.hp <= 0) {
+                            showGameOver(false);
+                            return;
+                        }
+                    }
+                }
+
                 setTimeout(() => {
                     movePlayerWithJumps(state.player, rollVal, () => {
                         handleTileEvent(state.player, () => {
                             state.isRolling = false;
-                            switchTurn('opponent');
+                            if (state.gameMode !== 'single') {
+                                switchTurn('opponent');
+                            }
                         });
                     });
                 }, 500);
@@ -923,11 +1318,17 @@
                 }
 
                 stepsTaken++;
+                let oldIndex = playerObj.tileIndex;
                 if (steps > 0) {
                     playerObj.tileIndex = (playerObj.tileIndex + 1) % nodes.length;
                 } else {
                     playerObj.tileIndex = (playerObj.tileIndex - 1 + nodes.length) % nodes.length;
                 }
+
+                if (playerObj === state.player && playerObj.tileIndex < oldIndex && steps > 0) {
+                    levelUpPlayer();
+                }
+
                 audio.playJump();
 
                 let jumpFrame = 0;
@@ -954,19 +1355,13 @@
             doSingleJump();
         }
 
-        function addXP(amount) {
-            state.player.xp += amount;
-            addLog(`✨ Gained +${amount} XP!`);
-            if (state.player.xp >= state.player.xpToNext) {
-                state.player.level++;
-                state.player.xp -= state.player.xpToNext;
-                state.player.xpToNext = Math.round(state.player.xpToNext * 1.4);
-                state.player.maxHp += 25;
-                state.player.hp = state.player.maxHp;
-                audio.playLevelUp();
-                document.getElementById('levelup-desc').innerText = `You reached Level ${state.player.level}! Max HP boosted to ${state.player.maxHp}!`;
-                document.getElementById('levelup-modal').classList.remove('hidden');
-            }
+        function levelUpPlayer() {
+            state.player.level++;
+            state.player.maxHp += 20;
+            state.player.hp = Math.min(state.player.maxHp, state.player.hp + 30);
+            audio.playLevelUp();
+            document.getElementById('levelup-desc').innerText = `Completed a lap! Reached Level ${state.player.level}! Restored +30 HP!`;
+            document.getElementById('levelup-modal').classList.remove('hidden');
             updateUI();
         }
 
@@ -976,8 +1371,6 @@
             const nodes = getActiveNodes();
             const tile = nodes[playerObj.tileIndex];
             addLog(`${playerObj.name} landed on <b>${tile.label}</b> (${tile.icon})`);
-
-            if (playerObj === state.player) addXP(20);
 
             if (tile.type === 'start') {
                 playerObj.hp = Math.min(playerObj.maxHp, playerObj.hp + 25);
@@ -992,18 +1385,76 @@
                 }
                 addLog(`⭐ Gathered +${earned} Stars!`);
                 audio.playCoin(); updateUI(); nextTurnCallback();
+            } else if (tile.type === 'attack_power' || tile.type === 'attack_square') {
+                if (state.gameMode === 'single') {
+                    if (playerObj === state.player) {
+                        const bossDmg = 35;
+                        state.boss.hp = Math.max(0, state.boss.hp - bossDmg);
+                        addLog(`⚔️ LANDED ON ATTACK SQUARE! Dealt <b>-${bossDmg} HP</b> damage to <b>${state.boss.name}</b>!`);
+                        audio.playVictory();
+                        updateUI();
+                        if (state.boss.hp <= 0) {
+                            setTimeout(() => {
+                                state.player.coins += 100; state.player.gems += 10;
+                                addLog(`🏆 DEFEATED ${state.boss.name}! Spawn a stronger boss!`);
+                                spawnNewBoss(state.boss.levelIdx + 1);
+                            }, 500);
+                            return;
+                        }
+                    }
+                } else {
+                    const target = playerObj === state.player ? state.opponent : state.player;
+                    const dmg = 25;
+                    target.hp = Math.max(0, target.hp - dmg);
+                    addLog(`⚔️ ATTACK! <b>${playerObj.name}</b> struck <b>${target.name}</b> for <b>-${dmg} HP</b>!`);
+                    audio.playTrap();
+                    updateUI();
+                    if (target.hp <= 0) {
+                        setTimeout(() => showGameOver(playerObj === state.player), 500);
+                        return;
+                    }
+                }
+                nextTurnCallback();
             } else if (tile.type === 'gem') {
                 if (playerObj === state.player) state.player.gems += 2;
                 addLog(`💎 Found +2 Gems!`);
                 audio.playCoin(); updateUI(); nextTurnCallback();
-            } else if (tile.type === 'powerup') {
-                if (playerObj === state.player) {
-                    if (state.player.inventory.length < 4) {
-                        const card = CARD_TYPES[Math.floor(Math.random() * CARD_TYPES.length)];
-                        state.player.inventory.push(card);
-                        addLog(`🎁 Got Card: <b>${card.name}</b>!`);
-                        audio.playCoin();
-                    } else { addLog(`🎒 Inventory full!`); }
+            } else if (tile.type === 'sugar_rush') {
+                addLog(`⚡ Sugar Rush! Jumping +3 spaces forward automatically!`);
+                audio.playCoin();
+                movePlayerWithJumps(playerObj, 3, nextTurnCallback);
+                return;
+            } else if (tile.type === 'timewarp') {
+                addLog(`⏳ Time Warp! Reeling back -2 spaces!`);
+                audio.playTrap();
+                movePlayerWithJumps(playerObj, -2, nextTurnCallback);
+                return;
+            } else if (tile.type === 'heal') {
+                playerObj.hp = Math.min(playerObj.maxHp, playerObj.hp + 20);
+                addLog(`💖 Fountain of Health! Restored +20 HP.`);
+                audio.playCoin(); updateUI(); nextTurnCallback();
+            } else if (tile.type === 'mystery') {
+                const outcome = Math.random();
+                if (outcome < 0.4) {
+                    playerObj.coins += 25;
+                    addLog(`❓ Mystery Box! Found +25 Bonus Stars!`);
+                } else if (outcome < 0.8) {
+                    playerObj.hp = Math.max(0, playerObj.hp - 15);
+                    addLog(`❓ Mystery Box trap! Took -15 HP.`);
+                } else {
+                    playerObj.hp = Math.min(playerObj.maxHp, playerObj.hp + 25);
+                    addLog(`❓ Mystery Box magical cupcake! Restored +25 HP.`);
+                }
+                audio.playVictory(); updateUI(); nextTurnCallback();
+            } else if (tile.type === 'freeze') {
+                if (playerObj.shieldActive) {
+                    playerObj.shieldActive = false;
+                    addLog(`🫧 Bubble Shield blocked the Frost Freeze!`);
+                    audio.playCoin();
+                } else {
+                    playerObj.hp = Math.max(0, playerObj.hp - 10);
+                    addLog(`❄️ Frost Trap! Chilled for -10 HP!`);
+                    audio.playTrap();
                 }
                 updateUI(); nextTurnCallback();
             } else if (tile.type === 'portal') {
@@ -1014,28 +1465,10 @@
                 drawBoard();
                 updateUI();
                 nextTurnCallback();
-            } else if (tile.type === 'trap') {
-                if (playerObj.shieldActive) {
-                    playerObj.shieldActive = false;
-                    addLog(`🫧 Bubble Shield blocked the hazard!`);
-                    audio.playCoin();
-                } else {
-                    const dmg = 15;
-                    const lostCoins = Math.min(playerObj.coins || 0, 10);
-                    playerObj.hp = Math.max(0, playerObj.hp - dmg);
-                    if (playerObj === state.player) playerObj.coins -= lostCoins;
-                    addLog(`⚡ Shock Trap hit! Lost -${dmg} HP & -${lostCoins} Stars!`);
-                    audio.playTrap();
-                }
-                updateUI(); nextTurnCallback();
-            } else if (tile.type === 'enemy') {
-                const dmg = 12;
-                playerObj.hp = Math.max(0, playerObj.hp - dmg);
-                addLog(`⚔️ Fought enemy! Took ${dmg} damage.`);
-                audio.playTrap(); updateUI(); nextTurnCallback();
             } else if (tile.type === 'boss') {
-                if (playerObj === state.player) { openBossModal(); }
-                else { addLog(`👑 Opponent challenged the Boss!`); nextTurnCallback(); }
+                if (playerObj === state.player && state.gameMode === 'single') {
+                    openBossModal();
+                } else { nextTurnCallback(); }
             } else { nextTurnCallback(); }
         }
 
@@ -1058,40 +1491,9 @@
             }
         }
 
-        function useCard(cardIdx) {
-            if (state.turn !== 'player' || state.isRolling) return;
-            const card = state.player.inventory[cardIdx];
-            if (!card) return;
-
-            state.player.inventory.splice(cardIdx, 1);
-            addLog(`✨ Used Card: <b>${card.name}</b>!`);
-            audio.playCoin();
-
-            if (card.type === 'move') {
-                movePlayerWithJumps(state.player, card.val, () => { handleTileEvent(state.player, () => {}); });
-            } else if (card.type === 'teleport') {
-                const nodes = getActiveNodes();
-                const randomIdx = Math.floor(Math.random() * nodes.length);
-                state.player.tileIndex = randomIdx;
-                addLog(`🌀 Singularity Vortex warped you to tile #${randomIdx}!`);
-                audio.playVictory();
-                drawBoard();
-                handleTileEvent(state.player, () => {});
-            } else if (card.type === 'shield') {
-                state.player.shieldActive = true;
-                addLog(`🫧 Bubble Shield active!`);
-            } else if (card.type === 'heal') {
-                state.player.hp = Math.min(state.player.maxHp, state.player.hp + card.val);
-                addLog(`🧁 Restored +${card.val} HP.`);
-            } else if (card.type === 'attack') {
-                addLog(`🪄 Star Wand ready for Boss Battle!`);
-            }
-            updateUI();
-        }
-
         function openBossModal() {
             document.getElementById('boss-modal').classList.remove('hidden');
-            state.boss.hp = state.boss.maxHp;
+            document.getElementById('boss-title').innerText = state.boss.name;
             updateBossUI();
             audio.playVictory();
         }
@@ -1103,54 +1505,32 @@
         }
 
         function executeBossAttack(type) {
-            const levelBonus = (state.player.level - 1) * 8;
-            if (type === 'attack') {
-                const playerDmg = Math.floor(Math.random() * 15) + 20 + levelBonus;
-                state.boss.hp = Math.max(0, state.boss.hp - playerDmg);
-                document.getElementById('boss-combat-log').innerText = `⚔️ Dealt ${playerDmg} damage to the Boss!`;
-                audio.playTone(420, 'sawtooth', 0.15);
-                updateBossUI();
+            const playerDmg = Math.floor(Math.random() * 15) + 20 + ((state.player.level - 1) * 8);
+            state.boss.hp = Math.max(0, state.boss.hp - playerDmg);
+            document.getElementById('boss-combat-log').innerText = `⚔️ Dealt ${playerDmg} damage to ${state.boss.name}!`;
+            audio.playTone(420, 'sawtooth', 0.15);
+            updateBossUI();
 
-                if (state.boss.hp <= 0) {
-                    setTimeout(() => {
-                        document.getElementById('boss-modal').classList.add('hidden');
-                        state.player.coins += 80; state.player.gems += 5; addXP(50);
-                        addLog(`🏆 DEFEATED THE BOSS! Earned +80 Stars & +5 Gems!`);
-                        showGameOver(true);
-                    }, 800);
-                    return;
-                }
-
+            if (state.boss.hp <= 0) {
                 setTimeout(() => {
-                    const bossDmg = Math.max(8, (Math.floor(Math.random() * 10) + 12) - (state.player.level * 2));
-                    state.player.hp = Math.max(0, state.player.hp - bossDmg);
-                    document.getElementById('boss-combat-log').innerText = `💥 Boss retaliated (-${bossDmg} HP)!`;
-                    audio.playTrap(); updateUI();
-
-                    if (state.player.hp <= 0) {
-                        setTimeout(() => { document.getElementById('boss-modal').classList.add('hidden'); showGameOver(false); }, 800);
-                    }
-                }, 700);
-            } else if (type === 'card') {
-                const wandIdx = state.player.inventory.findIndex(c => c.type === 'attack');
-                if (wandIdx !== -1) {
-                    const card = state.player.inventory.splice(wandIdx, 1)[0];
-                    const totalDmg = card.val + levelBonus;
-                    state.boss.hp = Math.max(0, state.boss.hp - totalDmg);
-                    document.getElementById('boss-combat-log').innerText = `🪄 Star Wand Blast! Dealt ${totalDmg} damage!`;
-                    audio.playCoin(); updateBossUI(); updateUI();
-
-                    if (state.boss.hp <= 0) {
-                        setTimeout(() => {
-                            document.getElementById('boss-modal').classList.add('hidden');
-                            state.player.coins += 80; state.player.gems += 5; addXP(50);
-                            showGameOver(true);
-                        }, 800);
-                    }
-                } else {
-                    document.getElementById('boss-combat-log').innerText = `❌ No Star Wand in inventory!`;
-                }
+                    document.getElementById('boss-modal').classList.add('hidden');
+                    state.player.coins += 80; state.player.gems += 5;
+                    addLog(`🏆 DEFEATED ${state.boss.name}! Spawn next level boss!`);
+                    spawnNewBoss(state.boss.levelIdx + 1);
+                }, 800);
+                return;
             }
+
+            setTimeout(() => {
+                const bossDmg = Math.max(8, (Math.floor(Math.random() * 10) + 12) - (state.player.level * 2));
+                state.player.hp = Math.max(0, state.player.hp - bossDmg);
+                document.getElementById('boss-combat-log').innerText = `💥 ${state.boss.name} retaliated (-${bossDmg} HP)!`;
+                audio.playTrap(); updateUI();
+
+                if (state.player.hp <= 0) {
+                    setTimeout(() => { document.getElementById('boss-modal').classList.add('hidden'); showGameOver(false); }, 800);
+                }
+            }, 700);
         }
 
         function updateUI() {
@@ -1161,22 +1541,11 @@
             document.getElementById('player-coins').innerText = state.player.coins;
             document.getElementById('player-gems').innerText = state.player.gems;
 
-            const invContainer = document.getElementById('inventory-container');
-            invContainer.innerHTML = '';
-            document.getElementById('card-count').innerText = `${state.player.inventory.length}/4`;
-
-            state.player.inventory.forEach((card, idx) => {
-                const cardEl = document.createElement('div');
-                cardEl.className = 'bg-white border-2 border-purple-200 rounded-xl p-2 flex flex-col justify-between cursor-pointer hover:border-purple-400 transition shadow-sm';
-                cardEl.onclick = () => useCard(idx);
-                cardEl.innerHTML = `
-                    <div class="flex items-center gap-1 font-bold text-xs text-purple-700">
-                        <span>${card.icon}</span><span class="truncate">${card.name}</span>
-                    </div>
-                    <div class="text-[10px] text-slate-500 leading-tight">${card.desc}</div>
-                `;
-                invContainer.appendChild(cardEl);
-            });
+            if (state.gameMode !== 'single') {
+                const oppHpPct = Math.max(0, (state.opponent.hp / state.opponent.maxHp) * 100);
+                document.getElementById('opp-hp-bar').style.width = `${oppHpPct}%`;
+                document.getElementById('opp-hp-text').innerText = `${state.opponent.hp}/${state.opponent.maxHp}`;
+            }
         }
 
         function addLog(msg) {
